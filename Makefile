@@ -4,12 +4,24 @@ UwUMaker-c-flags-y += -std=c2x -g \
 		-Wmissing-prototypes \
 		-fpic -fblocks -Wextra \
 		-D_POSIX_C_SOURCE=200809L \
-		-fvisibility=hidden -fno-common 
+		-fvisibility=hidden -fno-common \
+		-Wmissing-field-initializers \
+		-Wstrict-prototypes \
+		-Waddress -Wconversion -Wunused \
+		-Wcast-align -Wfloat-equal -Wformat=2 \
+		-fstrict-flex-arrays=3 -Warray-bounds \
+		-Wno-initializer-overrides
 
 UwUMaker-linker-flags-y += -lm -lBlocksRuntime
 
+UwUMaker-dirs-y += data_structs core
 UwUMaker-dirs-$(CONFIG_ENABLE_TEST_EXE) += test
 
 UwUMaker-is-executable := m
-UwUMaker-name := FluffedLib$(CONFIG_VERSION_MAJOR)
+UwUMaker-name := Flup$(CONFIG_VERSION_MAJOR)
+
+
+
+
+
 
