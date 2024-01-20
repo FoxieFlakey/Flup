@@ -1,13 +1,14 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <stdbit.h>
+#include <stdckdint.h>
 
 #include "flup/attributes.h"
 #include "flup/container_of.h"
 #include "flup/data_structs/linked_list.h"
 #include "flup/data_structs/squeue.h"
 #include "flup/util/iterator.h"
-
-#include "c23_support/stdbit.h"
+#include "flup/data_structs/dyn_array.h"
 
 #include "main.h"
 
@@ -17,7 +18,7 @@ int fluffedup_main(FLUP_UNUSED int argc, FLUP_UNUSED const char** argv) {
   printf("Bit ceil: %u to %u\n", 43, stdc_bit_ceil_ui(43));
   printf("Bit floor: %u to %u\n", 43, stdc_bit_floor_ui(43));
   printf("linked list test\n");
-
+  
   flup_linked_list* list = flup_linked_list_new();
   flup_linked_list_add_head(list, (void*) 123);
   flup_linked_node* node = flup_linked_list_add_head(list, (void*) 124);
@@ -91,6 +92,18 @@ int fluffedup_main(FLUP_UNUSED int argc, FLUP_UNUSED const char** argv) {
   }
 
   flup_squeue_free(queue);
+
+  printf("Dynamic array test\n");
+  flup_dyn_array* arr = flup_dyn_array_new(sizeof(int), 3);
+  for (int i = 0; i < 20; i++) {
+    int n = rand();
+    flup_dyn_array_append(arr, &n);
+  }
+  
+  for (unsigned int i = 0; i < arr->length; i++)
+    printf("arr[%d] = %d\n", i, *(int*) flup_dyn_array_at(arr, i));
+
+  flup_dyn_array_free(arr);
   return 0;
 }
 
