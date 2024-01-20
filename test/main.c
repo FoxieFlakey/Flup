@@ -7,10 +7,17 @@
 #include "flup/data_structs/squeue.h"
 #include "flup/util/iterator.h"
 
+#include "c23_support/stdbit.h"
+
 #include "main.h"
 
 FLUP_PUBLIC
 int fluffedup_main(FLUP_UNUSED int argc, FLUP_UNUSED const char** argv) {
+  printf("C23 stdbit.h test\n");
+  printf("Bit ceil: %u to %u\n", 43, stdc_bit_ceil_ui(43));
+  printf("Bit floor: %u to %u\n", 43, stdc_bit_floor_ui(43));
+  printf("linked list test\n");
+
   flup_linked_list* list = flup_linked_list_new();
   flup_linked_list_add_head(list, (void*) 123);
   flup_linked_node* node = flup_linked_list_add_head(list, (void*) 124);
@@ -66,7 +73,7 @@ int fluffedup_main(FLUP_UNUSED int argc, FLUP_UNUSED const char** argv) {
   flup_squeue_enqueue(queue, &msg4->super);
   flup_squeue_enqueue(queue, &msg5->super);
   
-  while (queue->super.length > 0) {
+  while (queue->length > 0) {
     flup_squeue_item* dequeuedMsg = flup_squeue_dequeue_filtered_blocks(queue, ^bool (flup_squeue_item* item) {
           struct message* msg = container_of(item, struct message, super);
           // Only if last digit is smaller than 5

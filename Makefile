@@ -10,11 +10,12 @@ UwUMaker-c-flags-y += -std=c2x -g \
 		-Waddress -Wconversion -Wunused \
 		-Wcast-align -Wfloat-equal -Wformat=2 \
 		-fstrict-flex-arrays=3 -Warray-bounds \
-		-Wno-initializer-overrides
+		-Wno-initializer-overrides \
+    -isystem $(PROJECT_DIR)/c23_support/
 
 UwUMaker-linker-flags-y += -lm -lBlocksRuntime
 
-UwUMaker-dirs-y += data_structs core
+UwUMaker-dirs-y += data_structs core c23_support
 UwUMaker-dirs-$(CONFIG_ENABLE_TEST_EXE) += test
 
 UwUMaker-is-executable := m
