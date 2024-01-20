@@ -46,6 +46,29 @@
     )))
 #endif
 
+#define stdc____generic(func, val) _Generic((val), \
+      unsigned char: func ## _uc((val)), \
+      unsigned short: func ## _us((val)), \
+      unsigned int: func ## _ui((val)), \
+      unsigned long: func ## _ul((val)), \
+      unsigned long long: func ## _ull((val)) \
+    )
+
+#define stdc_bit_width(x) stdc____generic(stdc_bit_width, x)
+#define stdc_bit_floor(x) stdc____generic(stdc_bit_floor, x)
+#define stdc_bit_ceil(x) stdc____generic(stdc_bit_ceil, x)
+#define stdc_count_ones(x) stdc____generic(stdc_count_ones, x)
+#define stdc_count_zeros(x) stdc____generic(stdc_count_zeros, x)
+#define stdc_leading_ones(x) stdc____generic(stdc_leading_ones, x)
+#define stdc_leading_zeros(x) stdc____generic(stdc_leading_zeros, x)
+#define stdc_trailing_ones(x) stdc____generic(stdc_trailing_ones, x)
+#define stdc_trailing_zeros(x) stdc____generic(stdc_trailing_zeros, x)
+#define stdc_has_single_bit(x) stdc____generic(stdc_has_single_bit, x)
+#define stdc_first_leading_ones(x) stdc____generic(stdc_first_leading_ones, x)
+#define stdc_first_leading_zeros(x) stdc____generic(stdc_first_leading_zeros, x)
+#define stdc_first_trailing_ones(x) stdc____generic(stdc_first_trailing_ones, x)
+#define stdc_first_trailing_zeros(x) stdc____generic(stdc_first_trailing_zeros, x)
+
 [[gnu::const]]
 static inline unsigned int stdc_count_ones_uc(unsigned char val) {
   return (unsigned int) __builtin_popcountg(val);
