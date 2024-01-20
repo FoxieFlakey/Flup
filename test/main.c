@@ -39,9 +39,8 @@ int fluffedup_main(FLUP_UNUSED int argc, FLUP_UNUSED const char** argv) {
 
   struct message* msg1 = malloc(sizeof(*msg1));
   *msg1 = (struct message) {
-    .super = { FLUP_SQUEUE_ITEM_DEFAULTS
-      .dealloc = (void*) free
-    },
+    .super = { FLUP_SQUEUE_ITEM_DEFAULTS },
+    .super.dealloc = (void*) free,
     .integer = 106
   };
 
@@ -67,7 +66,7 @@ int fluffedup_main(FLUP_UNUSED int argc, FLUP_UNUSED const char** argv) {
   flup_squeue_enqueue(queue, &msg4->super);
   flup_squeue_enqueue(queue, &msg5->super);
   
-  while (queue->length > 0) {
+  while (queue->super.length > 0) {
     flup_squeue_item* dequeuedMsg = flup_squeue_dequeue_filtered_blocks(queue, ^bool (flup_squeue_item* item) {
           struct message* msg = container_of(item, struct message, super);
           // Only if last digit is smaller than 5
@@ -79,7 +78,7 @@ int fluffedup_main(FLUP_UNUSED int argc, FLUP_UNUSED const char** argv) {
       continue;
     }
 
-    dequeuedMsg = flup_squeue_dequeue(queue);
+    dequeuedMsg = flup_squeue_try_dequeue(queue);
     struct message* msg = container_of(dequeuedMsg, struct message, super);
     printf("Non filtered dequeue: %d\n", msg->integer);
   }

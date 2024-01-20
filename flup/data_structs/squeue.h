@@ -13,16 +13,16 @@ typedef struct flup_squeue {
 
 // The memory of this struct managed is
 // managed by program
-typedef struct flup_squeue_message_head {
+typedef struct flup_squeue_item {
   flup_list_head node;
-  void (*dealloc)(struct flup_squeue_message_head* msg);
+  void (*dealloc)(struct flup_squeue_item* self);
 } flup_squeue_item;
 
 FLUP_USED
-static void flup_squeue_nop_dealloc(struct flup_squeue_message_head*) {
+static void flup_squeue_nop_msg_dealloc(flup_squeue_item*) {
 }
 
-#define FLUP_SQUEUE_ITEM_DEFAULTS {}, flup_squeue_nop_dealloc,
+#define FLUP_SQUEUE_ITEM_DEFAULTS .node = {}, .dealloc = flup_squeue_nop_msg_dealloc,
 
 FLUP_ALLOCS_MEM
 FLUP_PUBLIC
@@ -36,7 +36,7 @@ FLUP_PUBLIC
 int flup_squeue_enqueue(flup_squeue* self, flup_squeue_item* msg);
 
 FLUP_PUBLIC
-flup_squeue_item* flup_squeue_dequeue(flup_squeue* self);
+flup_squeue_item* flup_squeue_try_dequeue(flup_squeue* self);
 
 typedef bool (*flup_squeue_filter_func)(flup_squeue_item* msg, void* udata);
 

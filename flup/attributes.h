@@ -32,5 +32,13 @@
 # define FLUP_ATTR_ADDRESS_SPACE(n) 
 #endif
 
+#if __clang__
+#define FLUP_NONNULL _Nonnull
+#define FLUP_NULLABLE _Nullable
+#else
+#define FLUP_NONNULL
+#define FLUP_NULLABLE
+#endif
+
 #endif
 

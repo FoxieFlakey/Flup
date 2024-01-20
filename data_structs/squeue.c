@@ -26,9 +26,9 @@ static flup_squeue_item* peek(flup_squeue* _self) {
   return container_of(current, flup_squeue_item, node);
 }
 
-static void removeQueueItem(flup_squeue* _self, flup_squeue_item* item) {
+static void removeQueueItem(flup_squeue* self, flup_squeue_item* item) {
   flup_list_del(&item->node);
-  _self->length--;
+  self->length--;
 }
 
 FLUP_PUBLIC
@@ -41,7 +41,7 @@ flup_squeue_item* flup_squeue_dequeue_filtered_blocks(flup_squeue* _self, flup_s
 }
 
 FLUP_PUBLIC
-flup_squeue_item* flup_squeue_dequeue(flup_squeue* _self) {
+flup_squeue_item* flup_squeue_try_dequeue(flup_squeue* _self) {
   flup_squeue_item* current = peek(_self);
   if (!current)
     return NULL;
