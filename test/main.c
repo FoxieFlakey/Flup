@@ -46,36 +46,20 @@ int fluffedup_main(FLUP_UNUSED int argc, FLUP_UNUSED const char** argv) {
   };
 
   struct message* msg2 = malloc(sizeof(*msg2));
-  *msg2 = (struct message) {
-    .super = { FLUP_SQUEUE_ITEM_DEFAULTS
-      .dealloc = (void*) free
-    },
-    .integer = 200
-  };
+  *msg2 = *msg1;
+  msg2->integer = 200;
   
   struct message* msg3 = malloc(sizeof(*msg3));
-  *msg3 = (struct message) {
-    .super = { FLUP_SQUEUE_ITEM_DEFAULTS
-      .dealloc = (void*) free
-    },
-    .integer = 301
-  };
+  *msg3 = *msg1;
+  msg3->integer = 301;
   
   struct message* msg4 = malloc(sizeof(*msg4));
-  *msg4 = (struct message) {
-    .super = { FLUP_SQUEUE_ITEM_DEFAULTS
-      .dealloc = (void*) free
-    },
-    .integer = 407
-  };
+  *msg4 = *msg1;
+  msg4->integer = 407;
   
   struct message* msg5 = malloc(sizeof(*msg5));
-  *msg5 = (struct message) {
-    .super = { FLUP_SQUEUE_ITEM_DEFAULTS
-      .dealloc = (void*) free
-    },
-    .integer = 502
-  };
+  *msg5 = *msg1;
+  msg5->integer = 502;
 
   flup_squeue_enqueue(queue, &msg1->super);
   flup_squeue_enqueue(queue, &msg2->super);
@@ -86,6 +70,7 @@ int fluffedup_main(FLUP_UNUSED int argc, FLUP_UNUSED const char** argv) {
   while (queue->length > 0) {
     flup_squeue_item* dequeuedMsg = flup_squeue_dequeue_filtered_blocks(queue, ^bool (flup_squeue_item* item) {
           struct message* msg = container_of(item, struct message, super);
+          // Only if last digit is smaller than 5
           return msg->integer % 10 < 5;
         });
     if (dequeuedMsg) {
