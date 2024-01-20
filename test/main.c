@@ -95,11 +95,24 @@ int fluffedup_main(FLUP_UNUSED int argc, FLUP_UNUSED const char** argv) {
 
   printf("Dynamic array test\n");
   flup_dyn_array* arr = flup_dyn_array_new(sizeof(int), 3);
-  for (int i = 0; i < 20; i++) {
-    int n = rand();
+  int n = 8086;
+  flup_dyn_array_prepend(arr, &n);
+  n = 2025;
+  flup_dyn_array_append(arr, &n);
+  n = 2026;
+  flup_dyn_array_append(arr, &n);
+  
+  srand(9096);
+
+  for (int i = 0; i < 5; i++) {
+    n = rand();
     flup_dyn_array_append(arr, &n);
   }
-  
+  n = 2024;
+  flup_dyn_array_append(arr, &n);
+  // Delete the appended "2025" and "2026" from earlier
+  flup_dyn_array_delete(arr, 1, 2);
+
   for (unsigned int i = 0; i < arr->length; i++)
     printf("arr[%d] = %d\n", i, *(int*) flup_dyn_array_at(arr, i));
 
