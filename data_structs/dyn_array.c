@@ -8,6 +8,7 @@
 
 #include "flup/data_structs/dyn_array.h"
 #include "flup/attributes.h"
+#include "flup/interface/ilist.h"
 #include "flup/tags.h"
 
 FLUP_ALLOCS_MEM
@@ -22,7 +23,13 @@ flup_dyn_array* flup_dyn_array_new(size_t elementSize, size_t capacity) {
     .length = 0,
     .elementSize = elementSize
   };
-  
+
+  extern flup_ilist_ops dyn_array_ilist_ops;
+  self->interface.IList = (flup_ilist) {
+    .ops = &dyn_array_ilist_ops,
+    .version = 0
+  };
+
   if (flup_dyn_array_reserve(self, capacity) < 0)
     goto failure;
   memset(self->array, 0xBE, self->capacity * self->elementSize);
@@ -105,7 +112,7 @@ int flup_dyn_array_insert(flup_dyn_array* self, size_t index, const void* elemen
 }
 
 FLUP_PUBLIC
-int flup_dyn_array_delete(flup_dyn_array* self, size_t index, size_t count) {
+int flup_dyn_array_remove(flup_dyn_array* self, size_t index, size_t count) {
   if (count < 1 || index >= self->length)
     return -EINVAL;
   

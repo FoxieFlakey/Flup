@@ -6,9 +6,14 @@
 #include <stddef.h>
 
 #include "flup/attributes.h"
+#include "flup/interface/ilist.h"
 #include "flup/tags.h"
 
 typedef struct flup_dyn_array {
+  struct {
+    flup_ilist IList;
+  } interface;
+
   size_t length;
   size_t capacity;
   size_t elementSize;
@@ -46,8 +51,9 @@ FLUP_PUBLIC
 int flup_dyn_array_trim(flup_dyn_array* self);
 
 FLUP_PUBLIC
-int flup_dyn_array_delete(flup_dyn_array* self, size_t index, size_t count);
+int flup_dyn_array_remove(flup_dyn_array* self, size_t index, size_t count);
 
+FLUP_ALLOCS_MEM
 FLUP_PUBLIC
 int flup_dyn_array_insert(flup_dyn_array* self, size_t index, const void* element);
 
