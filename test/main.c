@@ -27,7 +27,7 @@ int fluffedup_main(FLUP_UNUSED int argc, FLUP_UNUSED const char** argv) {
     flup_linked_node* node = flup_linked_list_add_head(list, &(int) {124});
     flup_linked_list_add_tail(list, &(int) {122});
    
-    flup_iterator_state* iterator = flup_linked_list_iterator(list);
+    flup_iterator_state* iterator = flup_linked_list_get_iterator(list);
     flup_iterator_foreach(int, x, iterator)
       printf("1st data iteration: %d, has next %d\n", x, iterator->ops->hasNext(iterator));
     

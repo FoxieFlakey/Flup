@@ -10,8 +10,6 @@
 #include "flup/data_structs/list_head.h"
 #include "flup/data_structs/linked_list.h"
 
-#include "linked_list_types.h"
-
 FLUP_PUBLIC
 flup_linked_list* flup_linked_list_new(size_t elementSize) {
   flup_linked_list* self = malloc(sizeof(*self));
@@ -43,7 +41,7 @@ void flup_linked_list_free(flup_linked_list* self) {
 }
 
 static bool nextItem(flup_iterator_state* _state) {
-  struct linked_list_iterator* state = container_of(_state, struct linked_list_iterator, state);
+  flup_linked_list_iterator* state = container_of(_state, flup_linked_list_iterator, state);
   flup_linked_list* self = state->owner;
   flup_linked_node* cur = state->next;
   BUG_ON(state->knownVersion != self->version);
@@ -58,17 +56,17 @@ static bool nextItem(flup_iterator_state* _state) {
 }
 
 static bool hasNext(flup_iterator_state* _state) {
-  struct linked_list_iterator* state = container_of(_state, struct linked_list_iterator, state);
+  flup_linked_list_iterator* state = container_of(_state, flup_linked_list_iterator, state);
   return !flup_list_is_head(&state->next->node, &state->owner->list);
 }
 
 static void freeIterator(flup_iterator_state* _state) {
-  struct linked_list_iterator* state = container_of(_state, struct linked_list_iterator, state);
+  flup_linked_list_iterator* state = container_of(_state, flup_linked_list_iterator, state);
   free(state);
 }
 
 static int resetIterator(flup_iterator_state* _state) {
-  struct linked_list_iterator* state = container_of(_state, struct linked_list_iterator, state);
+  flup_linked_list_iterator* state = container_of(_state, flup_linked_list_iterator, state);
   state->state.current = NULL;
   state->state.errorCode = 0;
   state->next = flup_list_first_entry(&state->owner->list, flup_linked_node, node);
@@ -76,8 +74,8 @@ static int resetIterator(flup_iterator_state* _state) {
 }
 
 FLUP_PUBLIC
-flup_iterator_state* flup_linked_list_iterator(flup_linked_list* self) {
-  struct linked_list_iterator* iterator = malloc(sizeof(*iterator));
+flup_iterator_state* flup_linked_list_get_iterator(flup_linked_list* self) {
+  flup_linked_list_iterator* iterator = malloc(sizeof(*iterator));
   if (!iterator)
     return NULL;
 
@@ -88,7 +86,7 @@ flup_iterator_state* flup_linked_list_iterator(flup_linked_list* self) {
     .reset = resetIterator
   };
 
-  *iterator = (struct linked_list_iterator) {
+  *iterator = (flup_linked_list_iterator) {
     .next = flup_list_first_entry(&self->list, flup_linked_node, node),
     .owner = self,
     .state = {

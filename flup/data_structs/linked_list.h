@@ -9,7 +9,10 @@
 #include "flup/tags.h"
 #include "flup/attributes.h"
 
-typedef struct flup_linked_node flup_linked_node;
+typedef struct flup_linked_node {
+  flup_list_head node;
+  char data[];
+} flup_linked_node;
 
 typedef struct flup_linked_list {
   struct {
@@ -21,6 +24,14 @@ typedef struct flup_linked_list {
   flup_list_head list;
   int version;
 } flup_linked_list;
+
+typedef struct flup_linked_list_iterator {
+  flup_iterator_state state;
+  flup_linked_list* owner;
+  flup_linked_node* next;
+
+  int knownVersion;
+} flup_linked_list_iterator;
 
 FLUP_ALLOCS_MEM
 FLUP_PUBLIC
@@ -40,7 +51,7 @@ flup_linked_node* flup_linked_list_add_head(flup_linked_list* self, const void* 
 
 FLUP_ALLOCS_MEM
 FLUP_PUBLIC
-flup_iterator_state* flup_linked_list_iterator(flup_linked_list* self);
+flup_iterator_state* flup_linked_list_get_iterator(flup_linked_list* self);
 
 FLUP_PUBLIC
 void flup_linked_list_del(flup_linked_list* self, flup_linked_node* node);
