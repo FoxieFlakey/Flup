@@ -24,7 +24,7 @@ int fluffedup_main(FLUP_UNUSED int argc, FLUP_UNUSED const char** argv) {
     
     flup_linked_list* list = flup_linked_list_new(sizeof(int));
     flup_linked_list_add_head(list, &(int) {123});
-    flup_linked_node* node = flup_linked_list_add_head(list, &(int) {124});
+    flup_linked_list_node* node = flup_linked_list_add_head(list, &(int) {124});
     flup_linked_list_add_tail(list, &(int) {122});
    
     flup_iterator_state* iterator = flup_linked_list_get_iterator(list);

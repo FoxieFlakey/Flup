@@ -36,40 +36,42 @@ void flup_linked_list_free(flup_linked_list* self) {
   flup_list_head* current;
   flup_list_head* next;
   flup_list_for_each_safe(&self->list, current, next)
-    flup_linked_list_del(self, flup_list_entry(current, flup_linked_node, node));
+    flup_linked_list_del(self, flup_list_entry(current, flup_linked_list_node, node));
   free(self);
 }
 
 static bool nextItem(flup_iterator_state* _state) {
-  flup_linked_list_iterator* state = container_of(_state, flup_linked_list_iterator, state);
+  flup_linked_list_iterator* state = container_of(_state, flup_linked_list_iterator, super);
   flup_linked_list* self = state->owner;
-  flup_linked_node* cur = state->next;
+  flup_linked_list_node* cur = state->next;
   BUG_ON(state->knownVersion != self->version);
 
   // Reached head, iteration ended
-  if (flup_list_is_head(&cur->node, &self->list))
+  if (flup_list_is_head(&cur->node, &self->list)) {
+    state->super.errorCode = 0;
     return false;
+  }
  
-  state->state.current = cur->data;
-  state->next = flup_list_entry(cur->node.next, flup_linked_node, node);
+  state->super.current = &cur->data;
+  state->next = flup_list_entry(cur->node.next, flup_linked_list_node, node);
   return true;
 }
 
 static bool hasNext(flup_iterator_state* _state) {
-  flup_linked_list_iterator* state = container_of(_state, flup_linked_list_iterator, state);
+  flup_linked_list_iterator* state = container_of(_state, flup_linked_list_iterator, super);
   return !flup_list_is_head(&state->next->node, &state->owner->list);
 }
 
 static void freeIterator(flup_iterator_state* _state) {
-  flup_linked_list_iterator* state = container_of(_state, flup_linked_list_iterator, state);
+  flup_linked_list_iterator* state = container_of(_state, flup_linked_list_iterator, super);
   free(state);
 }
 
 static int resetIterator(flup_iterator_state* _state) {
-  flup_linked_list_iterator* state = container_of(_state, flup_linked_list_iterator, state);
-  state->state.current = NULL;
-  state->state.errorCode = 0;
-  state->next = flup_list_first_entry(&state->owner->list, flup_linked_node, node);
+  flup_linked_list_iterator* state = container_of(_state, flup_linked_list_iterator, super);
+  state->super.current = NULL;
+  state->super.errorCode = 0;
+  state->next = flup_list_first_entry(&state->owner->list, flup_linked_list_node, node);
   return 0;
 }
 
@@ -87,27 +89,27 @@ flup_iterator_state* flup_linked_list_get_iterator(flup_linked_list* self) {
   };
 
   *iterator = (flup_linked_list_iterator) {
-    .next = flup_list_first_entry(&self->list, flup_linked_node, node),
+    .next = flup_list_first_entry(&self->list, flup_linked_list_node, node),
     .owner = self,
-    .state = {
+    .super = {
       .current = NULL,
       .errorCode = 0,
       .ops = &ops
     }
   };
-  return &iterator->state;
+  return &iterator->super;
 }
 
 FLUP_PUBLIC
-void flup_linked_list_del(flup_linked_list* self, flup_linked_node* node) {
+void flup_linked_list_del(flup_linked_list* self, flup_linked_list_node* node) {
   self->length--;
   flup_list_del(&node->node);
   free(node);
 }
 
 FLUP_PUBLIC
-flup_linked_node* flup_linked_list_add_tail(flup_linked_list* self, const void* data) {
-  flup_linked_node* node = malloc(sizeof(*node) + self->elementSize);
+flup_linked_list_node* flup_linked_list_add_tail(flup_linked_list* self, const void* data) {
+  flup_linked_list_node* node = malloc(sizeof(*node) + self->elementSize);
   if (!node)
     return NULL;
 
@@ -119,8 +121,8 @@ flup_linked_node* flup_linked_list_add_tail(flup_linked_list* self, const void* 
 }
 
 FLUP_PUBLIC
-flup_linked_node* flup_linked_list_add_head(flup_linked_list* self, const void* data) {
-  flup_linked_node* node = malloc(sizeof(*node) + self->elementSize);
+flup_linked_list_node* flup_linked_list_add_head(flup_linked_list* self, const void* data) {
+  flup_linked_list_node* node = malloc(sizeof(*node) + self->elementSize);
   if (!node)
     return NULL;
 
