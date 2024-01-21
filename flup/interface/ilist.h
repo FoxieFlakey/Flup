@@ -8,6 +8,7 @@
 typedef struct flup_ilist {
   struct flup_ilist_ops* ops;
   size_t elementSize;
+  unsigned int version;
 } flup_ilist;
 
 typedef struct flup_ilist_ops {
