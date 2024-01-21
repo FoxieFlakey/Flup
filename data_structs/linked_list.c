@@ -1,43 +1,56 @@
 #include <stddef.h>
 #include <stdlib.h>
+#include <string.h>
 
 #include "flup/bug.h"
 #include "flup/container_of.h"
-#include "linked_list_types.h"
-
+#include "flup/interface/ilist.h"
 #include "flup/util/iterator.h"
 #include "flup/attributes.h"
 #include "flup/data_structs/list_head.h"
 #include "flup/data_structs/linked_list.h"
 
+#include "linked_list_types.h"
+
 FLUP_PUBLIC
-flup_linked_list* flup_linked_list_new() {
-  flup_linked_list* self = malloc(sizeof(*self));
+flup_linked_list* flup_linked_list_new(size_t elementSize) {
+  struct linked_list_impl* self = malloc(sizeof(*self));
   if (!self)
     return NULL;
 
-  *self = (flup_linked_list) {
-    .count = 0,
-    .list = FLUP_LIST_HEAD_INIT(self->list)
+  extern const flup_ilist_ops linked_list_ilist_ops;
+  *self = (struct linked_list_impl) {
+    .list = FLUP_LIST_HEAD_INIT(self->list),
+    .super = {
+      .length = 0,
+      .elementSize = elementSize,
+      .interface = {
+        .IList.ops = &linked_list_ilist_ops
+      }
+    }
   };
-  return self;
+  return &self->super;
 }
 
+#define getSelf(x) container_of(x, struct linked_list_impl, super)
+
 FLUP_PUBLIC
-void flup_linked_list_free(flup_linked_list* self) {
-  if (!self)
+void flup_linked_list_free(flup_linked_list* _self) {
+  if (!_self)
     return;
+
+  struct linked_list_impl* self = getSelf(_self);
 
   flup_list_head* current;
   flup_list_head* next;
   flup_list_for_each_safe(&self->list, current, next)
-    flup_linked_list_del(self, flup_list_entry(current, flup_linked_node, node));
+    flup_linked_list_del(_self, flup_list_entry(current, flup_linked_node, node));
   free(self);
 }
 
 static bool nextItem(flup_iterator_state* _state) {
   struct linked_list_iterator* state = container_of(_state, struct linked_list_iterator, state);
-  flup_linked_list* self = state->owner;
+  struct linked_list_impl* self = state->owner;
   flup_linked_node* cur = state->next;
   BUG_ON(state->knownVersion != self->version);
 
@@ -69,7 +82,8 @@ static int resetIterator(flup_iterator_state* _state) {
 }
 
 FLUP_PUBLIC
-flup_iterator_state* flup_linked_list_iterator(flup_linked_list* self) {
+flup_iterator_state* flup_linked_list_iterator(flup_linked_list* _self) {
+  struct linked_list_impl* self = getSelf(_self);
   struct linked_list_iterator* iterator = malloc(sizeof(*iterator));
   if (!iterator)
     return NULL;
@@ -94,30 +108,37 @@ flup_iterator_state* flup_linked_list_iterator(flup_linked_list* self) {
 }
 
 FLUP_PUBLIC
-void flup_linked_list_del(flup_linked_list*, flup_linked_node* node) {
+void flup_linked_list_del(flup_linked_list* self, flup_linked_node* node) {
+  self->length--;
   flup_list_del(&node->node);
   free(node);
 }
 
 FLUP_PUBLIC
-flup_linked_node* flup_linked_list_add_tail(flup_linked_list* self, void* data) {
-  flup_linked_node* node = malloc(sizeof(*node));
+flup_linked_node* flup_linked_list_add_tail(flup_linked_list* _self, const void* data) {
+  struct linked_list_impl* self = getSelf(_self);
+  flup_linked_node* node = malloc(sizeof(*node) + self->super.elementSize);
   if (!node)
     return NULL;
 
-  node->data = data;
+  memcpy(node->data, data, self->super.elementSize);
+  
   flup_list_add_tail(&self->list, &node->node);
+  self->super.length++;
   return node;
 }
 
 FLUP_PUBLIC
-flup_linked_node* flup_linked_list_add_head(flup_linked_list* self, void* data) {
-  flup_linked_node* node = malloc(sizeof(*node));
+flup_linked_node* flup_linked_list_add_head(flup_linked_list* _self, const void* data) {
+  struct linked_list_impl* self = getSelf(_self);
+  flup_linked_node* node = malloc(sizeof(*node) + self->super.elementSize);
   if (!node)
     return NULL;
 
-  node->data = data;
+  memcpy(node->data, data, self->super.elementSize);
+  
   flup_list_add_head(&self->list, &node->node);
+  self->super.length++;
   return node;
 }
 

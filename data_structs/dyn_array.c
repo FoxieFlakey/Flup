@@ -24,10 +24,9 @@ flup_dyn_array* flup_dyn_array_new(size_t elementSize, size_t capacity) {
     .elementSize = elementSize
   };
 
-  extern flup_ilist_ops dyn_array_ilist_ops;
+  extern const flup_ilist_ops dyn_array_ilist_ops;
   self->interface.IList = (flup_ilist) {
-    .ops = &dyn_array_ilist_ops,
-    .version = 0
+    .ops = &dyn_array_ilist_ops
   };
 
   if (flup_dyn_array_reserve(self, capacity) < 0)

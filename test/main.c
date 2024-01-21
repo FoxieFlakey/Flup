@@ -22,20 +22,20 @@ int fluffedup_main(FLUP_UNUSED int argc, FLUP_UNUSED const char** argv) {
   {
     printf("linked list test\n");
     
-    flup_linked_list* list = flup_linked_list_new();
-    flup_linked_list_add_head(list, (void*) 123);
-    flup_linked_node* node = flup_linked_list_add_head(list, (void*) 124);
-    flup_linked_list_add_tail(list, (void*) 122);
+    flup_linked_list* list = flup_linked_list_new(sizeof(int));
+    flup_linked_list_add_head(list, &(int) {123});
+    flup_linked_node* node = flup_linked_list_add_head(list, &(int) {124});
+    flup_linked_list_add_tail(list, &(int) {122});
    
     flup_iterator_state* iterator = flup_linked_list_iterator(list);
-    flup_iterator_foreach_ptr(void, x, iterator)
-      printf("1st data iteration: %ld, has next %d\n", (long) x, iterator->ops->hasNext(iterator));
+    flup_iterator_foreach(int, x, iterator)
+      printf("1st data iteration: %d, has next %d\n", x, iterator->ops->hasNext(iterator));
     
     flup_linked_list_del(list, node);
     iterator->ops->reset(iterator);
 
-    flup_iterator_foreach_ptr(void, x, iterator)
-      printf("2nd data iteration: %ld, has next %d\n", (long) x, iterator->ops->hasNext(iterator));
+    flup_iterator_foreach(int, x, iterator)
+      printf("2nd data iteration: %d, has next %d\n", x, iterator->ops->hasNext(iterator));
     iterator->ops->free(iterator);
 
     flup_linked_list_free(list);

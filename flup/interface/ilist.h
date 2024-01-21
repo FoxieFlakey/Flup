@@ -7,7 +7,6 @@
 
 typedef struct flup_ilist {
   const struct flup_ilist_ops* ops;
-  unsigned int version;
 } flup_ilist;
 
 typedef struct flup_ilist_ops {
