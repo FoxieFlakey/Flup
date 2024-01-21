@@ -3,10 +3,13 @@
 
 #include <stddef.h>
 
+#include "flup/data_structs/list_head.h"
 #include "flup/interface/ilist.h"
 #include "flup/util/iterator.h"
 #include "flup/tags.h"
 #include "flup/attributes.h"
+
+typedef struct flup_linked_node flup_linked_node;
 
 typedef struct flup_linked_list {
   struct {
@@ -14,8 +17,10 @@ typedef struct flup_linked_list {
   } interface;
   size_t length;
   size_t elementSize;
+  
+  flup_list_head list;
+  int version;
 } flup_linked_list;
-typedef struct flup_linked_node flup_linked_node;
 
 FLUP_ALLOCS_MEM
 FLUP_PUBLIC
