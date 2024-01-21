@@ -12,7 +12,7 @@
 
 FLUP_ALLOCS_MEM
 FLUP_PUBLIC
-flup_dyn_array* flup_dyn_array_new(size_t elementSize, unsigned int capacity) {
+flup_dyn_array* flup_dyn_array_new(size_t elementSize, size_t capacity) {
   flup_dyn_array* self = malloc(sizeof(*self));
   if (!self)
     return NULL;
@@ -46,12 +46,12 @@ void flup_dyn_array_free(flup_dyn_array* self) {
 
 FLUP_ALLOCS_MEM
 FLUP_PUBLIC
-int flup_dyn_array_reserve(flup_dyn_array* self, unsigned int count) {
-  unsigned int maxLengthReserved;
+int flup_dyn_array_reserve(flup_dyn_array* self, size_t count) {
+  size_t maxLengthReserved;
   if (ckd_add(&maxLengthReserved, self->length, count))
     return -EINVAL;
   
-  unsigned int newCapacity = stdc_bit_ceil(maxLengthReserved);
+  size_t newCapacity = stdc_bit_ceil(maxLengthReserved);
   if (newCapacity <= self->capacity)
     return 0;
 
@@ -63,12 +63,12 @@ int flup_dyn_array_reserve(flup_dyn_array* self, unsigned int count) {
   return 0;
 }
 
-static void* getElementAddr(flup_dyn_array* self, unsigned int index) {
+static void* getElementAddr(flup_dyn_array* self, size_t index) {
   return (char*) self->array + self->elementSize * index;
 }
 
 static int preInsert(flup_dyn_array* self) {
-  unsigned int newLength;
+  size_t newLength;
   if (ckd_add(&newLength, self->length, 1))
     return -EOVERFLOW;
 
@@ -81,9 +81,9 @@ static int preInsert(flup_dyn_array* self) {
 }
 
 FLUP_PUBLIC
-int flup_dyn_array_insert(flup_dyn_array* self, unsigned int index, const void* element) {
-  unsigned int moveTarget;
-  unsigned int moveCount;
+int flup_dyn_array_insert(flup_dyn_array* self, size_t index, const void* element) {
+  size_t moveTarget;
+  size_t moveCount;
   if (ckd_add(&moveTarget, index, 1))
     return -EINVAL;
   if (ckd_sub(&moveCount, self->length, index))
@@ -105,11 +105,11 @@ int flup_dyn_array_insert(flup_dyn_array* self, unsigned int index, const void* 
 }
 
 FLUP_PUBLIC
-int flup_dyn_array_delete(flup_dyn_array* self, unsigned int index, unsigned int count) {
+int flup_dyn_array_delete(flup_dyn_array* self, size_t index, size_t count) {
   if (count < 1 || index >= self->length)
     return -EINVAL;
   
-  unsigned int startOfNext;
+  size_t startOfNext;
   if (ckd_add(&startOfNext, index, count))
     return -EINVAL;
   if (startOfNext >= self->length)
@@ -133,7 +133,7 @@ int flup_dyn_array_prepend(flup_dyn_array* self, const void* element) {
 }
 
 FLUP_PUBLIC
-int flup_dyn_array_get(flup_dyn_array* self, unsigned int index, void** element) {
+int flup_dyn_array_get(flup_dyn_array* self, size_t index, void** element) {
   if (index > self->length)
     return -EINVAL;
 
@@ -143,7 +143,7 @@ int flup_dyn_array_get(flup_dyn_array* self, unsigned int index, void** element)
 }
 
 FLUP_PUBLIC
-int flup_dyn_array_set(flup_dyn_array* self, unsigned int index, const void* element) {
+int flup_dyn_array_set(flup_dyn_array* self, size_t index, const void* element) {
   if (index >= self->length)
     return -EINVAL;
   
@@ -154,7 +154,7 @@ int flup_dyn_array_set(flup_dyn_array* self, unsigned int index, const void* ele
 FLUP_DEALLOCS_MEM
 FLUP_PUBLIC
 int flup_dyn_array_trim(flup_dyn_array* self) {
-  unsigned int trimmedCapacity = stdc_bit_ceil(self->length);
+  size_t trimmedCapacity = stdc_bit_ceil(self->length);
   if (trimmedCapacity == self->capacity)
     return 0;
   
