@@ -7,21 +7,21 @@
 
 // Queue interface
 
-typedef struct flup_queue {
-  struct flup_queue_ops* ops;
-} flup_queue;
+typedef struct flup_iqueue {
+  struct flup_iqueue_ops* ops;
+} flup_iqueue;
 
-typedef struct flup_queue_ops {
-  unsigned int (*getLength)(flup_queue* self);
+typedef struct flup_iqueue_ops {
+  unsigned int (*getLength)(flup_iqueue* self);
   
-  unsigned int (*try_enqueue)(flup_queue* self, void* ptr);
-  int (*enqueue)(flup_queue* self, void* ptr);
+  unsigned int (*try_enqueue)(flup_iqueue* self, void* ptr);
+  int (*enqueue)(flup_iqueue* self, void* ptr);
   
-  void* FLUP_NULLABLE (*try_dequeue)(flup_queue* self);
-  void* FLUP_NONNULL (*dequeue)(flup_queue* self, const struct timespec* abstimeout);
+  void* FLUP_NULLABLE (*try_dequeue)(flup_iqueue* self);
+  void* FLUP_NONNULL (*dequeue)(flup_iqueue* self, const struct timespec* abstimeout);
   
-  void (*dealloc)(flup_queue* self);
-} flup_queue_ops;
+  void (*dealloc)(flup_iqueue* self);
+} flup_iqueue_ops;
 
 #endif
 
