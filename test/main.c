@@ -113,8 +113,11 @@ int fluffedup_main(FLUP_UNUSED int argc, FLUP_UNUSED const char** argv) {
   // Delete the appended "2025" and "2026" from earlier
   flup_dyn_array_delete(arr, 1, 2);
 
-  for (unsigned int i = 0; i < arr->length; i++)
-    printf("arr[%d] = %d\n", i, *(int*) flup_dyn_array_at(arr, i));
+  for (unsigned int i = 0; i < arr->length; i++) {
+    int* addr;
+    flup_dyn_array_get(arr, i, (void**) &addr);
+    printf("arr[%d] = %d\n", i, *addr);
+  }
 
   flup_dyn_array_free(arr);
   return 0;

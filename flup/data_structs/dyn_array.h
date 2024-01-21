@@ -28,7 +28,7 @@ FLUP_PUBLIC
 void flup_dyn_array_free(flup_dyn_array* self);
 
 FLUP_PUBLIC
-void* flup_dyn_array_at(flup_dyn_array* self, unsigned int index);
+int flup_dyn_array_get(flup_dyn_array* self, unsigned int index, void** element);
 
 FLUP_ALLOCS_MEM
 FLUP_PUBLIC
@@ -40,9 +40,6 @@ int flup_dyn_array_prepend(flup_dyn_array* self, const void* element);
 
 FLUP_PUBLIC
 int flup_dyn_array_set(flup_dyn_array* self, unsigned int index, const void* element);
-
-FLUP_PUBLIC
-int flup_dyn_array_get(flup_dyn_array* self, unsigned int index, void* element);
 
 FLUP_DEALLOCS_MEM
 FLUP_PUBLIC

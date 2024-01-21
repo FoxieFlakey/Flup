@@ -133,11 +133,13 @@ int flup_dyn_array_prepend(flup_dyn_array* self, const void* element) {
 }
 
 FLUP_PUBLIC
-void* flup_dyn_array_at(flup_dyn_array* self, unsigned int index) {
+int flup_dyn_array_get(flup_dyn_array* self, unsigned int index, void** element) {
   if (index > self->length)
-    return NULL;
+    return -EINVAL;
 
-  return getElementAddr(self, index);
+  if (element)
+    *element = getElementAddr(self, index);
+  return 0;
 }
 
 FLUP_PUBLIC
@@ -146,15 +148,6 @@ int flup_dyn_array_set(flup_dyn_array* self, unsigned int index, const void* ele
     return -EINVAL;
   
   memcpy(getElementAddr(self, index), element, self->elementSize);
-  return 0;
-}
-
-FLUP_PUBLIC
-int flup_dyn_array_get(flup_dyn_array* self, unsigned int index, void* element) {
-  if (index >= self->length)
-    return -EINVAL;
-
-  memcpy(element, getElementAddr(self, self->length), self->elementSize);
   return 0;
 }
 
