@@ -26,7 +26,7 @@ typedef struct flup_linked_list {
 } flup_linked_list;
 
 typedef struct flup_linked_list_iterator {
-  flup_iterator_state super;
+  flup_iterator super;
   flup_linked_list* owner;
   flup_linked_list_node* next;
 
@@ -49,12 +49,14 @@ FLUP_ALLOCS_MEM
 FLUP_PUBLIC
 flup_linked_list_node* flup_linked_list_add_head(flup_linked_list* self, const void* data);
 
-FLUP_ALLOCS_MEM
 FLUP_PUBLIC
-flup_iterator_state* flup_linked_list_get_iterator(flup_linked_list* self);
+void flup_linked_list_get_iterator(flup_linked_list* self, flup_linked_list_iterator* preAllocated);
 
 FLUP_PUBLIC
 void flup_linked_list_del(flup_linked_list* self, flup_linked_list_node* node);
+
+FLUP_PUBLIC
+flup_linked_list_node* flup_linked_list_at_index(flup_linked_list* self, size_t index);
 
 #endif
 

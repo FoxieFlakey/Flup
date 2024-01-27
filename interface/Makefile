@@ -1,3 +1,3 @@
 
-UwUMaker-c-sources-y += ilist.c
+UwUMaker-dirs-y += ilist
 

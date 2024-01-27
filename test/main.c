@@ -8,10 +8,14 @@
 #include "flup/data_structs/linked_list.h"
 #include "flup/data_structs/squeue.h"
 #include "flup/interface/ilist.h"
+#include "flup/util/foreach.h"
 #include "flup/util/iterator.h"
 #include "flup/data_structs/dyn_array.h"
 
 #include "main.h"
+
+int doSomething(int);
+bool iterate(long*);
 
 FLUP_PUBLIC
 int fluffedup_main(FLUP_UNUSED int argc, FLUP_UNUSED const char** argv) {
@@ -19,26 +23,50 @@ int fluffedup_main(FLUP_UNUSED int argc, FLUP_UNUSED const char** argv) {
   printf("Bit ceil: %u to %u\n", 43, stdc_bit_ceil_ui(43));
   printf("Bit floor: %u to %u\n", 43, stdc_bit_floor_ui(43));
   
+  printf("For each test\n");
+
+  bool (^blk)(int*) = ^bool(int* x) {return ++(*x) <= 5;};
+  flup_foreach(int, x, blk, 0) {
+    if (x == 4) {
+      printf("X is 4 so we're exit\n");
+      break;
+    }
+    printf("X is %d\n", x);
+  }
+  
   {
     printf("linked list test\n");
     
-    flup_linked_list* list = flup_linked_list_new(sizeof(int));
-    flup_linked_list_add_head(list, &(int) {123});
-    flup_linked_list_node* node = flup_linked_list_add_head(list, &(int) {124});
-    flup_linked_list_add_tail(list, &(int) {122});
+    flup_ilist* list = &flup_linked_list_new(sizeof(int))->interface.IList;
+    list->ops->prepend(list, &(int) {123});
+    list->ops->prepend(list, &(int) {124});
+    list->ops->append(list, &(int) {122});
    
-    flup_iterator_state* iterator = flup_linked_list_get_iterator(list);
+    {
+      int* res = NULL;
+      list->ops->get(list, 0, (void**) &res);
+      printf("list[0] = %d\n", *res);
+      
+      list->ops->get(list, 1, (void**) &res);
+      printf("list[1] = %d\n", *res);
+
+      list->ops->get(list, 2, (void**) &res);
+      printf("list[2] = %d\n", *res);
+    }
+
+    flup_iterator* iterator = list->ops->getIterator(list);
     flup_iterator_foreach(int, x, iterator)
       printf("1st data iteration: %d, has next %d\n", x, iterator->ops->hasNext(iterator));
-    
-    flup_linked_list_del(list, node);
+   
+    printf("Removing at index 1");
+    list->ops->remove(list, 1, 1);
     iterator->ops->reset(iterator);
 
     flup_iterator_foreach(int, x, iterator)
       printf("2nd data iteration: %d, has next %d\n", x, iterator->ops->hasNext(iterator));
-    iterator->ops->free(iterator);
+    iterator->free(iterator);
 
-    flup_linked_list_free(list);
+    list->ops->dealloc(list);
   }
 
   {

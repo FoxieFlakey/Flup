@@ -15,7 +15,7 @@ UwUMaker-c-flags-y += -std=c2x -g \
 
 UwUMaker-linker-flags-y += -lm -lBlocksRuntime
 
-UwUMaker-dirs-y += data_structs core c23_support interface
+UwUMaker-dirs-y += data_structs core c23_support interface util
 UwUMaker-dirs-$(CONFIG_ENABLE_TEST_EXE) += test
 
 UwUMaker-is-executable := m
