@@ -39,7 +39,7 @@ bool flup_impl_ilist_try_get(flup_ilist* self, size_t index, void** element) {
   // Error treated as not exist
   if (ret < 0)
     return false;
-  return ret != 0;
+  return !!ret;
 }
 
 

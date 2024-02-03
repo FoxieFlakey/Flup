@@ -37,7 +37,7 @@ static int reset(flup_iterator* _self) {
   int ret = self->owner->ops->get(self->owner, 0, &self->nextValue);
   if (ret < 0)
     return ret;
-  self->hasNext = ret != 0;
+  self->hasNext = !!ret;
   return 0;
 }
 
