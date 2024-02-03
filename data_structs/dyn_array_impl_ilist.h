@@ -1,0 +1,9 @@
+#ifndef header_1706925691_53cf655a_6fdc_4d0b_97cc_d41665de02af_dyn_array_impl_ilist_h
+#define header_1706925691_53cf655a_6fdc_4d0b_97cc_d41665de02af_dyn_array_impl_ilist_h
+
+#include "flup/interface/ilist.h"
+
+extern const flup_ilist_ops dyn_array_ilist_ops;
+
+#endif
+

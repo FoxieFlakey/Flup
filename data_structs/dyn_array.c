@@ -8,8 +8,9 @@
 
 #include "flup/data_structs/dyn_array.h"
 #include "flup/attributes.h"
-#include "flup/interface/ilist.h"
 #include "flup/tags.h"
+
+#include "data_structs/dyn_array_impl_ilist.h"
 
 FLUP_ALLOCS_MEM
 FLUP_PUBLIC
@@ -24,7 +25,6 @@ flup_dyn_array* flup_dyn_array_new(size_t elementSize, size_t capacity) {
     .elementSize = elementSize
   };
 
-  extern const flup_ilist_ops dyn_array_ilist_ops;
   self->interface.IList = (flup_ilist) {
     .ops = &dyn_array_ilist_ops
   };

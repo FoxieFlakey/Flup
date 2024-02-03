@@ -4,11 +4,12 @@
 
 #include "flup/bug.h"
 #include "flup/container_of.h"
-#include "flup/interface/ilist.h"
 #include "flup/util/iterator.h"
 #include "flup/attributes.h"
 #include "flup/data_structs/list_head.h"
 #include "flup/data_structs/linked_list.h"
+
+#include "data_structs/linked_list_impl_ilist.h"
 
 FLUP_PUBLIC
 flup_linked_list* flup_linked_list_new(size_t elementSize) {
@@ -16,7 +17,6 @@ flup_linked_list* flup_linked_list_new(size_t elementSize) {
   if (!self)
     return NULL;
 
-  extern const flup_ilist_ops linked_list_ilist_ops;
   *self = (flup_linked_list) {
     .list = FLUP_LIST_HEAD_INIT(self->list),
     .length = 0,

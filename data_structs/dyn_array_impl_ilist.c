@@ -26,12 +26,17 @@ static int removeImpl(flup_ilist* _self, size_t index, size_t count) {
   return flup_dyn_array_remove(getSelf(_self), index, count);
 }
 
+static size_t elementSize(flup_ilist* _self) {
+  return getSelf(_self)->elementSize;
+}
+
 const flup_ilist_ops dyn_array_ilist_ops = {
   FLUP_ILIST_OPS_DEFAULTS
-  .dealloc = dealloc,
   .length = length,
-  .get = get,
+  .elementSize = elementSize,
   .insert = insert,
-  .remove = removeImpl
+  .remove = removeImpl,
+  .get = get,
+  .dealloc = dealloc
 };
 
