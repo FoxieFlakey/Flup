@@ -22,7 +22,13 @@ static bool next(flup_iterator* _self, void* current) {
   _self->current = self->nextValue;
   self->nextIndex++;
   
-  self->hasNext = self->owner->ops->tryGet(self->owner, self->nextIndex, &self->nextValue);
+  int ret = self->owner->ops->get(self->owner, self->nextIndex, &self->nextValue);
+  if (ret < 0) {
+    self->super.errorCode = -ret;
+    return false;
+  }
+  self->hasNext = !!ret;
+
   if (current)
     memcpy(current, _self->current, self->owner->ops->elementSize(self->owner));
   return true;
