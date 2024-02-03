@@ -149,12 +149,16 @@ int fluffedup_main(FLUP_UNUSED int argc, FLUP_UNUSED const char** argv) {
     // Delete the appended "2025" and "2026" from earlier
     list->ops->remove(list, 1, 2);
 
-    for (unsigned int i = 0; i < list->ops->length(list); i++) {
+    for (size_t i = 0; i < list->ops->length(list); i++) {
       int* addr;
       list->ops->get(list, i, (void**) &addr);
-      printf("arr[%d] = %d\n", i, *addr);
+      printf("[Manual iterator] arr[%zu] = %d\n", i, *addr);
     }
 
+    flup_iterator* iterator = list->ops->getIterator(list);
+    flup_iterator_foreach(int, x, iterator)
+      printf("[Flup's foreach] arr = %d\n", x);
+    iterator->free(iterator);
     list->ops->dealloc(list);
   }
   return 0;
