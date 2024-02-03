@@ -140,12 +140,12 @@ int flup_dyn_array_prepend(flup_dyn_array* self, const void* element) {
 
 FLUP_PUBLIC
 int flup_dyn_array_get(flup_dyn_array* self, size_t index, void** element) {
-  if (index > self->length)
-    return -EINVAL;
+  if (index >= self->length)
+    return false;
 
   if (element)
     *element = getElementAddr(self, index);
-  return 0;
+  return true;
 }
 
 FLUP_PUBLIC
