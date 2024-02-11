@@ -16,9 +16,9 @@
  * variable name.
  *
  * @param var The variable to check
- * @param type Type to check for as vararg
+ * @param ... Type to check for
  *
- * @return @a var as @a type
+ * @return @a var as @a ... type
  */
 #define FLUP_CHECK_VAR_TYPE(var, ...) \
   (*((struct {__VA_ARGS__* __flup_check_ptr;}) \
@@ -31,10 +31,10 @@
  *
  * @param func Name/variable of function to check for type
  * @param retType Return value of the function
- * @param argTypes List of arguments types as vararg
+ * @param ... List of arguments types
  *
  * @return @a func as function with correct args
- *   and return values
+ *   and return value
  */
 #define FLUP_CHECK_VAR_FUNC_TYPE(func, retType, ...) \
   (*((struct {retType (*__flup_check_ptr)(__VA_ARGS__);}) \
@@ -47,7 +47,7 @@
  *
  * @param block Variable of block to check for type
  * @param retType Return value of the block
- * @param argTypes List of arguments types as vararg
+ * @param ... List of arguments types as vararg
  *
  * @return @a block as blocks with correct args
  *   and return values
