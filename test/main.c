@@ -14,8 +14,7 @@
 
 #include "main.h"
 
-int doSomething(int);
-bool iterate(long*);
+// TODO: Write docs for flup/* files
 
 FLUP_PUBLIC
 int fluffedup_main(FLUP_UNUSED int argc, FLUP_UNUSED const char** argv) {
