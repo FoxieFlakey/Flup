@@ -3,6 +3,7 @@
 
 /**
  * @file 
+ * @brief Bug checking functions
  * 
  * Contains bug checking functions which maybe
  * no-op depending in configuration..
