@@ -1,6 +1,13 @@
 #ifndef header_1703854935_5d95709d_2525_4c6d_bc32_855dcd6772d8_attributes_h
 #define header_1703854935_5d95709d_2525_4c6d_bc32_855dcd6772d8_attributes_h
 
+/**
+ * @file
+ * @brief Macros for GNU C attributes
+ * 
+ * Header containing various macro for GNU C
+ * specific attributes with proper detection.
+ */
 
 /**
  * @brief Clang's _Nonnull
