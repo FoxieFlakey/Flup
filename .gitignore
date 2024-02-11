@@ -30,3 +30,5 @@ saved.vim
 .config.*
 .cache
 a.out
+doxygen_output
+
