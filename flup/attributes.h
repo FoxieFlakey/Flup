@@ -17,7 +17,7 @@
 #define FLUP_NULLABLE
 
 /**
- * @brief GNU C's __attribute__
+ * @brief GNU C's \_\_attribute\_\_
  *
  * Expands __attribute__(@a x) on supporting
  * compilers.
