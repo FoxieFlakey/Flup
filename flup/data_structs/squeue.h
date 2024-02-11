@@ -44,7 +44,7 @@ FLUP_PUBLIC
 flup_squeue_item* flup_squeue_dequeue_filtered_func(flup_squeue* self, flup_squeue_filter_func filter, void* udata);
 #define flup_squeue_dequeue_filtered flup_squeue_desqueue_filtered_func
 
-#ifdef FLUP_APPLE_BLOCKS_AVAILABLE
+#if FLUP_APPLE_BLOCKS_AVAILABLE
 typedef bool (^flup_squeue_filter_block)(flup_squeue_item* msg);
 
 FLUP_PUBLIC
