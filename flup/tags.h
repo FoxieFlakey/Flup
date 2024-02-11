@@ -1,7 +1,12 @@
 #ifndef header_1703917259_e618c257_1508_43cb_a4b2_585008a89946_tags_h
 #define header_1703917259_e618c257_1508_43cb_a4b2_585008a89946_tags_h
 
-// Does nothinf just for marking functions
+/**
+ * @file 
+ * @brief Does nothinf just for marking functions
+ *
+ * To be removed.
+ */
 
 #define FLUP_ALLOCS_MEM
 #define FLUP_DEALLOCS_MEM
