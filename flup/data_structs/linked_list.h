@@ -76,7 +76,7 @@ typedef struct flup_linked_list_iterator {
    * @brief Version captured at time of creation
    *
    * The iterator compares this field with the
-   * @ref flup_linked_list#version if not equal,
+   * @ref flup_linked_list.version if not equal,
    * the iterator will trigger @ref BUG
    */
   int knownVersion;
