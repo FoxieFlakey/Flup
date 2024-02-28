@@ -140,10 +140,10 @@ flup_squeue_item* flup_squeue_dequeue_filtered_func(flup_squeue* self, flup_sque
  * @brief An alias to corresponding filter dequeue func
  *
  * Expands to corresponding filter dequeue func. If Apple Blocks
- * available expands to @ref flup_squeue_desqueue_filtered_func else 
+ * available expands to @ref flup_squeue_dequeue_filtered_func else 
  * epxnads to @ref flup_squeue_dequeue_filtered_func.
  */
-#define flup_squeue_dequeue_filtered flup_squeue_desqueue_filtered_func
+#define flup_squeue_dequeue_filtered flup_squeue_dequeue_filtered_func
 
 #if FLUP_APPLE_BLOCKS_AVAILABLE
 /**
