@@ -1,3 +1,4 @@
+include $(ROOT_PROJECT_DIR)/makefiles/common.mak
 
 UwUMaker-c-flags-y += -std=c2x -g \
 		-Wall -Wshadow -Wpointer-arith \

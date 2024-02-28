@@ -124,6 +124,12 @@ int fluffedup_main(FLUP_UNUSED int argc, FLUP_UNUSED const char** argv) {
     }
 
     flup_squeue_free(queue);
+    
+    free(msg1);
+    free(msg2);
+    free(msg3);
+    free(msg4);
+    free(msg5);
   }
 
   {

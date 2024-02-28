@@ -15,3 +15,11 @@ config VERSION_PATCH
 config ENABLE_TEST_EXE
   bool "Enable main"
 
+config ASAN
+  bool "Enable ASAN"
+config TSAN
+  bool "Enable TSAN"
+config MSAN
+  bool "Enable MSAN"
+config UBSAN
+  bool "Enable UBSAN"
