@@ -3,10 +3,7 @@
 
 /**
  * @file
- * @brief Simple doubly linked list
- *
- * A simple linked list using @ref flup_list_head.
- * Implements various interfaces useful for a list.
+ * @copydoc flup_linked_list
  */
 
 #include <stddef.h>
@@ -28,7 +25,10 @@ typedef struct flup_linked_list_node {
 } flup_linked_list_node;
 
 /**
- * @brief Doubly linked list
+ * @brief Simple doubly linked list
+ *
+ * A simple linked list using @ref flup_list_head.
+ * Implements various interfaces useful for a list.
  */
 typedef struct flup_linked_list {
   /// Interfaces implemeted

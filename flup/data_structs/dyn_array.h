@@ -3,7 +3,7 @@
 
 /**
  * @file
- * @brief Dynamicly expanding array
+ * @copydoc flup_dyn_array
  */
 
 #include <stddef.h>
@@ -12,6 +12,9 @@
 #include "flup/interface/ilist.h"
 #include "flup/tags.h"
 
+/**
+ * @brief Dynamicly expanding array
+ */
 typedef struct flup_dyn_array {
   /// Interfaces implemented
   struct {
