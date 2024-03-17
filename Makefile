@@ -22,7 +22,9 @@ UwUMaker-dirs-$(CONFIG_ENABLE_TEST_EXE) += test
 UwUMaker-is-executable := m
 UwUMaker-name := Flup$(CONFIG_VERSION_MAJOR)
 
-
+proj_test:
+	@$(MAKE) -C $(UWUMAKER_HOME) PROJECT_DIR="$(PROJECT_DIR)" cmd_all
+	@cd "$(PROJECT_DIR)" && LD_LIBRARY_PATH="./build/objs:$$LD_LIBRARY_PATH" ./build/objs/test/test_exe/objs/Test
 
 
 
