@@ -26,6 +26,10 @@ proj_test:
 	@$(MAKE) -C $(UWUMAKER_HOME) PROJECT_DIR="$(PROJECT_DIR)" cmd_all
 	@cd "$(PROJECT_DIR)" && LD_LIBRARY_PATH="./build/objs:$$LD_LIBRARY_PATH" ./build/objs/test/test_exe/objs/Test
 
+proj_doxygen:
+	@cd "$(PROJECT_DIR)" && doxygen
+	@echo "Doxygen result viewable at http://localhost:8080"
+	@cd "$(PROJECT_DIR)/doxygen_output/html" && php -S localhost:8080
 
 
 
