@@ -188,17 +188,17 @@ FLUP_PUBLIC
 int flup_impl_ilist_prepend(flup_ilist* self, const void* element);
 
 /**
- * @brief Default implementation for @ref flup_ilist_ops.get_iterator
+ * @brief Default implementation for @ref flup_ilist_ops.getIterator
  *
- * @see @ref flup_ilist_ops.get_iterator
+ * @see @ref flup_ilist_ops.getIterator
  */
 FLUP_PUBLIC
 flup_iterator* flup_impl_ilist_get_iterator(flup_ilist* self);
 
 /**
- * @brief Default implementation for @ref flup_ilist_ops.try_get
+ * @brief Default implementation for @ref flup_ilist_ops.tryGet
  *
- * @see @ref flup_ilist_ops.try_get
+ * @see @ref flup_ilist_ops.tryGet
  */
 FLUP_PUBLIC
 bool flup_impl_ilist_try_get(flup_ilist* self, size_t index, void** element);
