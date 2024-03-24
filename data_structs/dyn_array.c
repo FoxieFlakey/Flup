@@ -6,6 +6,7 @@
 #include <stdckdint.h>
 #include <string.h>
 
+#include "flup/interface/ilist.h"
 #include "flup/data_structs/dyn_array.h"
 #include "flup/attributes.h"
 #include "flup/tags.h"
@@ -73,13 +74,13 @@ static void* getElementAddr(flup_dyn_array* self, size_t index) {
   return (char*) self->array + self->elementSize * index;
 }
 
-static int preInsert(flup_dyn_array* self) {
+static int checkSpaceAndIncrementLength(flup_dyn_array* self, size_t n) {
   size_t newLength;
-  if (ckd_add(&newLength, self->length, 1))
+  if (ckd_add(&newLength, self->length, n))
     return -EOVERFLOW;
 
   int res = 0;
-  if ((res = flup_dyn_array_reserve(self, 1)))
+  if ((res = flup_dyn_array_reserve(self, n)))
     return res;
 
   self->length = newLength;
@@ -101,7 +102,7 @@ int flup_dyn_array_insert(flup_dyn_array* self, size_t index, const void* elemen
     return -EINVAL;
 
   int res = 0;
-  if ((res = preInsert(self)) < 0)
+  if ((res = checkSpaceAndIncrementLength(self, 1)) < 0)
     return res;
   
   if (moveCount > 0)
@@ -121,7 +122,10 @@ int flup_dyn_array_remove(flup_dyn_array* self, size_t index, size_t count) {
   if (startOfNext >= self->length)
     return -EINVAL;
 
-  memmove(getElementAddr(self, index), getElementAddr(self, startOfNext), (self->length - startOfNext) * self->elementSize);
+  void* destinationAddr = getElementAddr(self, index);
+  void* sourceAddr = getElementAddr(self, startOfNext);
+  size_t moveCount = self->length - startOfNext;
+  memmove(destinationAddr, sourceAddr, moveCount * self->elementSize);
   self->length -= count;
   return 0;
 }
