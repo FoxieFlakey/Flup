@@ -133,7 +133,7 @@ flup_linked_list_node* flup_linked_list_add_head(flup_linked_list* self, const v
 /**
  * @brief Initialize a new iterator
  *
- * Saves current version and initializes @a preAllocated
+ * Saves current version and initializes @p preAllocated
  * for iteration from head to tail.
  *
  * @param self Instance to be iterated

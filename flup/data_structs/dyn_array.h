@@ -47,9 +47,9 @@ FLUP_PUBLIC
 flup_dyn_array* flup_dyn_array_new(size_t elementSize, size_t capacity);
 
 /**
- * @brief Reserve @a count elements
+ * @brief Reserve @p count elements
  *
- * Reserves @a counf elements so any insertion
+ * Reserves @p counf elements so any insertion
  * will never cause out-of-memory error.
  *
  * @param self Instance of @ref flup_dyn_array
@@ -75,7 +75,7 @@ void flup_dyn_array_free(flup_dyn_array* self);
 /**
  * @brief Get an element
  *
- * Gets an element at @a index and saves it to @a element
+ * Gets an element at @p index and saves it to @p element
  *
  * @param self Instance of  @ref flup_dyn_array to retrieve
  *   element from
@@ -90,7 +90,7 @@ int flup_dyn_array_get(flup_dyn_array* self, size_t index, void** element);
 /**
  * @brief Append an element
  *
- * Appends @a element to the end of @a self array
+ * Appends @p element to the end of @p self array
  *
  * @param self Instance of @ref flup_dyn_array to append to
  * @param[in] element Pointer to element to be appended to array
@@ -106,7 +106,7 @@ int flup_dyn_array_append(flup_dyn_array* self, const void* element);
 /**
  * @brief Prepend an element
  *
- * Prepends @a element to the end of @a self array
+ * Prepends @p element to the end of @p self array
  *
  * @param self Instance of @ref flup_dyn_array to prepend to
  * @param[in] element Pointer to element to be prepended to array
@@ -122,13 +122,13 @@ int flup_dyn_array_prepend(flup_dyn_array* self, const void* element);
 /**
  * @brief Set an element
  *
- * Sets an element at @a index
+ * Sets an element at @p index
  *
  * @param self Instance of @ref flup_dyn_array to set on
  * @param index Index where element be set to
- * @param[in] element Element which new content at @a index  will be
+ * @param[in] element Element which new content at @p index  will be
  *
- * @throws EINVAL @a index points to outside of array
+ * @throws EINVAL @p index points to outside of array
  *
  * @return 0 on success, -errno on error (see above)
  */
@@ -154,7 +154,7 @@ int flup_dyn_array_trim(flup_dyn_array* self);
 /**
  * @brief Remove n element
  *
- * Removes an element at @a index
+ * Removes an element at @p index
  *
  * @param self Instance of @ref flup_dyn_array
  * @param index Index where element to be removed
@@ -162,7 +162,7 @@ int flup_dyn_array_trim(flup_dyn_array* self);
  *
  * @note This function does not trim the array
  *
- * @throws EINVAL Range to be removed which is [@a index, @a index + @a count)
+ * @throws EINVAL Range to be removed which is [@p index, @p index + @p count)
  *   is out of array
  *
  * @return 0 on success, -errno on error (see above)
@@ -173,15 +173,15 @@ int flup_dyn_array_remove(flup_dyn_array* self, size_t index, size_t count);
 /**
  * @brief Inserts an element
  *
- * Insert an element at @a index and moves other element
+ * Insert an element at @p index and moves other element
  * to make up a space for new element
  *
  * @param self Instance of @ref flup_dyn_array 
  * @param index Index where element be inserted at
- * @param[in] element Element which content at @a index will be
+ * @param[in] element Element which content at @p index will be
  *
  * @throws ENOMEM Out of memory
- * @throws EINVAL @a index points to outside of array
+ * @throws EINVAL @p index points to outside of array
  *
  * @return 0 on success, -errno on error (see above)
  */

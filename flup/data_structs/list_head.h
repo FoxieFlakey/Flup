@@ -44,7 +44,7 @@ typedef struct flup_list_head {
 } flup_list_head;
 
 /**
- * @brief Initialize @a list
+ * @brief Initialize @p list
  *
  * Initialize list so that it points to itself
  *
@@ -80,7 +80,7 @@ static inline void flup_list_head_init(struct flup_list_head* list) {
 #define FLUP_LIST_HEAD_INIT(x) {.next = &x, .prev = &x}
 
 /**
- * @brief Check if @a head is valid
+ * @brief Check if @p head is valid
  *
  * Check if the @ref flup_list_head.next and
  * if @ref flup_list_head.prev is not a NULL.
@@ -119,7 +119,7 @@ static inline void __flup_list_del(struct flup_list_head* prev, struct flup_list
 }
 
 /**
- * @brief Add @a new node into @a head
+ * @brief Add @p new node into @p head
  *
  * @param head The list to be added to
  * @param new The node to be added
@@ -129,7 +129,7 @@ static inline void flup_list_add_head(struct flup_list_head* head, struct flup_l
 }
 
 /**
- * @brief Add @a new node into @a tail
+ * @brief Add @p new node into @p tail
  *
  * @param head The list to be added to
  * @param new The node to be added
@@ -139,7 +139,7 @@ static inline void flup_list_add_tail(struct flup_list_head* head, struct flup_l
 }
 
 /**
- * @brief Mark @a head as invalid
+ * @brief Mark @p head as invalid
  *
  * @param head The list to be marked as invalid
  */
@@ -149,7 +149,7 @@ static inline void flup_list_init_as_invalid(struct flup_list_head* head) {
 }
 
 /**
- * @brief Delete a @a node
+ * @brief Delete a @p node
  *
  * @param node Node to be deleted/unlinked
  */
@@ -190,18 +190,18 @@ static inline void flup_list_del(struct flup_list_head* node) {
  * @param head The head of list
  * @param node Node to check with
  *
- * @return true if @a node is head and false if not head
+ * @return true if @p node is head and false if not head
  */
 #define flup_list_is_head(head, node) ((node) == (head))
 
 /**
- * @brief Get entry from @a nodePtr
+ * @brief Get entry from @p nodePtr
  *
  * @param nodePtr Pointer to node
  * @param type The type of entry
  * @param member The member which the @ref flup_list_head reside
  *
- * @return The list entry casted to @a type
+ * @return The list entry casted to @p type
  */
 #define flup_list_entry(nodePtr, type, member) container_of(nodePtr, type, member)
 
@@ -212,7 +212,7 @@ static inline void flup_list_del(struct flup_list_head* node) {
  * @param type The type of entry
  * @param member The member which the @ref flup_list_head reside
  *
- * @return The first list entry casted to @a type
+ * @return The first list entry casted to @p type
  */
 #define flup_list_first_entry(head, type, member) flup_list_entry(flup_list_first(head), type, member)
 
@@ -223,7 +223,7 @@ static inline void flup_list_del(struct flup_list_head* node) {
  * @param type The type of entry
  * @param member The member which the @ref flup_list_head reside
  *
- * @return The last list entry casted to @a type
+ * @return The last list entry casted to @p type
  */
 #define flup_list_last_entry(head, type, member) flup_list_entry(flup_list_last(head), type, member)
 

@@ -17,7 +17,7 @@
  *
  * @param ptr Pointer of the pointer to member
  * @param type Type name of container
- * @param member The member name of where the @a ptr coming from
+ * @param member The member name of where the @p ptr coming from
  */
 # define container_of(ptr, type, member) \
   ((type *)((void*) ( (char *)__mptr - offsetof(type,member) )))

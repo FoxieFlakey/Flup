@@ -25,7 +25,7 @@
 /**
  * @brief Conditional BUG
  *
- * Call #BUG() if @a x evaluates to true.
+ * Call #BUG() if @p x evaluates to true.
  */
 #define BUG_ON(x) do { \
   if (x) \

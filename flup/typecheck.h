@@ -10,7 +10,7 @@
  */
 
 /**
- * @brief Check type for @a var's type.
+ * @brief Check type for @p var's type.
  * 
  * Does not take expression only take
  * variable name.
@@ -18,14 +18,14 @@
  * @param var The variable to check
  * @param ... Type to check for
  *
- * @return @a var as @a ... type
+ * @return @p var as @p ... type
  */
 #define FLUP_CHECK_VAR_TYPE(var, ...) \
   (*((struct {__VA_ARGS__* __flup_check_ptr;}) \
      {&(var)}).__flup_check_ptr)
 
 /**
- * @brief Check function type for @a func's type
+ * @brief Check function type for @p func's type
  *
  * Does not take expression only take name.
  *
@@ -33,7 +33,7 @@
  * @param retType Return value of the function
  * @param ... List of arguments types
  *
- * @return @a func as function with correct args
+ * @return @p func as function with correct args
  *   and return value
  */
 #define FLUP_CHECK_VAR_FUNC_TYPE(func, retType, ...) \
@@ -41,7 +41,7 @@
      {&(func)}).__flup_check_ptr)
 
 /**
- * @brief Check function type for @a block's type
+ * @brief Check function type for @p block's type
  *
  * Does not take expression only take name.
  *
@@ -49,7 +49,7 @@
  * @param retType Return value of the block
  * @param ... List of arguments types as vararg
  *
- * @return @a block as blocks with correct args
+ * @return @p block as blocks with correct args
  *   and return values
  */
 #define FLUP_CHECK_VAR_BLOCK_TYPE(block, retType, ...) \

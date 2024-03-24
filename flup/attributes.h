@@ -26,7 +26,7 @@
 /**
  * @brief GNU C's \_\_attribute\_\_
  *
- * Expands __attribute__(@a x) on supporting
+ * Expands __attribute__(@p x) on supporting
  * compilers.
  */
 #define FLUP_ATTR(x)
@@ -39,7 +39,7 @@
  * @param fmtOffset Offset to parameter where printf's
  *    format string is where 1 is first argument
  * @param vaStart Offset to where the "..." var arg starts
- *    same as @a fmtOffset, its one based
+ *    same as @p fmtOffset, its one based
  */
 #define FLUP_ATTR_PRINTF(fmtOffset, vaStart) FLUP_ATTR((format(printf, fmtOffset, vaStart)))
 
@@ -51,7 +51,7 @@
  * @param fmtOffset Offset to parameter where scanf's
  *    format string is where 1 is first argument
  * @param vaStart Offset to where the "..." var arg starts
- *    same as @a fmtOffset, its one based
+ *    same as @p fmtOffset, its one based
  */
 #define FLUP_ATTR_SCANF(fmtOffset, vaStart) FLUP_ATTR((format(scanf, fmtOffset, vaStart)))
 
