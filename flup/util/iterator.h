@@ -11,6 +11,11 @@
  * @brief Macros and type for stateful iterator
  */
 
+/**
+ * @brief Typedef for @ref flup_iterator
+ *
+ * @see @ref flup_iterator
+ */
 typedef struct flup_iterator flup_iterator;
 
 /**
@@ -148,7 +153,7 @@ void flup_iterator_impl_free_nop(flup_iterator* self);
  * @param self The iterator state
  */
 FLUP_PUBLIC
-void flup_iterator_impl_cleanup_nop(flup_iterator*);
+void flup_iterator_impl_cleanup_nop(flup_iterator* self);
 
 /**
  * @brief Macro for iterating each item by value

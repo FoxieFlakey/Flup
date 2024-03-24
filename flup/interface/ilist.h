@@ -117,7 +117,7 @@ typedef struct flup_ilist_ops {
    * @param element The element to be inserted
    *
    * @throws ENOMEM Not enough memory
-   * @throws EINVAL Invalid @p index or @p element is NULL
+   * @throws EINVAL Invalid @p element is NULL
    *
    * @return 0 on sucess, else -errno on error (see above)
    */
@@ -133,7 +133,7 @@ typedef struct flup_ilist_ops {
    * @param element The element to be inserted
    *
    * @throws ENOMEM Not enough memory
-   * @throws EINVAL Invalid @p index or @p element is NULL
+   * @throws EINVAL Invalid @p element is NULL
    *
    * @return 0 on sucess, else -errno on error (see above)
    */
@@ -175,30 +175,31 @@ typedef struct flup_ilist_ops {
  * @brief Default implementation for @ref flup_ilist_ops.append
  *
  * @see @ref flup_ilist_ops.append
+ *
+ * @param self List instance
+ * @param element Element to be appended
+ *
+ * @throws ENOMEM Out of memory while appending
+ *
+ * @return 0 on success, -errno on error (see above)
  */
 FLUP_PUBLIC
 int flup_impl_ilist_append(flup_ilist* self, const void* element);
 
 /**
- * @brief Default implementation for @ref flup_ilist_ops.prepend
- *
- * @see @ref flup_ilist_ops.prepend
+ * @copydoc flup_ilist_ops.prepend
  */
 FLUP_PUBLIC
 int flup_impl_ilist_prepend(flup_ilist* self, const void* element);
 
 /**
- * @brief Default implementation for @ref flup_ilist_ops.getIterator
- *
- * @see @ref flup_ilist_ops.getIterator
+ * @copydoc flup_ilist_ops.getIterator
  */
 FLUP_PUBLIC
 flup_iterator* flup_impl_ilist_get_iterator(flup_ilist* self);
 
 /**
- * @brief Default implementation for @ref flup_ilist_ops.tryGet
- *
- * @see @ref flup_ilist_ops.tryGet
+ * @copydoc flup_ilist_ops.tryGet
  */
 FLUP_PUBLIC
 bool flup_impl_ilist_try_get(flup_ilist* self, size_t index, void** element);
