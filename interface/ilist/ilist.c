@@ -5,8 +5,6 @@
 #include "flup/container_of.h"
 #include "flup/util/iterator.h"
 
-#include "interface/ilist/iterator.h"
-
 FLUP_PUBLIC
 int flup_impl_ilist_append(flup_ilist* self, const void* element) {
   return self->ops->insert(self, self->ops->length(self), element);
@@ -18,13 +16,13 @@ int flup_impl_ilist_prepend(flup_ilist* self, const void* element) {
 }
 
 static void doFreeIterator(flup_iterator* self) {
-  free(container_of(self, struct ilist_iterator, super));
+  free(container_of(self, struct flup_ilist_iterator, super));
 }
 
 FLUP_PUBLIC
 flup_iterator* flup_impl_ilist_get_iterator(flup_ilist* self) {
-  struct ilist_iterator* iterator = malloc(sizeof(*iterator));
-  if (ilist_iterator_init(iterator, self) < 0) {
+  struct flup_ilist_iterator* iterator = malloc(sizeof(*iterator));
+  if (flup_ilist_iterator_init(iterator, self) < 0) {
     free(iterator);
     return NULL;
   }

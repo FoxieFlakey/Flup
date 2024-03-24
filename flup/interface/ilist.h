@@ -223,5 +223,41 @@ bool flup_impl_ilist_try_get(flup_ilist* self, size_t index, void** element);
   .getIterator = flup_impl_ilist_get_iterator, \
   .tryGet = flup_impl_ilist_try_get,
 
+/**
+ * @brief IList default iterator structure
+ */
+struct flup_ilist_iterator {
+  /// The base structure of iterator
+  flup_iterator super;
+  /// Which IList this iterator belongs to
+  flup_ilist* owner;
+
+  /**
+   * @brief Containing index to next
+   *
+   * Containg index to next item, maybe invalid check if next
+   * is present or not with @ref flup_ilist_iterator.hasNext
+   */
+  size_t nextIndex;
+  
+  /// Value will be returned by @ref flup_iterator_ops.hasNext implementation
+  bool hasNext;
+  /// Pointer to next value
+  void* nextValue;
+};
+
+/**
+ * @brief Initializes an @ref flup_ilist_iterator
+ *
+ * Initialize and call @ref flup_iterator_ops.reset
+ *
+ * @param self The instance
+ * @param owner The list to be iterated by @p self instance
+ *
+ * @return Returns result of @ref flup_iterator_ops.reset
+ */
+FLUP_PUBLIC
+int flup_ilist_iterator_init(struct flup_ilist_iterator* self, flup_ilist* owner);
+
 #endif
 

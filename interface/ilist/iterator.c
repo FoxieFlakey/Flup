@@ -2,19 +2,18 @@
 #include <string.h>
 
 #include "flup/util/iterator.h"
+#include "flup/attributes.h"
 #include "flup/container_of.h"
 #include "flup/interface/ilist.h"
 
-#include "interface/ilist/iterator.h"
-
-#define getSelf(x) container_of((x), struct ilist_iterator, super)
+#define getSelf(x) container_of((x), struct flup_ilist_iterator, super)
 
 static bool hasNext(flup_iterator* self) {
   return getSelf(self)->hasNext;
 }
 
 static bool next(flup_iterator* _self, void* current) {
-  struct ilist_iterator* self = getSelf(_self);
+  struct flup_ilist_iterator* self = getSelf(_self);
   if (!self->hasNext)
     return false;
   
@@ -35,7 +34,7 @@ static bool next(flup_iterator* _self, void* current) {
 }
 
 static int reset(flup_iterator* _self) {
-  struct ilist_iterator* self = getSelf(_self);
+  struct flup_ilist_iterator* self = getSelf(_self);
   self->nextIndex = 0;
   self->nextValue = NULL;
   self->hasNext = false;
@@ -54,7 +53,8 @@ const flup_iterator_ops IList_iterator_ops = {
   .reset = reset
 };
 
-int ilist_iterator_init(struct ilist_iterator* self, flup_ilist* owner) {
+FLUP_PUBLIC
+int flup_ilist_iterator_init(struct flup_ilist_iterator* self, flup_ilist* owner) {
   self->owner = owner;
   self->super = (flup_iterator) {
     FLUP_ITERATOR_DEFAULTS
