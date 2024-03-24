@@ -163,7 +163,7 @@ typedef struct flup_ilist_ops {
    *
    * @param self The instance of list
    * @param index The index of where the element retrieved
-   * @param[out] element Pointer to void* where the result be
+   * @param[out] element Pointer to void* where the item pointer be
    *   saved
    *
    * @return true if exist, false if not exist or error occured
