@@ -27,7 +27,7 @@ static bool next(flup_iterator* _self, void* current) {
     self->super.errorCode = -ret;
     return false;
   }
-  self->hasNext = !!ret;
+  self->hasNext = ret != 0;
 
   if (current)
     memcpy(current, _self->current, self->owner->ops->elementSize(self->owner));
