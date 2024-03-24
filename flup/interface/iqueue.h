@@ -3,8 +3,6 @@
 
 #include <time.h>
 
-#include "flup/attributes.h"
-
 /**
  * @file
  * @copydoc flup_iqueue
@@ -41,7 +39,9 @@ typedef struct flup_iqueue_ops {
   /**
    * @brief Enqueue an item to queue
    *
-   * Enqueues an item with timeout or no timeout ( @p abstimeout is NULL)
+   * Enqueues an item with timeout or no timeout ( @p abstimeout is NULL).
+   * If the queue uncontended, there are queue space and @p abstimeout NULL, 
+   * implementation must successfully enqueue.
    *
    * @param self The queue instance
    * @param item The item to be queued
@@ -58,6 +58,9 @@ typedef struct flup_iqueue_ops {
    * @brief Dequeues an item from queue
    *
    * Enqueues an item with timeout or no timeout ( @p abstimeout is NULL)
+   *
+   * If the queue uncontended, there are queued items and @p abstimeout NULL, 
+   * implementation must successfully dequeue.
    *
    * @param self The queue instance
    * @param[out] item The result of dequeued item
