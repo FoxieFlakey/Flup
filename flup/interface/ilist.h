@@ -143,7 +143,7 @@ typedef struct flup_ilist_ops {
    * @brief (With default) Get a @ref flup_iterator
    *
    * The default implementation is using @ref flup_ilist_ops.get
-   * to iterate.
+   * to iterate by tracking the index.
    *
    * @param self The instance of @ref flup_ilist to be iterated
    *
