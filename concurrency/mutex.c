@@ -25,6 +25,9 @@ flup_mutex* flup_mutex_new() {
 
 FLUP_PUBLIC
 void flup_mutex_free(flup_mutex* self) {
+  if (!self)
+    return;
+    
   pthread_mutex_destroy(&self->lock);
   free(self);
 }
