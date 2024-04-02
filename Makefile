@@ -12,6 +12,7 @@ UwUMaker-c-flags-y += -std=c2x -g \
 		-Wcast-align -Wfloat-equal -Wformat=2 \
 		-fstrict-flex-arrays=3 -Warray-bounds \
 		-Wno-initializer-overrides \
+		-Wundef \
     -isystem $(PROJECT_DIR)/c23_support/
 
 UwUMaker-linker-flags-y += -lm -lBlocksRuntime
