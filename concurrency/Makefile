@@ -1,1 +1,1 @@
-UwUMaker-c-sources-y += mutex.c
+UwUMaker-c-sources-y += mutex.c rwlock.c
