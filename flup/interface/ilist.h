@@ -10,6 +10,7 @@
 
 #include "flup/attributes.h"
 #include "flup/util/iterator.h"
+#include "flup/util/iterator_resetable.h"
 
 /**
  * @brief Generic IList
@@ -226,9 +227,9 @@ bool flup_impl_ilist_try_get(flup_ilist* self, size_t index, void** element);
 /**
  * @brief IList default iterator structure
  */
-struct flup_ilist_iterator {
+typedef struct flup_ilist_iterator {
   /// The base structure of iterator
-  flup_iterator super;
+  flup_resetable_iterator super;
   /// Which IList this iterator belongs to
   flup_ilist* owner;
 
@@ -244,20 +245,18 @@ struct flup_ilist_iterator {
   bool hasNext;
   /// Pointer to next value
   void* nextValue;
-};
+} flup_ilist_iterator;
 
 /**
  * @brief Initializes an @ref flup_ilist_iterator
  *
- * Initialize and call @ref flup_iterator_ops.reset
- *
  * @param self The instance
  * @param owner The list to be iterated by @p self instance
  *
- * @return Returns result of @ref flup_iterator_ops.reset
+ * @return Returns result of @ref flup_resetable_iterator_ops.reset
  */
 FLUP_PUBLIC
-int flup_ilist_iterator_init(struct flup_ilist_iterator* self, flup_ilist* owner);
+int flup_ilist_iterator_init(flup_ilist_iterator* self, flup_ilist* owner);
 
 #endif
 
