@@ -29,7 +29,7 @@ typedef struct flup_resetable_iterator {
  * Use this to initialize as part of structure
  * initializer of the @ref flup_iterator
  */
-#define FLUP_RESETABLE_ITERATOR_DEFAULTS .reset = NULL
+#define FLUP_RESETABLE_ITERATOR_DEFAULTS_OPS .reset = NULL,
 
 /**
  * @brief Contain operations supported by resettable iterator
