@@ -10,6 +10,10 @@
 #include "flup/data_structs/linked_list.h"
 
 #include "data_structs/linked_list_impl_ilist.h"
+#include "flup/util/iterator_resetable.h"
+
+#define getSelf(x) container_of(x, flup_linked_list_iterator, super.super)
+#define getSelfFromResetable(x) container_of(x, flup_linked_list_iterator, super)
 
 FLUP_PUBLIC
 flup_linked_list* flup_linked_list_new(size_t elementSize) {
@@ -41,18 +45,18 @@ void flup_linked_list_free(flup_linked_list* self) {
 }
 
 static bool nextItem(flup_iterator* _state, void* current) {
-  flup_linked_list_iterator* state = container_of(_state, flup_linked_list_iterator, super);
+  flup_linked_list_iterator* state = getSelf(_state);
   flup_linked_list* self = state->owner;
   flup_linked_list_node* cur = state->next;
   BUG_ON(state->knownVersion != self->version);
 
   // Reached head, iteration ended
   if (flup_list_is_head(&cur->node, &self->list)) {
-    state->super.errorCode = 0;
+    state->super.super.errorCode = 0;
     return false;
   }
  
-  state->super.current = &cur->data;
+  state->super.super.current = &cur->data;
   state->next = flup_list_entry(cur->node.next, flup_linked_list_node, node);
 
   // Copies current value if requested
@@ -62,14 +66,14 @@ static bool nextItem(flup_iterator* _state, void* current) {
 }
 
 static bool hasNext(flup_iterator* _state) {
-  flup_linked_list_iterator* state = container_of(_state, flup_linked_list_iterator, super);
+  flup_linked_list_iterator* state = getSelf(_state);
   return !flup_list_is_head(&state->next->node, &state->owner->list);
 }
 
-static int resetIterator(flup_iterator* _state) {
-  flup_linked_list_iterator* state = container_of(_state, flup_linked_list_iterator, super);
-  state->super.current = NULL;
-  state->super.errorCode = 0;
+static int resetIterator(flup_resetable_iterator* _state) {
+  flup_linked_list_iterator* state = getSelfFromResetable(_state);
+  state->super.super.current = NULL;
+  state->super.super.errorCode = 0;
   state->next = flup_list_first_entry(&state->owner->list, flup_linked_list_node, node);
   return 0;
 }
@@ -78,17 +82,23 @@ FLUP_PUBLIC
 void flup_linked_list_get_iterator(flup_linked_list* self, flup_linked_list_iterator* preAllocated) {
   static flup_iterator_ops ops = { FLUP_ITERATOR_OPS_DEFAULT
     .next = nextItem,
-    .hasNext = hasNext,
+    .hasNext = hasNext
+  };
+  
+  static flup_resetable_iterator_ops resetableOps = { FLUP_RESETABLE_ITERATOR_DEFAULTS_OPS
     .reset = resetIterator
   };
 
   *preAllocated = (flup_linked_list_iterator) {
     .next = flup_list_first_entry(&self->list, flup_linked_list_node, node),
     .owner = self,
-    .super = { FLUP_ITERATOR_DEFAULTS
-      .current = NULL,
-      .errorCode = 0,
-      .ops = &ops
+    .super = {
+      .ops = &resetableOps,
+      .super = (flup_iterator) { FLUP_ITERATOR_DEFAULTS
+        .current = NULL,
+        .errorCode = 0,
+        .ops = &ops
+      }
     }
   };
 }

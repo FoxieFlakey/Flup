@@ -10,7 +10,7 @@
 
 #include "flup/data_structs/list_head.h"
 #include "flup/interface/ilist.h"
-#include "flup/util/iterator.h"
+#include "flup/util/iterator_resetable.h"
 #include "flup/tags.h"
 #include "flup/attributes.h"
 
@@ -66,7 +66,7 @@ typedef struct flup_linked_list {
  */
 typedef struct flup_linked_list_iterator {
   /// The struct which this derived from
-  flup_iterator super;
+  flup_resetable_iterator super;
   /// Pointer to which the iterator created from
   flup_linked_list* owner;
   /// Pointer to next item

@@ -56,6 +56,7 @@ static int removeImpl(flup_ilist* _self, size_t index, size_t count) {
     return -EINVAL;
 
   flup_linked_list_node* node = flup_linked_list_at_index(self, index);
+  // Delete "count" nodes from starting point of "node"
   for (size_t i = 0; i < count; i++) {
     flup_linked_list_node* next = flup_list_entry(node->node.next, flup_linked_list_node, node);
     
