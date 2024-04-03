@@ -16,7 +16,7 @@ int flup_impl_ilist_prepend(flup_ilist* self, const void* element) {
 }
 
 static void doFreeIterator(flup_iterator* self) {
-  free(container_of(self, struct flup_ilist_iterator, super));
+  free(container_of(self, flup_ilist_iterator, super.super));
 }
 
 FLUP_PUBLIC
@@ -26,8 +26,8 @@ flup_iterator* flup_impl_ilist_get_iterator(flup_ilist* self) {
     free(iterator);
     return NULL;
   }
-  iterator->super.free = doFreeIterator;
-  return &iterator->super;
+  iterator->super.super.free = doFreeIterator;
+  return &iterator->super.super;
 }
 
 FLUP_PUBLIC
