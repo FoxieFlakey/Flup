@@ -23,7 +23,7 @@ typedef struct flup_resetable_iterator {
   /// The base for the non resetable stuffs
   flup_iterator super;
   /// Operations supported by resetable iterator
-  flup_resetable_iterator_ops* ops;
+  const flup_resetable_iterator_ops* ops;
 } flup_resetable_iterator;
 
 /**
