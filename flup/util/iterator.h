@@ -70,20 +70,6 @@ typedef struct flup_iterator_ops {
   bool (*hasNext)(flup_iterator* self);
 
   /**
-   * @brief Reset current iterator
-   *
-   * Resets current iterator to start of iteration
-   *
-   * @note This method not allowed to set @ref flup_iterator.errorCode
-   * @todo Consider whether reset should exist or not
-   *
-   * @param self The iterator state
-   * @throws -ENOSYS The reset is not implemented
-   * @return 0 on success or -errno on error (see above)
-   */
-  int (*reset)(flup_iterator* self);
-  
-  /**
    * @brief Do any cleanup necessary except free'ing self
    *
    * @param self The iterator state
