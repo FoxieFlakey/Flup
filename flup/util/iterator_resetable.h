@@ -10,6 +10,9 @@
  * @copydoc flup_resetable_iterator
  */
 
+/// Forward typedef for @ref flup_resetable_iterator_ops
+typedef struct flup_resetable_iterator_ops flup_resetable_iterator_ops;
+
 /**
  * @brief Resetable iterator state
  * 
@@ -20,7 +23,7 @@ typedef struct flup_resetable_iterator {
   /// The base for the non resetable stuffs
   flup_iterator super;
   /// Operations supported by resetable iterator
-  struct flup_resetable_ops* ops;
+  flup_resetable_iterator_ops* ops;
 } flup_resetable_iterator;
 
 /**
