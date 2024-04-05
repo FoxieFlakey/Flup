@@ -12,12 +12,11 @@ UwUMaker-c-flags-y += -std=c2x -g \
 		-Wcast-align -Wfloat-equal -Wformat=2 \
 		-fstrict-flex-arrays=3 -Warray-bounds \
 		-Wno-initializer-overrides \
-		-Wundef \
-    -isystem $(PROJECT_DIR)/c23_support/
+		-Wundef
 
 UwUMaker-linker-flags-y += -lm -lBlocksRuntime
 
-UwUMaker-dirs-y += data_structs core c23_support interface util concurrency thread
+UwUMaker-dirs-y += data_structs core interface util concurrency thread
 UwUMaker-dirs-$(CONFIG_ENABLE_TEST_EXE) += test
 
 UwUMaker-is-executable := m

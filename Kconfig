@@ -23,3 +23,5 @@ config MSAN
   bool "Enable MSAN"
 config UBSAN
   bool "Enable UBSAN"
+
+source "c23_support/Kconfig"

@@ -1,0 +1,33 @@
+
+menu "C23 support"
+  config HAS_STDBIT
+    bool
+    default $[[$PROJECT_DIR/scripts/check_header.sh stdbit.h]]
+  config HAS_STDCKINT
+    bool
+    default $[[$PROJECT_DIR/scripts/check_header.sh stdckint.h]]
+    
+  config USE_BUILTIN_STDBIT
+    bool "Use this project's stdbit.h"
+    default y if !HAS_STDBIT
+    help
+      This is available for users' compiler's which
+      don't shipped C23's stdbit.h or the compiler's
+      stdbit.h is buggy. Most of time leave this
+      at default value
+      
+      The default value automaticly selected to be
+      either 'y' or 'n' depends on detection.
+  
+  config USE_BUILTIN_STDCKINT
+    bool "Use this project's stdckint.h"
+    default y if !HAS_STDCKINT
+    help
+      This is available for users' compiler's which
+      don't shipped C23's stdckint.h or the compiler's
+      stdckint.h is buggy. Most of time leave this
+      at default value
+      
+      The default value automaticly selected to be
+      either 'y' or 'n' depends on detection.
+endmenu
