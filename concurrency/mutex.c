@@ -1,5 +1,4 @@
 #include <pthread.h>
-#include <stdatomic.h>
 #include <stddef.h>
 #include <stdlib.h>
 
@@ -19,7 +18,6 @@ flup_mutex* flup_mutex_new() {
   }
   
   self->initialized = true;
-  atomic_init(&self->owner, NULL);
   return self;
 }
 

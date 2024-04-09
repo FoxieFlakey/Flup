@@ -9,7 +9,6 @@
 #include <pthread.h>
 
 #include "flup/attributes.h"
-#include "flup/thread/thread.h"
 
 /**
  * @brief Mutual exclusion lock
@@ -24,8 +23,6 @@ typedef struct flup_mutex {
   bool initialized;
   /// The underlying pthread_mutex_t type for lock
   pthread_mutex_t lock;
-  /// Thread which owns the mutex or NULL if none
-  _Atomic(flup_thread*) owner;
 } flup_mutex;
 
 /**
