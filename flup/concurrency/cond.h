@@ -28,6 +28,24 @@ typedef struct flup_cond {
 } flup_cond;
 
 /**
+ * @brief Statically define a preinitialized cond
+ */
+#define FLUP_COND_DEFINE(name) \
+  flup_cond name = { \
+    .initialized = true, \
+    .cond = PTHREAD_COND_INITIALIZER \
+  }
+
+/**
+ * @brief Statically define a statically linked preinitialized cond
+ */
+#define FLUP_COND_DEFINE_STATIC(name) \
+  static flup_cond name = { \
+    .initialized = true, \
+    .cond = PTHREAD_COND_INITIALIZER \
+  }
+
+/**
  * @brief Create new instance of @ref flup_cond
  *
  * @return New instance or NULL on error

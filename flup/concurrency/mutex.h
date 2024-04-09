@@ -26,6 +26,24 @@ typedef struct flup_mutex {
 } flup_mutex;
 
 /**
+ * @brief Statically define a preinitialized mutex
+ */
+#define FLUP_MUTEX_DEFINE(name) \
+  flup_mutex name = { \
+    .initialized = true, \
+    .lock = PTHREAD_MUTEX_INITIALIZER \
+  }
+
+/**
+ * @brief Statically define a statically linked preinitialized mutex
+ */
+#define FLUP_MUTEX_DEFINE_STATIC(name) \
+  static flup_mutex name = { \
+    .initialized = true, \
+    .lock = PTHREAD_MUTEX_INITIALIZER \
+  }
+
+/**
  * @brief Allocate new mutex
  *
  * @return New instance of mutex or NULL on error

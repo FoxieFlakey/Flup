@@ -24,6 +24,24 @@ typedef struct flup_rwlock {
 } flup_rwlock;
 
 /**
+ * @brief Statically define a preinitialized cond
+ */
+#define FLUP_RWLOCK_DEFINE(name) \
+  flup_rwlock name = { \
+    .initialized = true, \
+    .rwlock = PTHREAD_RWLOCK_INITIALIZER \
+  }
+
+/**
+ * @brief Statically define a statically linked preinitialized cond
+ */
+#define FLUP_RWLOCKDEFINE_STATIC(name) \
+  static flup_rwlock name = { \
+    .initialized = true, \
+    .rwlock = PTHREAD_RWLOCK_INITIALIZER \
+  }
+
+/**
  * @brief Create new instance of rwlock
  *
  * @return New instance of rwlock or NULL on error

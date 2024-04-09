@@ -33,6 +33,29 @@ typedef struct flup_circular_buffer {
 } flup_circular_buffer;
 
 /**
+ * @brief Statically define a preinitialized circular buffer
+ */
+#define FLUP_CIRCULAR_BUFFER_DEFINE(name, _buffer, size) \
+  flup_circular_buffer name = { \
+    .readOffset = 0, \
+    .writeOffset = 0, \
+    .bufferSize = (size), \
+    .buffer = (_buffer) \
+  }
+
+/**
+ * @brief Statically define a statically linked preinitialized circular buffer
+ */
+#define FLUP_CIRCULAR_BUFFER_DEFINE_STATIC(name, _buffer, size) \
+  static flup_circular_buffer name = { \
+    .readOffset = 0, \
+    .writeOffset = 0, \
+    .bufferSize = (size), \
+    .buffer = (_buffer) \
+  }
+
+
+/**
  * @brief Allocate a new circular buffer
  *
  * @param size Buffer size
