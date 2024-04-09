@@ -4,6 +4,7 @@
 #include <stdarg.h>
 #include <stdatomic.h>
 #include <stddef.h>
+#include <sys/types.h>
 
 #include "flup/attributes.h"
 
@@ -84,7 +85,7 @@ typedef struct flup_printk_call_site_info {
    *
    * @note The file path pointed by this isn't always present
    */
-  const char* file;
+  const char* sourceFile;
   
   /**
    * @brief Line number in source file of origin
@@ -115,7 +116,11 @@ extern size_t flup_logbuffer_size;
 
 /// Is an abort in progress (panic, bug, etc)
 FLUP_PUBLIC_VAR
-extern atomic_bool flup_is_in_abort;
+extern atomic_bool flup_is_aborting;
+
+/// Is current thread aborting?
+FLUP_PUBLIC_VAR
+extern thread_local bool flup_is_thread_aborting;
 
 /// @cond
 FLUP_PUBLIC
@@ -142,7 +147,7 @@ void flup__printk(const flup_printk_call_site_info* callSite, flup_loglevel logl
 #define flup_printk(loglevel, fmt, ...) do {\
   static const flup_printk_call_site_info callSite = { \
     .shortFuncName = __func__, \
-    .file = __FILE__, \
+    .sourceFile = __FILE__, \
     .line = __LINE__, \
     .funcPtr = NULL \
   }; \
@@ -161,12 +166,53 @@ void flup__printk(const flup_printk_call_site_info* callSite, flup_loglevel logl
 #define flup_vprintk(loglevel, fmt, args) do {\
   static const flup_printk_call_site_info callSite = { \
     .shortFuncName = __func__, \
-    .file = __FILE__, \
+    .sourceFile = __FILE__, \
     .line = __LINE__, \
     .funcPtr = NULL \
   }; \
   flup__printk(&callSite, (loglevel), flup_fmt(fmt), args); \
 } while(0)
+
+/**
+ * @brief Record for a single log entry
+ */
+typedef struct flup_log_record {
+  /// The size of whole record including this structure
+  size_t recordSize;
+  /// Pointer to function (or NULL if can't be retrieved)
+  void* funcPtr;
+  /// Line number where the log was generated (or -1 if can't be retrieved)
+  int line;
+  /// Loglevel
+  flup_loglevel logLevel;
+  
+  /// Source where the log was generated or NULL or -1 if can't be retrieved
+  union {
+    /// Pointer to string itself
+    const char* uSourcePath;
+    /// In serialized form only, offset to the string
+    ssize_t uSourcePathOffset;
+  };
+  
+  /// Function name or NULL or -1 if can't be retrieved
+  union {
+    /// Pointer to string itself
+    const char* uShortFuncName;
+    /// In serialized form only, offset to the string
+    ssize_t uShortFuncNameOffset;
+  };
+  
+  /// Message in the log
+  union {
+    /// Pointer to string itself
+    const char* uMessage;
+    /// In serialized form only, offset to the string
+    ssize_t uMessageOffset;
+  };
+  
+  /// The string come after this struct
+  char strings[];
+} flup_log_record;
 
 #endif
 

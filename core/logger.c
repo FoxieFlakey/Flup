@@ -4,7 +4,9 @@
 #include <stddef.h>
 #include <stdint.h>
 #include <stdio.h>
+#include <string.h>
 #include <time.h>
+#include <threads.h>
 
 #include "flup/core/logger.h"
 #include "flup/attributes.h"
@@ -30,14 +32,12 @@
 
 FLUP_PUBLIC_VAR
 char flup_logbuffer[BUFFER_SIZE];
-
-/// The size of logbuffer
 FLUP_PUBLIC_VAR
 size_t flup_logbuffer_size = BUFFER_SIZE;
-
-/// Is an abort in progress (panic, bug, etc)
 FLUP_PUBLIC_VAR
 atomic_bool flup_is_in_abort = false;
+FLUP_PUBLIC_VAR
+thread_local bool flup_is_thread_aborting = false;
 
 FLUP_CIRCULAR_BUFFER_DEFINE_STATIC(logBufferStruct, flup_logbuffer, BUFFER_SIZE);
 FLUP_MUTEX_DEFINE_STATIC(loggerLock);
@@ -75,32 +75,74 @@ static const char* loglevelToStr(flup_loglevel loglevel) {
   return NULL;
 }
 
+FLUP_PUBLIC
+void flup__vprintk(const flup_printk_call_site_info* callSite, flup_loglevel loglevel, const char* fmt, va_list args) {
+  static thread_local char threadBuffer[THREAD_BUFFER_SIZE];
+  flup_log_record record = {
+    .logLevel = loglevel,
+    .funcPtr = callSite->funcPtr,
+    .line = callSite->line,
+    .uShortFuncNameOffset = -1,
+    .uSourcePathOffset = -1,
+    .uMessageOffset = -1
+  };
+  
+  size_t sizeLeft = sizeof(threadBuffer);
+  char* currentPointer = threadBuffer;
+  int writtenBytes = 0;
+  *currentPointer = '\0';
+  
+  // Append the source path if given
+  if (!callSite->sourceFile)
+    goto sourceNotGiven;
+  
+  writtenBytes = snprintf(currentPointer, sizeLeft, "%s", callSite->sourceFile) + 1;
+  if ((size_t) writtenBytes > sizeLeft)
+    goto overflow_occured;
+  // Get offset by subtracting originating array and the
+  // pointer of its element
+  record.uSourcePathOffset = currentPointer - threadBuffer;
+  currentPointer += writtenBytes;
+  sizeLeft -= (size_t) writtenBytes;
+sourceNotGiven:
+  
+  // Append the func name if given
+  if (!callSite->shortFuncName)
+    goto funcNameNotGiven;
+  
+  writtenBytes = snprintf(currentPointer, sizeLeft, "%s", callSite->shortFuncName) + 1;
+  if ((size_t) writtenBytes > sizeLeft)
+    goto overflow_occured;
+  // Get offset by subtracting originating array and the
+  // pointer of its element
+  record.uShortFuncNameOffset = currentPointer - threadBuffer;
+  currentPointer += writtenBytes;
+  sizeLeft -= (size_t) writtenBytes;
+funcNameNotGiven:
+  
+  // Append the message itself
 #ifdef __clang__
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wformat-nonliteral"
 #endif
+  writtenBytes = vsnprintf(currentPointer, sizeLeft, fmt, args) + 1;
+#ifdef __clang__
+#pragma GCC diagnostic pop
+#endif
 
-FLUP_PUBLIC
-void flup__vprintk(const flup_printk_call_site_info* callSite, flup_loglevel loglevel, const char* fmt, va_list args) {
-  static thread_local char threadBuffer[THREAD_BUFFER_SIZE];
-  
-  size_t sizeLeft = sizeof(threadBuffer);
-  char* currentPointer = threadBuffer;
-  *currentPointer = '\0';
-  
-  int writtenChars = vsnprintf(currentPointer, sizeLeft, fmt, args);
-  if ((size_t) writtenChars + 1 > sizeLeft)
+  if ((size_t) writtenBytes > sizeLeft)
     goto overflow_occured;
-  currentPointer += writtenChars;
+  // Get offset by subtracting originating array and the
+  // pointer of its element
+  record.uMessageOffset = currentPointer - threadBuffer;
+  currentPointer += writtenBytes;
+  sizeLeft -= (size_t) writtenBytes;
   
 overflow_occured:;
   struct timespec time;
   clock_gettime(CLOCK_REALTIME, &time);
-  printf("Line: [%ju] [<placeholder>/%s] [%s:%d#%s] %s\n", (uintmax_t) time.tv_sec, loglevelToStr(loglevel), callSite->file, callSite->line, callSite->shortFuncName, threadBuffer);
+  printf("Line: [%ju] [<placeholder>/%s] [%s:%d#%s] %s\n", (uintmax_t) time.tv_sec, loglevelToStr(loglevel), callSite->sourceFile, callSite->line, callSite->shortFuncName, threadBuffer);
 }
 
-#ifdef __clang__
-#pragma GCC diagnostic pop
-#endif
 
 
