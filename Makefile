@@ -16,6 +16,8 @@ UwUMaker-c-flags-y += -std=c2x -g \
 
 UwUMaker-linker-flags-y += -lm -lBlocksRuntime
 
+UwUMaker-pkg-config-libs-y += mimalloc
+
 UwUMaker-dirs-y += data_structs core interface util concurrency thread
 UwUMaker-dirs-$(CONFIG_ENABLE_TEST_EXE) += test
 

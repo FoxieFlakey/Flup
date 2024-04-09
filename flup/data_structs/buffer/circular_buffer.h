@@ -10,6 +10,7 @@ typedef struct flup_circular_buffer {
   size_t writeOffset;
   
   size_t bufferSize;
+  size_t usedCount;
   void* buffer;
 } flup_circular_buffer;
 
