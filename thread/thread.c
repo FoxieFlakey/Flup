@@ -5,6 +5,7 @@
 #include <string.h>
 
 #include "flup/attributes.h"
+#include "flup/bug.h"
 #include "flup/compiler.h"
 #include "flup/thread/thread.h"
 
@@ -95,5 +96,6 @@ void flup_thread_free(flup_thread* self) {
 
 FLUP_PUBLIC
 void flup_thread_wait(flup_thread* self) {
-  pthread_join(self->thread, NULL);
+  int ret = pthread_join(self->thread, NULL);
+  BUG_ON(ret != 0);
 }
