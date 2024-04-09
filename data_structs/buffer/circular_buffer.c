@@ -2,9 +2,11 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <errno.h>
+#include <string.h>
 
 #include "flup/data_structs/buffer/circular_buffer.h"
 #include "flup/attributes.h"
+#include "flup/util/min_max.h"
 
 // Almost copy pasting from https://lo.calho.st/posts/black-magic-buffer/
 
@@ -43,8 +45,12 @@ int flup_circular_buffer_write(flup_circular_buffer* self, const void* data, siz
   
   const char* charData = data;
   char* charBuffer = self->buffer;
-  for (size_t i = 0; i < size; i++)
-    charBuffer[(self->writeOffset + i) % self->bufferSize] = charData[i];
+  
+  size_t part1 = flup_min(size, self->bufferSize - self->writeOffset);
+  size_t part2 = size - part1;
+
+  memcpy(charBuffer + self->writeOffset, charData        , part1);
+  memcpy(charBuffer                    , charData + part1, part2);
   
   self->writeOffset = (self->writeOffset + size) % self->bufferSize;
   self->usedCount += size;
@@ -59,8 +65,12 @@ int flup_circular_buffer_read(flup_circular_buffer* self, void* data, size_t siz
   
   char* charData = data;
   const char* charBuffer = self->buffer;
-  for (size_t i = 0; i < size; i++)
-    charData[i] = charBuffer[(self->readOffset + i) % self->bufferSize];
+  
+  size_t part1 = flup_min(size, self->bufferSize - self->readOffset);
+  size_t part2 = size - part1;
+
+  memcpy(charData,         charBuffer + self->readOffset, part1);
+  memcpy(charData + part1, charBuffer                   , part2);
   
   self->readOffset = (self->readOffset + size) % self->bufferSize;
   self->usedCount -= size;
