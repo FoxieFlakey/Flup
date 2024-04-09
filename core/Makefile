@@ -1,3 +1,3 @@
 
-UwUMaker-c-sources-y += panic.c
+UwUMaker-c-sources-y += panic.c logger.c
 

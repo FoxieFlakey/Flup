@@ -27,5 +27,15 @@
 # define FLUP_APPLE_BLOCKS_AVAILABLE 1
 #endif
 
+/// Behaves like __func__ but can be pretty depends on compiler detection
+#define FLUP_PRETTY_FUNCTION __func__
+
+// Im entirely guessing the version -w-
+// someone has to tell me exact major version
+#if defined(__GNUC__) && __GNUC__ > 3
+# undef FLUP_PRETTY_FUNCTION
+# define FLUP_PRETTY_FUNCTION __PRETTY_FUNCTION__
+#endif
+
 #endif
 

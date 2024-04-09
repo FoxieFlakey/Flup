@@ -1,0 +1,175 @@
+#ifndef UWU_D5D49FFC_4CF8_4DE3_8FA5_8FC2B91110EF_UWU
+#define UWU_D5D49FFC_4CF8_4DE3_8FA5_8FC2B91110EF_UWU
+
+#include <stdarg.h>
+#include <stdatomic.h>
+#include <stddef.h>
+
+#include "flup/attributes.h"
+
+/**
+ * @file
+ * @brief Flup's logging system
+ *
+ * Its uses a circular buffer to store the log entries while
+ * waiting for reader thread to read it. This logger for now
+ * wait for the readers.
+ * 
+ * The design of log system primarily aim to avoid I/O wait or
+ * atleast absorbs the I/O wait impact and also when program
+ * crash so early that no log saved. Users can read the log in
+ * dump file.
+ *
+ * This design also largely inspired from Linux kernel
+ */
+
+/**
+ * @brief Log levels
+ *
+ * The urgency of a level is counted from most urgent (0) to 
+ * least urgent (8).
+ */
+typedef enum flup_loglevel {
+  /// Unrecoverable situation (program cannot progress further)
+  FLUP_FATAL      = 0,
+  /// Need immediate action
+  FLUP_ALERT      = 1,
+  /// Critical event has occured
+  FLUP_CRITICAL   = 2,
+  /// An error occured
+  FLUP_ERROR      = 3,
+  /// Warning about something
+  FLUP_WARN       = 4,
+  /// Information which may be significant
+  FLUP_NOTICE     = 5,
+  /// Informational purpose doesn't tell much about error
+  FLUP_INFO       = 6,
+  /// Moar output
+  FLUP_VERBOSE    = 7,
+  /// EVEN MOAR OUTPUT UWU
+  FLUP_DEBUG      = 8
+} flup_loglevel;
+
+/**
+ * @brief Structure about @ref flup_printk call site
+ *
+ * Optionally by default used to track where @ref flup_printk
+ * was called from to aid in more detailed log.
+ */
+typedef struct flup_printk_call_site_info {
+  /**
+   * @brief Pointer to function which called @ref flup_printk
+   * 
+   * Can be NULL if caller can't determinate and let
+   * Flup try to fill this.
+   */
+  void* funcPtr;
+  
+  /**
+   * @brief Name of the caller function
+   *
+   * This is filled using with __func__.
+   *
+   * Can be NULL if caller can't know the name and let
+   * Flup try to fill this.
+   */
+  const char* shortFuncName;
+  
+  /**
+   * @brief Path to source file of origin
+   *
+   * The value is taken from __FILE__ macro during the call 
+   * to @ref flup_printk. The function will try fill this if
+   * its NULL value or "Source.c" if it wasn't able to fill this.
+   *
+   * @note The file path pointed by this isn't always present
+   */
+  const char* file;
+  
+  /**
+   * @brief Line number in source file of origin
+   *
+   * The value is taken from __LINE__ macro during the call
+   * to @ref flup_printk. The function will try fill this if
+   * its negative value or leave it at negative if it wasn't
+   * able to fill this.
+   */
+  int line;
+} flup_printk_call_site_info;
+
+/**
+ * @brief Symbol to log buffer
+ *
+ * @warning Its only used for debugging after death,
+ *   the content format and structure won't be stable.
+ *   Pass the content through 'strings' command and
+ *   you'll get log messages jumbled with other stuffs.
+ *   The char type does not imply its a printable string
+ */
+FLUP_PUBLIC_VAR
+extern char flup_logbuffer[];
+
+/// The size of logbuffer
+FLUP_PUBLIC_VAR
+extern size_t flup_logbuffer_size;
+
+/// Is an abort in progress (panic, bug, etc)
+FLUP_PUBLIC_VAR
+extern atomic_bool flup_is_in_abort;
+
+/// @cond
+FLUP_PUBLIC
+void flup__vprintk(const flup_printk_call_site_info* callSite, flup_loglevel loglevel, const char* fmt, va_list args);
+
+FLUP_PUBLIC
+void flup__printk(const flup_printk_call_site_info* callSite, flup_loglevel loglevel, const char* fmt, ...);
+/// @endcond
+
+/// Format fmt in a way to allow each source to have own format
+#ifndef flup_fmt
+# define flup_fmt(fmt) fmt
+#endif
+
+/**
+ * @brief Write a log entry
+ *
+ * This must be called on its own statement
+ *
+ * @param loglevel The loglevel the entry is
+ * @param fmt The printf format for log
+ * @param ... The rest of arguments for printf format
+ */
+#define flup_printk(loglevel, fmt, ...) do {\
+  static const flup_printk_call_site_info callSite = { \
+    .shortFuncName = __func__, \
+    .file = __FILE__, \
+    .line = __LINE__, \
+    .funcPtr = NULL \
+  }; \
+  flup__printk(&callSite, (loglevel), flup_fmt(fmt) __VA_OPT__(,) __VA_ARGS__); \
+} while(0)
+
+/**
+ * @brief Write a log entry (va_list alternative)
+ *
+ * This must be called on its own statement
+ *
+ * @param loglevel The loglevel the entry is
+ * @param fmt The printf format for log
+ * @param args The rest of arguments for printf format
+ */
+#define flup_vprintk(loglevel, fmt, args) do {\
+  static const flup_printk_call_site_info callSite = { \
+    .shortFuncName = __func__, \
+    .file = __FILE__, \
+    .line = __LINE__, \
+    .funcPtr = NULL \
+  }; \
+  flup__printk(&callSite, (loglevel), flup_fmt(fmt), args); \
+} while(0)
+
+#endif
+
+
+
+
