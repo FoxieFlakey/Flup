@@ -3,6 +3,7 @@
 #include <stdlib.h>
 
 #include "flup/attributes.h"
+#include "flup/bug.h"
 #include "flup/concurrency/mutex.h"
 
 FLUP_PUBLIC
@@ -13,7 +14,7 @@ flup_mutex* flup_mutex_new() {
   self->initialized = false;
   
   if (pthread_mutex_init(&self->lock, NULL) != 0) {
-    flup_mutex_free(self);
+    free(self);
     return NULL;
   }
   
@@ -26,17 +27,22 @@ void flup_mutex_free(flup_mutex* self) {
   if (!self)
     return;
     
-  pthread_mutex_destroy(&self->lock);
+  if (self->initialized) {
+    int ret = pthread_mutex_destroy(&self->lock);
+    BUG_ON(ret != 0);
+  }
   free(self);
 }
 
 FLUP_PUBLIC
 void flup_mutex_lock(flup_mutex* self) {
-  pthread_mutex_lock(&self->lock);
+  int ret = pthread_mutex_lock(&self->lock);
+  BUG_ON(ret != 0);
 }
 
 FLUP_PUBLIC
 void flup_mutex_unlock(flup_mutex* self) {
-  pthread_mutex_unlock(&self->lock);
+  int ret = pthread_mutex_unlock(&self->lock);
+  BUG_ON(ret != 0);
 }
 

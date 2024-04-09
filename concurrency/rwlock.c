@@ -2,6 +2,7 @@
 #include <stdlib.h>
 
 #include "flup/attributes.h"
+#include "flup/bug.h"
 
 #include "flup/concurrency/rwlock.h"
 
@@ -13,7 +14,7 @@ flup_rwlock* flup_rwlock_new() {
   self->initialized = false;
   
   if (pthread_rwlock_init(&self->rwlock, NULL) != 0) {
-    flup_rwlock_free(self);
+    free(self);
     return NULL;
   }
   
@@ -26,21 +27,27 @@ void flup_rwlock_free(flup_rwlock* self) {
   if (!self)
     return;
   
-  pthread_rwlock_destroy(&self->rwlock);
+  if (self->initialized) {
+    int ret = pthread_rwlock_destroy(&self->rwlock);
+    BUG_ON(ret != 0);
+  }
   free(self);
 }
 
 FLUP_PUBLIC
 void flup_rwlock_rdlock(flup_rwlock* self) {
-  pthread_rwlock_rdlock(&self->rwlock);
+  int ret = pthread_rwlock_rdlock(&self->rwlock);
+  BUG_ON(ret != 0);
 }
 
 FLUP_PUBLIC
 void flup_rwlock_wrlock(flup_rwlock* self) {
-  pthread_rwlock_wrlock(&self->rwlock);
+  int ret = pthread_rwlock_wrlock(&self->rwlock);
+  BUG_ON(ret != 0);
 }
 
 FLUP_PUBLIC
 void flup_rwlock_unlock(flup_rwlock* self) {
-  pthread_rwlock_unlock(&self->rwlock);
+  int ret = pthread_rwlock_unlock(&self->rwlock);
+  BUG_ON(ret != 0);
 }

@@ -14,7 +14,9 @@ flup_cond* flup_cond_new() {
     return NULL;
   
   *self = (flup_cond) {};
-  if (pthread_cond_init(&self->cond, NULL) < 0) {
+  
+  self->initialized = false;
+  if (pthread_cond_init(&self->cond, NULL) != 0) {
     free(self);
     return NULL;
   }
@@ -27,6 +29,10 @@ void flup_cond_free(flup_cond* self) {
   if (!self)
     return;
   
+  if (self->initialized) {
+    int ret = pthread_cond_destroy(&self->cond);
+    BUG_ON(ret != 0);
+  }
   free(self);
 }
 
