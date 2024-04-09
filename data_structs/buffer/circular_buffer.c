@@ -40,7 +40,7 @@ void flup_circular_buffer_free(flup_circular_buffer* self) {
 FLUP_PUBLIC
 int flup_circular_buffer_write(flup_circular_buffer* self, const void* data, size_t size) {
   // Buffer is full
-  if (size > self->bufferSize - self->usedCount)
+  if (size > self->bufferSize - self->usedSize)
     return -ENOSPC;
   
   const char* charData = data;
@@ -53,14 +53,14 @@ int flup_circular_buffer_write(flup_circular_buffer* self, const void* data, siz
   memcpy(charBuffer                    , charData + part1, part2);
   
   self->writeOffset = (self->writeOffset + size) % self->bufferSize;
-  self->usedCount += size;
+  self->usedSize += size;
   return 0;
 }
 
 FLUP_PUBLIC
 int flup_circular_buffer_read(flup_circular_buffer* self, void* data, size_t size) {
   // Buffer is empty
-  if (flup_circular_buffer_is_empty(self))
+  if (self->usedSize < size)
     return -ENODATA;
   
   char* charData = data;
@@ -73,18 +73,8 @@ int flup_circular_buffer_read(flup_circular_buffer* self, void* data, size_t siz
   memcpy(charData + part1, charBuffer                   , part2);
   
   self->readOffset = (self->readOffset + size) % self->bufferSize;
-  self->usedCount -= size;
+  self->usedSize -= size;
   return 0;
-}
-
-FLUP_PUBLIC
-bool flup_circular_buffer_is_empty(flup_circular_buffer* self) {
-  return self->usedCount == 0;
-}
-
-FLUP_PUBLIC
-bool flup_circular_buffer_is_full(flup_circular_buffer* self) {
-  return self->usedCount == self->bufferSize;
 }
 
 
