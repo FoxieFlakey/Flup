@@ -1,6 +1,14 @@
 #ifndef UWU_AFB2EA92_9823_438F_BD97_D91FE0974C4C_UWU
 #define UWU_AFB2EA92_9823_438F_BD97_D91FE0974C4C_UWU
 
+/**
+ * @file
+ * @brief Min/max operation
+ *
+ * Contains functions which tell which is larger/smaller
+ */
+
+/// @cond
 #define FLUP__MIN_MAX_DEFINE(postfix, t) \
   static inline t flup_min_ ## postfix (t a, t b) { \
     return a < b ? a : b; \
@@ -32,8 +40,28 @@ FLUP__MIN_MAX_DEFINE(ullong, unsigned long long);
     long long: flup_min_llong, \
     unsigned long long: flup_min_ullong \
   )(a, b)
+/// @endcond
 
+/**
+ * @brief Return smallest value
+ *
+ * This function return first if first < second or second if
+ * second < first
+ *
+ * @param a The first value
+ * @param a The second value
+ */
 #define flup_min(a, b) FLUP__MIN_MAX_SELECT(min, a, b)
-#define flup_max(a, b) FLUP__MIN_MAX_SELECT(min, a, b)
+
+/**
+ * @brief Return largest value
+ *
+ * This function return first if first > second or second if
+ * second > first
+ *
+ * @param a The first value
+ * @param a The second value
+ */
+#define flup_max(a, b) FLUP__MIN_MAX_SELECT(max, a, b)
 
 #endif
