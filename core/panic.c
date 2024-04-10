@@ -39,6 +39,7 @@ static void hardPanic(const char* format, va_list list) {
 # pragma clang diagnostic pop
 #endif
   fprintf(stderr, "\n");
+  fprintf(stderr, "[HARD PANIC] Logs not flushed!\n");
   abort();
 }
 
@@ -74,6 +75,7 @@ void flup_vpanic(const char* format, va_list list) {
 # pragma clang diagnostic pop
 #endif
   flup_pr_fatal("Panic occured >w<: %s", panicBuffer);
+  flup_pr_info("Flushing logs");
   flup_flush_logs(NULL);
   abort();
 }
