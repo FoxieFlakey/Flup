@@ -5,6 +5,7 @@
 #include <stdatomic.h>
 #include <stddef.h>
 #include <sys/types.h>
+#include <time.h>
 
 #include "flup/attributes.h"
 
@@ -213,6 +214,17 @@ typedef struct flup_log_record {
   /// The string come after this struct
   char strings[];
 } flup_log_record;
+
+/**
+ * @brief Wait until all logs processed
+ *
+ * @param abstimeout How long caller willing to wait or NULL if forever
+ *
+ * @return 0 on success or -ETIMEOUT if timeout reached (never returned
+ *   if abstimeout is NULL)
+ */
+FLUP_PUBLIC
+int flup_flush_logs(const struct timespec* abstimeout);
 
 #endif
 

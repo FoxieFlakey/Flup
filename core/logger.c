@@ -8,8 +8,10 @@
 #include <time.h>
 #include <threads.h>
 #include <unistd.h>
+#include <errno.h>
 
 #include "flup/core/logger.h"
+#include "core/logger_thread.h"
 #include "flup/attributes.h"
 #include "flup/concurrency/cond.h"
 #include "flup/concurrency/mutex.h"
@@ -44,7 +46,8 @@ thread_local bool flup_is_thread_aborting = false;
 
 FLUP_CIRCULAR_BUFFER_DEFINE_STATIC(buffer, flup_logbuffer, BUFFER_SIZE);
 FLUP_MUTEX_DEFINE_STATIC(bufferLock);
-FLUP_COND_DEFINE_STATIC(bufferEvent);
+FLUP_COND_DEFINE_STATIC(dataWrittenBufferEvent);
+FLUP_COND_DEFINE_STATIC(dataReadBufferEvent);
 
 FLUP_PUBLIC
 void flup__printk(const flup_printk_call_site_info* callSite, flup_loglevel loglevel, const char* fmt, ...) {
@@ -56,6 +59,8 @@ void flup__printk(const flup_printk_call_site_info* callSite, flup_loglevel logl
 
 FLUP_PUBLIC
 void flup__vprintk(const flup_printk_call_site_info* callSite, flup_loglevel loglevel, const char* fmt, va_list args) {
+  logger_thread_start();
+  
   static thread_local char threadBuffer[THREAD_BUFFER_SIZE];
   flup_log_record record = {
     .logLevel = loglevel,
@@ -121,13 +126,15 @@ overflow_occured:
   
   // Wait until there space to write whole record plus strings
   while (buffer.bufferSize - buffer.usedSize < record.recordSize)
-    flup_cond_wait(&bufferEvent, &bufferLock, NULL);
+    flup_cond_wait(&dataWrittenBufferEvent, &bufferLock, NULL);
   
   int ret = flup_circular_buffer_write(&buffer, &record, sizeof(record));
   assert(ret == 0);
   ret = flup_circular_buffer_write(&buffer, threadBuffer, writtenBytes);
   assert(ret == 0);
   flup_mutex_unlock(&bufferLock);
+  
+  flup_cond_wake_one(&dataWrittenBufferEvent);
 }
 
 const flup_log_record* logger_read_log() {
@@ -138,7 +145,7 @@ const flup_log_record* logger_read_log() {
   // Wait until there enough data to read 
   // whole record header
   while (buffer.usedSize < sizeof(record))
-    flup_cond_wait(&bufferEvent, &bufferLock, NULL);
+    flup_cond_wait(&dataWrittenBufferEvent, &bufferLock, NULL);
   
   // Read the log header
   int ret = flup_circular_buffer_read(&buffer, &record, sizeof(record));
@@ -149,12 +156,13 @@ const flup_log_record* logger_read_log() {
   // Wait until there enough data to read
   // all the strings 
   while (buffer.usedSize < stringSize)
-    flup_cond_wait(&bufferEvent, &bufferLock, NULL);
+    flup_cond_wait(&dataWrittenBufferEvent, &bufferLock, NULL);
   
   // Then read the strings
   ret = flup_circular_buffer_read(&buffer, threadBuffer, record.recordSize - sizeof(record));
   assert(ret == 0);
   flup_mutex_unlock(&bufferLock);
+  flup_cond_wake_one(&dataReadBufferEvent);
   
   // Convert the offsets into pointer
   record.uSourcePath = &threadBuffer[record.uSourcePathOffset];
@@ -164,4 +172,21 @@ const flup_log_record* logger_read_log() {
   return &record;
 }
 
+FLUP_PUBLIC
+int flup_flush_logs(const struct timespec* abstimeout) {
+  int ret = 0;
+  flup_mutex_lock(&bufferLock);
+  
+  // Wait until the buffer is empty
+  while (buffer.usedSize > 0) {
+    if (flup_cond_wait(&dataReadBufferEvent, &bufferLock, abstimeout) == -ETIMEDOUT) {
+      ret = -ETIMEDOUT;
+      goto log_is_flushed;
+    }
+  }
+
+log_is_flushed:
+  flup_mutex_unlock(&bufferLock);
+  return ret;
+}
 

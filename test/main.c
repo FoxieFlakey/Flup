@@ -8,7 +8,6 @@
 #include <stdio.h>
 #include <unistd.h>
 
-#include "flup/thread/thread.h"
 #include "flup/attributes.h"
 #include "flup/data_structs/buffer/circular_buffer.h"
 #include "flup/core/logger.h"
@@ -18,19 +17,6 @@
 static void mimalloc_play();
 FLUP_PUBLIC
 int fluffedup_main(FLUP_UNUSED int argc, FLUP_UNUSED const char** argv) {
-  fprintf(stderr, "[Parent] Starting thread\n");
-  flup_thread* thrd = flup_thread_new_with_block(^() {
-    fprintf(stderr, "[Child] Hello UwU\n");
-    sleep(1);
-    fprintf(stderr, "[Child] Terminating thread\n");
-  });
-  
-  fprintf(stderr, "[Parent] Waiting thread\n");
-  flup_thread_wait(thrd);
-  
-  fprintf(stderr, "[Parent] Cleaning thread\n");
-  flup_thread_free(thrd);
-  
   flup_circular_buffer* buffer = flup_circular_buffer_new(20);
   flup_circular_buffer_write(buffer, "UwU", 3);
   

@@ -28,6 +28,14 @@ proj_test:
 	@$(MAKE) -C $(UWUMAKER_HOME) PROJECT_DIR="$(PROJECT_DIR)" cmd_all
 	@cd "$(PROJECT_DIR)" && LD_LIBRARY_PATH="./build/objs:$$LD_LIBRARY_PATH" ./build/objs/test/test_exe/objs/Test
 
+proj_test_gdb:
+	@$(MAKE) -C $(UWUMAKER_HOME) PROJECT_DIR="$(PROJECT_DIR)" cmd_all
+	@cd "$(PROJECT_DIR)" && LD_LIBRARY_PATH="./build/objs:$$LD_LIBRARY_PATH" gdb ./build/objs/test/test_exe/objs/Test
+
+proj_test_strace:
+	@$(MAKE) -C $(UWUMAKER_HOME) PROJECT_DIR="$(PROJECT_DIR)" cmd_all
+	@cd "$(PROJECT_DIR)" && LD_LIBRARY_PATH="./build/objs:$$LD_LIBRARY_PATH" strace ./build/objs/test/test_exe/objs/Test
+
 proj_doxygen:
 	@cd "$(PROJECT_DIR)" && doxygen
 	@echo "Doxygen result viewable at http://localhost:8080"
