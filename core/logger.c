@@ -72,34 +72,31 @@ void flup__vprintk(const flup_printk_call_site_info* callSite, flup_loglevel log
   int currentWrittenBytes = 0;
   *currentPointer = '\0';
   
+  // Get offset by subtracting originating array and the
+  // pointer of its element
+# define storeOffsetAndIncrement(field) do {\
+    record.field = currentPointer - threadBuffer; \
+    currentPointer += currentWrittenBytes; \
+    sizeLeft -= (size_t) currentWrittenBytes; \
+    writtenBytes += (size_t) currentWrittenBytes; \
+  } while (0)
+  
   // Append the source path if given
   if (!callSite->sourceFile)
     goto sourceNotGiven;
-  
   currentWrittenBytes = snprintf(currentPointer, sizeLeft, "%s", callSite->sourceFile) + 1;
   if ((size_t) currentWrittenBytes > sizeLeft)
     goto overflow_occured;
-  // Get offset by subtracting originating array and the
-  // pointer of its element
-  record.uSourcePathOffset = currentPointer - threadBuffer;
-  currentPointer += currentWrittenBytes;
-  sizeLeft -= (size_t) currentWrittenBytes;
-  writtenBytes += (size_t) currentWrittenBytes;
+  storeOffsetAndIncrement(uSourcePathOffset);
 sourceNotGiven:
   
   // Append the func name if given
   if (!callSite->shortFuncName)
     goto funcNameNotGiven;
-  
   currentWrittenBytes = snprintf(currentPointer, sizeLeft, "%s", callSite->shortFuncName) + 1;
   if ((size_t) currentWrittenBytes > sizeLeft)
     goto overflow_occured;
-  // Get offset by subtracting originating array and the
-  // pointer of its element
-  record.uShortFuncNameOffset = currentPointer - threadBuffer;
-  currentPointer += currentWrittenBytes;
-  sizeLeft -= (size_t) currentWrittenBytes;
-  writtenBytes += (size_t) currentWrittenBytes;
+  storeOffsetAndIncrement(uShortFuncNameOffset);
 funcNameNotGiven:
   
   // Append the message itself
@@ -108,18 +105,12 @@ funcNameNotGiven:
 #pragma GCC diagnostic ignored "-Wformat-nonliteral"
 #endif
   currentWrittenBytes = vsnprintf(currentPointer, sizeLeft, fmt, args) + 1;
+  if ((size_t) currentWrittenBytes > sizeLeft)
+    goto overflow_occured;
+  storeOffsetAndIncrement(uMessageOffset);
 #ifdef __clang__
 #pragma GCC diagnostic pop
 #endif
-
-  if ((size_t) currentWrittenBytes > sizeLeft)
-    goto overflow_occured;
-  // Get offset by subtracting originating array and the
-  // pointer of its element
-  record.uMessageOffset = currentPointer - threadBuffer;
-  currentPointer += currentWrittenBytes;
-  sizeLeft -= (size_t) currentWrittenBytes;
-  writtenBytes += (size_t) currentWrittenBytes;
   
 overflow_occured:
   // Set record size
@@ -127,10 +118,9 @@ overflow_occured:
   
   // Write to the log buffer
   flup_mutex_lock(&bufferLock);
-  size_t totalSize = sizeof(record) + writtenBytes;
   
-  // Wait until there space to write
-  while (buffer.bufferSize - buffer.usedSize < totalSize)
+  // Wait until there space to write whole record plus strings
+  while (buffer.bufferSize - buffer.usedSize < record.recordSize)
     flup_cond_wait(&bufferEvent, &bufferLock, NULL);
   
   int ret = flup_circular_buffer_write(&buffer, &record, sizeof(record));
@@ -143,8 +133,8 @@ overflow_occured:
 const flup_log_record* logger_read_log() {
   static thread_local char threadBuffer[THREAD_BUFFER_SIZE];
   static thread_local flup_log_record record;
-  flup_mutex_lock(&bufferLock);
   
+  flup_mutex_lock(&bufferLock);
   // Wait until there enough data to read 
   // whole record header
   while (buffer.usedSize < sizeof(record))
