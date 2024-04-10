@@ -10,7 +10,6 @@
 #include <unistd.h>
 
 #include "flup/attributes.h"
-#include "flup/data_structs/buffer/circular_buffer.h"
 #include "flup/core/logger.h"
 
 #include "main.h"
@@ -18,25 +17,6 @@
 static void mimalloc_play();
 FLUP_PUBLIC
 int fluffedup_main(FLUP_UNUSED int argc, FLUP_UNUSED const char** argv) {
-  flup_circular_buffer* buffer = flup_circular_buffer_new(20);
-  flup_circular_buffer_write(buffer, "UwU", 3);
-  
-  char tmp[5];
-  flup_circular_buffer_read(buffer, tmp, 3);
-  
-  flup_circular_buffer_write(buffer, "He  1", 5);
-  flup_circular_buffer_write(buffer, "He  2", 5);
-  flup_circular_buffer_write(buffer, "He  3", 5);
-  flup_circular_buffer_write(buffer, "He  4", 5);
-  
-  flup_circular_buffer_read(buffer, tmp, sizeof(tmp));
-  flup_circular_buffer_read(buffer, tmp, sizeof(tmp));
-  flup_circular_buffer_read(buffer, tmp, sizeof(tmp));
-  flup_circular_buffer_read(buffer, tmp, sizeof(tmp));
-  printf("Result: %.*s\n", (int) sizeof(tmp), tmp);
-  
-  flup_circular_buffer_free(buffer);
-  
   flup_pr_info("Hello World!");
   flup_panic("aaaa ouch");
   // mimalloc_play();
