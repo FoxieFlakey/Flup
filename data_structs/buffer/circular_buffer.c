@@ -59,7 +59,7 @@ int flup_circular_buffer_write(flup_circular_buffer* self, const void* data, siz
 
 FLUP_PUBLIC
 int flup_circular_buffer_read(flup_circular_buffer* self, void* data, size_t size) {
-  // Buffer is empty
+  // Buffer has less data than needed
   if (self->usedSize < size)
     return -ENODATA;
   

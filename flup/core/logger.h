@@ -214,6 +214,9 @@ typedef struct flup_log_record {
   char strings[];
 } flup_log_record;
 
+FLUP_PUBLIC
+const flup_log_record* flup_read_log();
+
 #endif
 
 
