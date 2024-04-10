@@ -16,7 +16,7 @@
  * Its a structure which protects access to a resource
  * by only allowing one thread has access at anytime
  *
- * The clock used as reference is CLOCK_MONOTONIC
+ * The clock used as reference is CLOCK_REALTIME
  */
 typedef struct flup_mutex {
   /// Is this structure initialized

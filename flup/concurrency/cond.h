@@ -18,7 +18,7 @@
  * Its a structure which allows application to signal
  * and wait for an event occur.
  *
- * The clock used as reference is CLOCK_MONOTONIC
+ * The clock used as reference is CLOCK_REALTIME
  */
 typedef struct flup_cond {
   /// Is this structure initalized

@@ -13,28 +13,19 @@
 
 FLUP_PUBLIC
 flup_cond* flup_cond_new() {
-  pthread_condattr_t attr;
-  flup_cond* self = NULL;
-  if (pthread_condattr_init(&attr) != 0)
-    return NULL;
-  
-  if (pthread_condattr_setclock(&attr, CLOCK_MONOTONIC) != 0)
-    goto failure;
-  self = malloc(sizeof(*self));
+  flup_cond* self = malloc(sizeof(*self));
   if (!self)
     goto failure;
   
   *self = (flup_cond) {};
   
   self->initialized = false;
-  if (pthread_cond_init(&self->cond, &attr) != 0)
+  if (pthread_cond_init(&self->cond, NULL) != 0)
     goto failure;
   self->initialized = true;
-  pthread_condattr_destroy(&attr);
   return self;
 
 failure:
-  pthread_condattr_destroy(&attr);
   flup_cond_free(self);
   return NULL;
 }

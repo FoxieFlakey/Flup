@@ -15,6 +15,8 @@
  *
  * This lock allow reader to run concurrenctly while
  * writers can only run serially.
+ *
+ * The clock uses as reference is CLOCK_REALTIME
  */
 typedef struct flup_rwlock {
   /// Pthread instance of rwlock
