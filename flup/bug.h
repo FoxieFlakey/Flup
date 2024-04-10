@@ -9,7 +9,13 @@
  * no-op depending in configuration..
  */
 
-#include "flup/core/panic.h" // IWYU pragma: keep
+#include "flup/attributes.h"
+
+/// @cond
+[[noreturn]]
+FLUP_PUBLIC
+void flup__trigger_bug(const char* file, int line, const char* func);
+/// @endcond
 
 /**
  * @brief Trigger bug handler
@@ -18,9 +24,7 @@
  * state which may be a bug. This macro can be
  * disabled.
  */
-#define BUG() do { \
-  flup_panic("BUG: failure at %s:%d/%s()!", __FILE__, __LINE__, __func__); \
-} while(0)
+#define BUG() flup__trigger_bug(__FILE__, __LINE__, __func__)
 
 /**
  * @brief Conditional BUG
