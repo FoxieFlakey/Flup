@@ -3,17 +3,19 @@
 #include <stdatomic.h>
 #include <stdbool.h>
 #include <stddef.h>
-#include <stdint.h>
 #include <stdio.h>
 #include <string.h>
 #include <time.h>
 #include <threads.h>
+#include <unistd.h>
 
 #include "flup/core/logger.h"
 #include "flup/attributes.h"
 #include "flup/concurrency/cond.h"
 #include "flup/concurrency/mutex.h"
 #include "flup/data_structs/buffer/circular_buffer.h"
+
+#include "logger.h"
 
 /*
 1 << 12, 4 KiB log buffer
@@ -40,9 +42,9 @@ atomic_bool flup_is_in_abort = false;
 FLUP_PUBLIC_VAR
 thread_local bool flup_is_thread_aborting = false;
 
-FLUP_CIRCULAR_BUFFER_DEFINE_STATIC(logBufferStruct, flup_logbuffer, BUFFER_SIZE);
-FLUP_MUTEX_DEFINE_STATIC(loggerLock);
-FLUP_COND_DEFINE_STATIC(loggerCond);
+FLUP_CIRCULAR_BUFFER_DEFINE_STATIC(buffer, flup_logbuffer, BUFFER_SIZE);
+FLUP_MUTEX_DEFINE_STATIC(bufferLock);
+FLUP_COND_DEFINE_STATIC(bufferEvent);
 
 FLUP_PUBLIC
 void flup__printk(const flup_printk_call_site_info* callSite, flup_loglevel loglevel, const char* fmt, ...) {
@@ -124,28 +126,45 @@ overflow_occured:
   record.recordSize = sizeof(record) + writtenBytes;
   
   // Write to the log buffer
-  flup_mutex_lock(&loggerLock);
-  int ret = flup_circular_buffer_write(&logBufferStruct, &record, sizeof(record));
+  flup_mutex_lock(&bufferLock);
+  size_t totalSize = sizeof(record) + writtenBytes;
+  
+  // Wait until there space to write
+  while (buffer.bufferSize - buffer.usedSize < totalSize)
+    flup_cond_wait(&bufferEvent, &bufferLock, NULL);
+  
+  int ret = flup_circular_buffer_write(&buffer, &record, sizeof(record));
   assert(ret == 0);
-  ret = flup_circular_buffer_write(&logBufferStruct, threadBuffer, writtenBytes);
+  ret = flup_circular_buffer_write(&buffer, threadBuffer, writtenBytes);
   assert(ret == 0);
-  flup_mutex_unlock(&loggerLock);
+  flup_mutex_unlock(&bufferLock);
 }
 
-FLUP_PUBLIC
-const flup_log_record* flup_read_log() {
+const flup_log_record* logger_read_log() {
   static thread_local char threadBuffer[THREAD_BUFFER_SIZE];
   static thread_local flup_log_record record;
-  flup_mutex_lock(&loggerLock);
+  flup_mutex_lock(&bufferLock);
+  
+  // Wait until there enough data to read 
+  // whole record header
+  while (buffer.usedSize < sizeof(record))
+    flup_cond_wait(&bufferEvent, &bufferLock, NULL);
   
   // Read the log header
-  int ret = flup_circular_buffer_read(&logBufferStruct, &record, sizeof(record));
+  int ret = flup_circular_buffer_read(&buffer, &record, sizeof(record));
   assert(ret == 0);
   
+  size_t stringSize = record.recordSize - sizeof(record);
+  
+  // Wait until there enough data to read
+  // all the strings 
+  while (buffer.usedSize < stringSize)
+    flup_cond_wait(&bufferEvent, &bufferLock, NULL);
+  
   // Then read the strings
-  ret = flup_circular_buffer_read(&logBufferStruct, threadBuffer, record.recordSize - sizeof(record));
+  ret = flup_circular_buffer_read(&buffer, threadBuffer, record.recordSize - sizeof(record));
   assert(ret == 0);
-  flup_mutex_unlock(&loggerLock);
+  flup_mutex_unlock(&bufferLock);
   
   // Convert the offsets into pointer
   record.uSourcePath = &threadBuffer[record.uSourcePathOffset];
