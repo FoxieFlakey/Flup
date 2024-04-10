@@ -50,15 +50,15 @@ FLUP_COND_DEFINE_STATIC(dataWrittenBufferEvent);
 FLUP_COND_DEFINE_STATIC(dataReadBufferEvent);
 
 FLUP_PUBLIC
-void flup__printk(const flup_printk_call_site_info* callSite, flup_loglevel loglevel, const char* fmt, ...) {
+void flup__printk(const flup_printk_call_site_info* callSite, const char* category, flup_loglevel loglevel, const char* fmt, ...) {
   va_list args;
   va_start(args, fmt);
-  flup__vprintk(callSite, loglevel, fmt, args);
+  flup__vprintk(callSite, category, loglevel, fmt, args);
   va_end(args);
 }
 
 FLUP_PUBLIC
-void flup__vprintk(const flup_printk_call_site_info* callSite, flup_loglevel loglevel, const char* fmt, va_list args) {
+void flup__vprintk(const flup_printk_call_site_info* callSite, const char* category, flup_loglevel loglevel, const char* fmt, va_list args) {
   logger_thread_start();
   
   static thread_local char threadBuffer[THREAD_BUFFER_SIZE];
@@ -111,6 +111,15 @@ sourceNotGiven:
     goto overflow_occured;
   storeOffsetAndIncrement(uShortFuncNameOffset);
 funcNameNotGiven:
+  
+  // Append the func name if given
+  if (!category)
+    goto categoryNotGiven;
+  currentWrittenBytes = snprintf(currentPointer, sizeLeft, "%s", category) + 1;
+  if ((size_t) currentWrittenBytes > sizeLeft)
+    goto overflow_occured;
+  storeOffsetAndIncrement(uCategoryOffset);
+categoryNotGiven:
   
   // Append the message itself
 #ifdef __clang__

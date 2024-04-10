@@ -125,10 +125,10 @@ extern thread_local bool flup_is_current_thread_aborting;
 
 /// @cond
 FLUP_PUBLIC
-void flup__vprintk(const flup_printk_call_site_info* callSite, flup_loglevel loglevel, const char* fmt, va_list args);
+void flup__vprintk(const flup_printk_call_site_info* callSite, const char* category, flup_loglevel loglevel, const char* fmt, va_list args);
 
 FLUP_PUBLIC
-void flup__printk(const flup_printk_call_site_info* callSite, flup_loglevel loglevel, const char* fmt, ...);
+void flup__printk(const flup_printk_call_site_info* callSite, const char* category, flup_loglevel loglevel, const char* fmt, ...);
 /// @endcond
 
 /// Format fmt in a way to allow each source to have own format
@@ -152,7 +152,7 @@ void flup__printk(const flup_printk_call_site_info* callSite, flup_loglevel logl
     .line = __LINE__, \
     .funcPtr = NULL \
   }; \
-  flup__printk(&callSite, (loglevel), flup_fmt(fmt) __VA_OPT__(,) __VA_ARGS__); \
+  flup__printk(&callSite, FLUP_LOG_CATEGORY, (loglevel), flup_fmt(fmt) __VA_OPT__(,) __VA_ARGS__); \
 } while(0)
 
 /// @{
@@ -186,7 +186,7 @@ void flup__printk(const flup_printk_call_site_info* callSite, flup_loglevel logl
     .line = __LINE__, \
     .funcPtr = NULL \
   }; \
-  flup__printk(&callSite, (loglevel), flup_fmt(fmt), args); \
+  flup__printk(&callSite, FLUP_LOG_CATEGORY, (loglevel), flup_fmt(fmt), args); \
 } while(0)
 
 /**
@@ -258,6 +258,20 @@ typedef struct flup_log_record {
  */
 FLUP_PUBLIC
 int flup_flush_logs(const struct timespec* abstimeout);
+
+/**
+ * @brief Category to be used to flup_pr_* functions
+ *
+ * Defaults to "Default" category
+ *
+ * This can be overrideable by each source by defining FLUP_LOG_CATEGORY
+ * before including any Flup's headers 
+ *
+ * Its serve as easy way for defining category for a single source
+ */
+#ifndef FLUP_LOG_CATEGORY
+# define FLUP_LOG_CATEGORY "Default"
+#endif
 
 #endif
 
