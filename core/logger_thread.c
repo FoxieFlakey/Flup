@@ -60,7 +60,7 @@ static void* readerThread(void*) {
     
     // Format is [timestamp] [subsystemName] [ThreadName/loglevel] [FileSource.c:line#function()] Message
     // Example: [Sat 12 Aug 2023, 10:31 AM +0700] [Renderer] [Render Thread/INFO] [renderer/renderer.c:20#init()] Initalizing OpenGL...
-    fprintf(stderr, "[%s] [%s] [%s/%s] [%s:%d#%s()] %s\n", timestampBuffer, record->uCategory ? record->uCategory : "Uncategorized", "<place holder>", loglevelToString(record->logLevel), record->uSourcePath, record->line, record->uShortFuncName, record->uMessage);
+    fprintf(stderr, "[%s] [%s] [%s/%s] [%s:%d#%s()] %s\n", timestampBuffer, record->uCategory ? record->uCategory : "Uncategorized", record->uThreadName ? record->uThreadName : "<Unknown Thread>", loglevelToString(record->logLevel), record->uSourcePath, record->line, record->uShortFuncName, record->uMessage);
   }
   fprintf(stderr, "Exiting\n");
   pthread_exit(NULL);

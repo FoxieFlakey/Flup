@@ -228,6 +228,14 @@ typedef struct flup_log_record {
     ssize_t uCategoryOffset;
   };
   
+  /// Thread of the log entry origin
+  union {
+    /// Pointer to string itself
+    const char* uThreadName;
+    /// In serialized form only, offset to the string
+    ssize_t uThreadNameOffset;
+  };
+  
   /// Message in the log
   union {
     /// Pointer to string itself

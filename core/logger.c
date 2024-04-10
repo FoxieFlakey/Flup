@@ -69,7 +69,8 @@ void flup__vprintk(const flup_printk_call_site_info* callSite, flup_loglevel log
     .uShortFuncNameOffset = -1,
     .uSourcePathOffset = -1,
     .uMessageOffset = -1,
-    .uCategoryOffset = -1
+    .uCategoryOffset = -1,
+    .uThreadNameOffset = -1
   };
   
   if (clock_gettime(CLOCK_REALTIME, &record.timestamp) != 0) {
@@ -181,6 +182,7 @@ const flup_log_record* logger_read_log() {
   initField(uSourcePath);
   initField(uShortFuncName);
   initField(uCategory);
+  initField(uThreadName);
   initField(uMessage);
 #undef initField
   
