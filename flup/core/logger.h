@@ -160,7 +160,7 @@ void flup__printk(const flup_printk_call_site_info* callSite, flup_loglevel logl
  * @brief Short wrapper around @ref flup_printk with coresponding level
  */
 #define flup_pr_fatal(fmt, ...) flup_printk(FLUP_FATAL, fmt __VA_OPT__(,) __VA_ARGS__)
-#define flup_pr_aleart(fmt, ...) flup_printk(FLUP_ALERT, fmt __VA_OPT__(,) __VA_ARGS__)
+#define flup_pr_alert(fmt, ...) flup_printk(FLUP_ALERT, fmt __VA_OPT__(,) __VA_ARGS__)
 #define flup_pr_critical(fmt, ...) flup_printk(FLUP_CRITICAL, fmt __VA_OPT__(,) __VA_ARGS__)
 #define flup_pr_error(fmt, ...) flup_printk(FLUP_ERROR, fmt __VA_OPT__(,) __VA_ARGS__)
 #define flup_pr_warn(fmt, ...) flup_printk(FLUP_WARN, fmt __VA_OPT__(,) __VA_ARGS__)
