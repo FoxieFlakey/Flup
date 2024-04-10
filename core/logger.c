@@ -106,15 +106,15 @@ funcNameNotGiven:
   
   // Append the message itself
 #ifdef __clang__
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wformat-nonliteral"
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wformat-nonliteral"
 #endif
   currentWrittenBytes = vsnprintf(currentPointer, sizeLeft, fmt, args) + 1;
   if ((size_t) currentWrittenBytes > sizeLeft)
     goto overflow_occured;
   storeOffsetAndIncrement(uMessageOffset);
 #ifdef __clang__
-#pragma GCC diagnostic pop
+#pragma clang diagnostic pop
 #endif
   
 overflow_occured:
