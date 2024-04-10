@@ -68,7 +68,8 @@ void flup__vprintk(const flup_printk_call_site_info* callSite, flup_loglevel log
     .line = callSite->line,
     .uShortFuncNameOffset = -1,
     .uSourcePathOffset = -1,
-    .uMessageOffset = -1
+    .uMessageOffset = -1,
+    .uCategoryOffset = -1
   };
   
   if (clock_gettime(CLOCK_REALTIME, &record.timestamp) != 0) {
@@ -122,7 +123,8 @@ funcNameNotGiven:
 #ifdef __clang__
 #pragma clang diagnostic pop
 #endif
-  
+
+# undef storeOffsetAndIncrement
 overflow_occured:
   // Set record size
   record.recordSize = sizeof(record) + writtenBytes;
@@ -169,9 +171,18 @@ const flup_log_record* logger_read_log() {
   flup_cond_wake_one(&dataReadBufferEvent);
   
   // Convert the offsets into pointer
-  record.uSourcePath = &threadBuffer[record.uSourcePathOffset];
-  record.uShortFuncName = &threadBuffer[record.uShortFuncNameOffset];
-  record.uMessage = &threadBuffer[record.uMessageOffset];
+# define initField(field) do { \
+    if (record.field ## Offset > 0) \
+      record.field = &threadBuffer[record.field ## Offset]; \
+    else \
+      record.field = NULL; \
+  } while (0)
+  
+  initField(uSourcePath);
+  initField(uShortFuncName);
+  initField(uCategory);
+  initField(uMessage);
+#undef initField
   
   return &record;
 }

@@ -220,6 +220,14 @@ typedef struct flup_log_record {
     ssize_t uShortFuncNameOffset;
   };
   
+  /// Category (or subsystem) of the log origin
+  union {
+    /// Pointer to string itself
+    const char* uCategory;
+    /// In serialized form only, offset to the string
+    ssize_t uCategoryOffset;
+  };
+  
   /// Message in the log
   union {
     /// Pointer to string itself
