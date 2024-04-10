@@ -40,9 +40,9 @@ char flup_logbuffer[BUFFER_SIZE];
 FLUP_PUBLIC_VAR
 size_t flup_logbuffer_size = BUFFER_SIZE;
 FLUP_PUBLIC_VAR
-atomic_bool flup_is_in_abort = false;
+atomic_bool flup_is_aborting = false;
 FLUP_PUBLIC_VAR
-thread_local bool flup_is_thread_aborting = false;
+thread_local bool flup_is_current_thread_aborting = false;
 
 FLUP_CIRCULAR_BUFFER_DEFINE_STATIC(buffer, flup_logbuffer, BUFFER_SIZE);
 FLUP_MUTEX_DEFINE_STATIC(bufferLock);
@@ -128,12 +128,10 @@ overflow_occured:
   while (buffer.bufferSize - buffer.usedSize < record.recordSize)
     flup_cond_wait(&dataWrittenBufferEvent, &bufferLock, NULL);
   
-  int ret = flup_circular_buffer_write(&buffer, &record, sizeof(record));
-  assert(ret == 0);
-  ret = flup_circular_buffer_write(&buffer, threadBuffer, writtenBytes);
-  assert(ret == 0);
-  flup_mutex_unlock(&bufferLock);
+  flup_circular_buffer_write(&buffer, &record, sizeof(record));
+  flup_circular_buffer_write(&buffer, threadBuffer, writtenBytes);
   
+  flup_mutex_unlock(&bufferLock);
   flup_cond_wake_one(&dataWrittenBufferEvent);
 }
 

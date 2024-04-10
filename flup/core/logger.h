@@ -121,7 +121,7 @@ extern atomic_bool flup_is_aborting;
 
 /// Is current thread aborting?
 FLUP_PUBLIC_VAR
-extern thread_local bool flup_is_thread_aborting;
+extern thread_local bool flup_is_current_thread_aborting;
 
 /// @cond
 FLUP_PUBLIC
@@ -154,6 +154,21 @@ void flup__printk(const flup_printk_call_site_info* callSite, flup_loglevel logl
   }; \
   flup__printk(&callSite, (loglevel), flup_fmt(fmt) __VA_OPT__(,) __VA_ARGS__); \
 } while(0)
+
+/// @{
+/**
+ * @brief Short wrapper around @ref flup_printk with coresponding level
+ */
+#define flup_pr_fatal(fmt, ...) flup_printk(FLUP_FATAL, fmt __VA_OPT__(,) __VA_ARGS__)
+#define flup_pr_aleart(fmt, ...) flup_printk(FLUP_ALERT, fmt __VA_OPT__(,) __VA_ARGS__)
+#define flup_pr_critical(fmt, ...) flup_printk(FLUP_CRITICAL, fmt __VA_OPT__(,) __VA_ARGS__)
+#define flup_pr_error(fmt, ...) flup_printk(FLUP_ERROR, fmt __VA_OPT__(,) __VA_ARGS__)
+#define flup_pr_warn(fmt, ...) flup_printk(FLUP_WARN, fmt __VA_OPT__(,) __VA_ARGS__)
+#define flup_pr_notice(fmt, ...) flup_printk(FLUP_NOTICE, fmt __VA_OPT__(,) __VA_ARGS__)
+#define flup_pr_info(fmt, ...) flup_printk(FLUP_INFO, fmt __VA_OPT__(,) __VA_ARGS__)
+#define flup_pr_verbose(fmt, ...) flup_printk(FLUP_VERBOSE, fmt __VA_OPT__(,) __VA_ARGS__)
+#define flup_pr_debug(fmt, ...) flup_printk(FLUP_DEBUG, fmt __VA_OPT__(,) __VA_ARGS__)
+/// @}
 
 /**
  * @brief Write a log entry (va_list alternative)
