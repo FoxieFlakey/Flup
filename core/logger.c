@@ -71,6 +71,12 @@ void flup__vprintk(const flup_printk_call_site_info* callSite, flup_loglevel log
     .uMessageOffset = -1
   };
   
+  if (clock_gettime(CLOCK_REALTIME, &record.timestamp) != 0) {
+    // On error default to epoch
+    record.timestamp.tv_nsec = 0;
+    record.timestamp.tv_nsec = 0;
+  }
+  
   size_t sizeLeft = sizeof(threadBuffer);
   char* currentPointer = threadBuffer;
   size_t writtenBytes = 0;

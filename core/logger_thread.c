@@ -17,13 +17,50 @@ static pthread_once_t tryStartOnce = PTHREAD_ONCE_INIT;
 static pthread_t thread;
 static atomic_bool wantShutdown = false;
 
+static const char* loglevelToString(flup_loglevel level) {
+  switch (level) {
+    case FLUP_FATAL:
+      return "FATAL";
+    case FLUP_ALERT:
+      return "ALERT";
+    case FLUP_CRITICAL:
+      return "CRITICAL";
+    case FLUP_ERROR:
+      return "ERROR";
+    case FLUP_WARN:
+      return "WARN";
+    case FLUP_NOTICE:
+      return "NOTICE";
+    case FLUP_INFO:
+      return "INFO";
+    case FLUP_VERBOSE:
+      return "VERBOSE";
+    case FLUP_DEBUG:
+      return "DEBUG";
+  }
+
+  return "UNKNOWN";
+}
+
 static void* readerThread(void*) {
   fprintf(stderr, "Started\n");
   while (atomic_load(&wantShutdown) == false) {
     const flup_log_record* record = logger_read_log();
-    fprintf(stderr, "[Logger thread] Source: %s\n", record->uSourcePath);
-    fprintf(stderr, "[Logger thread] Func name: %s\n", record->uShortFuncName);
-    fprintf(stderr, "[Logger thread] Message: %s\n", record->uMessage);
+    
+    struct tm brokenDownDateAndTime;
+    
+    // If there any error during localtime_r, default to epoch
+    if (localtime_r(&record->timestamp.tv_sec, &brokenDownDateAndTime) == NULL) {
+      time_t epoch = 0;
+      localtime_r(&epoch, &brokenDownDateAndTime);
+    }
+    
+    static char timestampBuffer[1024];
+    strftime(timestampBuffer, sizeof(timestampBuffer), "%a %d %b %Y, %H:%M:%S %z", &brokenDownDateAndTime);
+    
+    // Format is [timestamp] [subsystemName] [ThreadName/loglevel] [FileSource.c:line#function()] Message
+    // Example: [Sat 12 Aug 2023, 10:31 AM +0700] [Renderer] [Render Thread/INFO] [renderer/renderer.c:20#init()] Initalizing OpenGL...
+    fprintf(stderr, "[%s] [%s] [%s/%s] [%s:%d#%s()] %s\n", timestampBuffer, "<place holder>", "<place holder>", loglevelToString(record->logLevel), record->uSourcePath, record->line, record->uShortFuncName, record->uMessage);
   }
   fprintf(stderr, "Exiting\n");
   pthread_exit(NULL);

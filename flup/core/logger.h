@@ -201,6 +201,8 @@ typedef struct flup_log_record {
   int line;
   /// Loglevel
   flup_loglevel logLevel;
+  /// Time when this log generated
+  struct timespec timestamp;
   
   /// Source where the log was generated or NULL or -1 if can't be retrieved
   union {
