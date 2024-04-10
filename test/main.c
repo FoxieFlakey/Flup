@@ -1,3 +1,4 @@
+#include "flup/core/panic.h"
 #define _GNU_SOURCE
 #include <time.h>
 #include <assert.h>
@@ -36,7 +37,8 @@ int fluffedup_main(FLUP_UNUSED int argc, FLUP_UNUSED const char** argv) {
   
   flup_circular_buffer_free(buffer);
   
-  flup_printk(FLUP_INFO, "Hello World!");
+  flup_pr_info("Hello World!");
+  flup_panic("aaaa ouch");
   // mimalloc_play();
   return 0;
 }
