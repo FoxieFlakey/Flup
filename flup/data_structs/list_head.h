@@ -45,6 +45,7 @@ typedef struct flup_list_head {
 
 /**
  * @brief Initialize @p list
+ * @public @memberof flup_list_head
  *
  * Initialize list so that it points to itself
  *
@@ -94,52 +95,47 @@ static inline void flup_list_head_init(struct flup_list_head* list) {
  */
 #define flup_list_is_valid(head) ((head)->prev != NULL && (head)->next != NULL)
 
-/**
- * @private
- *
- * @brief Its an internal helper function
- */
-static inline void __flup_list_add(struct flup_list_head *new, struct flup_list_head *prev, struct flup_list_head *next) {
+/// @cond
+static inline void flup_list__add(struct flup_list_head *new, struct flup_list_head *prev, struct flup_list_head *next) {
   next->prev = new;
   new->next = next;
   new->prev = prev;
   prev->next = new;
 }
 
-/**
- * @private
- *
- * @brief Its an internal helper function
- */
-static inline void __flup_list_del(struct flup_list_head* prev, struct flup_list_head* next) {
+static inline void flup_list__del(struct flup_list_head* prev, struct flup_list_head* next) {
   BUG_ON(!flup_list_is_valid(prev));
   BUG_ON(!flup_list_is_valid(next));
   next->prev = prev;
   prev->next = next;
 }
+/// @endcond
 
 /**
- * @brief Add @p new node into @p head
+ * @brief Add @p new node into head of @p head
+ * @public @memberof flup_list_head
  *
  * @param head The list to be added to
  * @param new The node to be added
  */
 static inline void flup_list_add_head(struct flup_list_head* head, struct flup_list_head* new) {
-	__flup_list_add(new, head, head->next);
+	flup_list__add(new, head, head->next);
 }
 
 /**
- * @brief Add @p new node into @p tail
+ * @brief Add @p new node into tail of @p head
+ * @public @memberof flup_list_head
  *
  * @param head The list to be added to
  * @param new The node to be added
  */
 static inline void flup_list_add_tail(struct flup_list_head* head, struct flup_list_head* new) {
-	__flup_list_add(new, head->prev, head);
+	flup_list__add(new, head->prev, head);
 }
 
 /**
  * @brief Mark @p head as invalid
+ * @public @memberof flup_list_head
  *
  * @param head The list to be marked as invalid
  */
@@ -150,13 +146,14 @@ static inline void flup_list_init_as_invalid(struct flup_list_head* head) {
 
 /**
  * @brief Delete a @p node
+ * @public @memberof flup_list_head
  *
  * @param node Node to be deleted/unlinked
  */
 static inline void flup_list_del(struct flup_list_head* node) {
   BUG_ON(!flup_list_is_valid(node));
 
-  __flup_list_del(node->prev, node->next);
+  flup_list__del(node->prev, node->next);
   flup_list_init_as_invalid(node);
 }
 

@@ -14,6 +14,8 @@
 
 /**
  * @brief Dynamicly expanding array
+ *
+ * @implements flup_ilist
  */
 typedef struct flup_dyn_array {
   /// Interfaces implemented
@@ -34,6 +36,7 @@ typedef struct flup_dyn_array {
 
 /**
  * @brief Create new instance of @ref flup_dyn_array
+ * @public @memberof flup_dyn_array
  *
  * @param elementSize Size of each element
  * @param capacity Pre-allocated count
@@ -48,6 +51,7 @@ flup_dyn_array* flup_dyn_array_new(size_t elementSize, size_t capacity);
 
 /**
  * @brief Reserve @p count elements
+ * @public @memberof flup_dyn_array
  *
  * Reserves @p counf elements so any insertion
  * will never cause out-of-memory error.
@@ -65,6 +69,7 @@ int flup_dyn_array_reserve(flup_dyn_array* self, size_t count);
 
 /**
  * @brief Free an instance of @ref flup_dyn_array
+ * @public @memberof flup_dyn_array
  *
  * @param self The @ref flup_dyn_array instance
  */
@@ -74,6 +79,7 @@ void flup_dyn_array_free(flup_dyn_array* self);
 
 /**
  * @brief Get an element
+ * @public @memberof flup_dyn_array
  *
  * Gets an element at @p index and saves it to @p element
  *
@@ -89,6 +95,7 @@ int flup_dyn_array_get(flup_dyn_array* self, size_t index, void** element);
 
 /**
  * @brief Append an element
+ * @public @memberof flup_dyn_array
  *
  * Appends @p element to the end of @p self array
  *
@@ -105,6 +112,7 @@ int flup_dyn_array_append(flup_dyn_array* self, const void* element);
 
 /**
  * @brief Prepend an element
+ * @public @memberof flup_dyn_array
  *
  * Prepends @p element to the end of @p self array
  *
@@ -121,6 +129,7 @@ int flup_dyn_array_prepend(flup_dyn_array* self, const void* element);
 
 /**
  * @brief Set an element
+ * @public @memberof flup_dyn_array
  *
  * Sets an element at @p index
  *
@@ -137,6 +146,7 @@ int flup_dyn_array_set(flup_dyn_array* self, size_t index, const void* element);
 
 /**
  * @brief Trims excess capacity
+ * @public @memberof flup_dyn_array
  *
  * Trims array so that excess capacity is freed or no-op
  * if array is already at smallest capacity
@@ -153,6 +163,7 @@ int flup_dyn_array_trim(flup_dyn_array* self);
 
 /**
  * @brief Remove n element
+ * @public @memberof flup_dyn_array
  *
  * Removes an element at @p index
  *
@@ -172,6 +183,7 @@ int flup_dyn_array_remove(flup_dyn_array* self, size_t index, size_t count);
 
 /**
  * @brief Inserts an element
+ * @public @memberof flup_dyn_array
  *
  * Insert an element at @p index and moves other element
  * to make up a space for new element

@@ -57,6 +57,7 @@ typedef struct flup_circular_buffer {
 
 /**
  * @brief Allocate a new circular buffer
+ * @public @memberof flup_circular_buffer
  *
  * @param size Buffer size
  *
@@ -67,6 +68,7 @@ flup_circular_buffer* flup_circular_buffer_new(size_t size);
 
 /**
  * @brief Free a circular buffer
+ * @public @memberof flup_circular_buffer
  *
  * @param self The instance to be free'd
  */
@@ -75,6 +77,7 @@ void flup_circular_buffer_free(flup_circular_buffer* self);
 
 /**
  * @brief Write data to buffer
+ * @public @memberof flup_circular_buffer
  *
  * @param self The instance of the buffer
  * @param data The data to be written
@@ -89,6 +92,7 @@ int flup_circular_buffer_write(flup_circular_buffer* self, const void* data, siz
 
 /**
  * @brief Read data from buffer
+ * @public @memberof flup_circular_buffer
  *
  * @param self The instance of the buffer
  * @param data The data to be read into

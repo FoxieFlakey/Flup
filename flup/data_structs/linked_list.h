@@ -26,6 +26,7 @@ typedef struct flup_linked_list_node {
 
 /**
  * @brief Simple doubly linked list
+ * @implements flup_ilist
  *
  * A simple linked list using @ref flup_list_head.
  * Implements various interfaces useful for a list.
@@ -63,6 +64,7 @@ typedef struct flup_linked_list {
 
 /**
  * @brief Iterator of linked list
+ * @extends flup_resetable_iterator
  */
 typedef struct flup_linked_list_iterator {
   /// The struct which this derived from
@@ -84,6 +86,7 @@ typedef struct flup_linked_list_iterator {
 
 /**
  * @brief Allocate new @ref flup_linked_list instance
+ * @public @memberof flup_linked_list
  *
  * @param elementSize Size of each element
  * @throws NULL Out of memory while allocating
@@ -95,6 +98,7 @@ flup_linked_list* flup_linked_list_new(size_t elementSize);
 
 /**
  * @brief Free a @ref flup_linked_list instance
+ * @public @memberof flup_linked_list
  *
  * @param self Instance to be deallocated
  */
@@ -104,6 +108,7 @@ void flup_linked_list_free(flup_linked_list* self);
 
 /**
  * @brief Inserts an element to tail
+ * @public @memberof flup_linked_list
  *
  * @param self Instance of @ref flup_linked_list
  * @param data The element to be inserted
@@ -118,6 +123,7 @@ flup_linked_list_node* flup_linked_list_add_tail(flup_linked_list* self, const v
 
 /**
  * @brief Inserts an element to head
+ * @public @memberof flup_linked_list
  *
  * @param self Instance of @ref flup_linked_list
  * @param[in] data The element to be inserted
@@ -132,6 +138,7 @@ flup_linked_list_node* flup_linked_list_add_head(flup_linked_list* self, const v
 
 /**
  * @brief Initialize a new iterator
+ * @public @memberof flup_linked_list
  *
  * Saves current version and initializes @p preAllocated
  * for iteration from head to tail.
@@ -144,6 +151,7 @@ void flup_linked_list_get_iterator(flup_linked_list* self, flup_linked_list_iter
 
 /**
  * @brief Deletes a node
+ * @public @memberof flup_linked_list
  *
  * Deletes a node and frees the node.
  *
@@ -155,6 +163,7 @@ void flup_linked_list_del(flup_linked_list* self, flup_linked_list_node* node);
 
 /**
  * @brief Get element at index
+ * @public @memberof flup_linked_list
  *
  * @param self Instance of @ref flup_linked_list
  * @param index Index of where the node is

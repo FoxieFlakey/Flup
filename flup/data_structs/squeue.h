@@ -43,6 +43,7 @@ typedef struct flup_squeue_item {
 
 /**
  * @brief A no-op item dealloc
+ * @protected @memberof flup_squeue
  */
 FLUP_USED
 static void flup_squeue_nop_msg_dealloc(flup_squeue_item*) {
@@ -55,6 +56,7 @@ static void flup_squeue_nop_msg_dealloc(flup_squeue_item*) {
 
 /**
  * @brief Allocate new squeue instance
+ * @public @memberof flup_squeue
  * 
  * Allocate a new squeue item which can filled by
  * @p capacity with @p flags
@@ -71,6 +73,7 @@ flup_squeue* flup_squeue_new(unsigned int capacity, unsigned int flags);
 
 /**
  * @brief Deallocate squeue
+ * @public @memberof flup_squeue
  * 
  * Deallocate squeue and also deallocates items
  * currently queue via @ref flup_squeue_item#dealloc
@@ -84,6 +87,7 @@ void flup_squeue_free(flup_squeue* self);
 
 /**
  * @brief Enqueues an item
+ * @public @memberof flup_squeue
  * 
  * Enqueues @p item to @p self
  *
@@ -100,6 +104,7 @@ int flup_squeue_enqueue(flup_squeue* self, flup_squeue_item* item);
 
 /**
  * @brief Dequeues an item
+ * @public @memberof flup_squeue
  *
  * Dequeues an item and return it.
  *
@@ -112,6 +117,7 @@ flup_squeue_item* flup_squeue_try_dequeue(flup_squeue* self);
 
 /**
  * @brief Filter function
+ * @public @memberof flup_squeue
  *
  * Check if current @p item is wanted item.
  *
@@ -124,6 +130,7 @@ typedef bool (*flup_squeue_filter_func)(flup_squeue_item* item, void* udata);
 
 /**
  * @brief Dequeue with a filter function
+ * @public @memberof flup_squeue
  *
  * Dequeue but with a filter to select which one to be dequeued
  *
@@ -140,14 +147,15 @@ flup_squeue_item* flup_squeue_dequeue_filtered_func(flup_squeue* self, flup_sque
  * @brief An alias to corresponding filter dequeue func
  *
  * Expands to corresponding filter dequeue func. If Apple Blocks
- * available expands to @ref flup_squeue_dequeue_filtered_func else 
- * epxnads to @ref flup_squeue_dequeue_filtered_func.
+ * available expands to @ref flup_squeue.flup_squeue_dequeue_filtered_func else 
+ * epxnads to @ref flup_squeue.flup_squeue_dequeue_filtered_func.
  */
 #define flup_squeue_dequeue_filtered flup_squeue_dequeue_filtered_func
 
 #if FLUP_APPLE_BLOCKS_AVAILABLE
 /**
  * @brief Filter block
+ * @public @memberof flup_squeue
  *
  * Check if current @p item is wanted item.
  *
@@ -159,6 +167,7 @@ typedef bool (^flup_squeue_filter_block)(flup_squeue_item* msg);
 
 /**
  * @brief Dequeue with a filter block
+ * @public @memberof flup_squeue
  *
  * Dequeue but with a filter to select which one to be dequeued
  *
