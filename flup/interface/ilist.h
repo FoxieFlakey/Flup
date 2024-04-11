@@ -18,7 +18,9 @@
  * Its a structure embedded in implementor's structure.
  */
 typedef struct flup_ilist {
-  /// @public Contains pointer to implemented methods
+  /**
+   * @public @brief Contains pointer to implemented methods
+   */
   const struct flup_ilist_ops* ops;
 } flup_ilist;
 
@@ -185,6 +187,7 @@ typedef struct flup_ilist_ops {
 
 /**
  * @brief Default implementation for @ref flup_ilist.append
+ * @protected @memberof flup_ilist
  *
  * @see @ref flup_ilist.append
  *
@@ -200,18 +203,21 @@ int flup_impl_ilist_append(flup_ilist* self, const void* element);
 
 /**
  * @copydoc flup_ilist.prepend
+ * @protected @memberof flup_ilist
  */
 FLUP_PUBLIC
 int flup_impl_ilist_prepend(flup_ilist* self, const void* element);
 
 /**
  * @copydoc flup_ilist.getIterator
+ * @protected @memberof flup_ilist
  */
 FLUP_PUBLIC
 flup_iterator* flup_impl_ilist_get_iterator(flup_ilist* self);
 
 /**
  * @copydoc flup_ilist.tryGet
+ * @protected @memberof flup_ilist
  */
 FLUP_PUBLIC
 bool flup_impl_ilist_try_get(flup_ilist* self, size_t index, void** element);
@@ -237,6 +243,7 @@ bool flup_impl_ilist_try_get(flup_ilist* self, size_t index, void** element);
 
 /**
  * @brief IList default iterator structure
+ * @public @memberof flup_ilist
  */
 typedef struct flup_ilist_iterator {
   /// The base structure of iterator
@@ -260,6 +267,7 @@ typedef struct flup_ilist_iterator {
 
 /**
  * @brief Initializes an @ref flup_ilist_iterator
+ * @public @memberof flup_ilist_iterator
  *
  * @param self The instance
  * @param owner The list to be iterated by @p self instance
