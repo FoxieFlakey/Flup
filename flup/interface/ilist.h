@@ -13,12 +13,12 @@
 #include "flup/util/iterator_resetable.h"
 
 /**
- * @brief Generic IList
+ * @brief (Interface) Generic IList
  *
  * Its a structure embedded in implementor's structure.
  */
 typedef struct flup_ilist {
-  /// Functions struct for different IList operations
+  /// @public Contains pointer to implemented methods
   const struct flup_ilist_ops* ops;
 } flup_ilist;
 
@@ -31,6 +31,7 @@ typedef struct flup_ilist {
 typedef struct flup_ilist_ops {
   /**
    * @brief Returns length of IList
+   * @public @memberof flup_ilist 
    * 
    * @param self Pointer to @ref flup_ilist
    *
@@ -40,6 +41,7 @@ typedef struct flup_ilist_ops {
   
   /**
    * @brief Return size of each element
+   * @public @memberof flup_ilist 
    * 
    * The size of elements allow caller at runtime allocate
    * necessary memory without knowing the type.
@@ -52,6 +54,7 @@ typedef struct flup_ilist_ops {
   
   /**
    * @brief Insert an element at @p index
+   * @public @memberof flup_ilist 
    * 
    * @param self Pointer to @ref flup_ilist
    * @param index Index to be inserted to
@@ -69,6 +72,8 @@ typedef struct flup_ilist_ops {
   
   /**
    * @brief Removes an element at @p index by @p count
+   * @public @memberof flup_ilist 
+   *
    * Non exhaustive list of errors (as it depends on the
    * implementation of what be thrown)
    * 
@@ -80,6 +85,7 @@ typedef struct flup_ilist_ops {
   
   /**
    * @brief Get an item
+   * @public @memberof flup_ilist 
    *
    * Gets an item at @p index and saves the pointer to it
    * to @p element.
@@ -103,6 +109,7 @@ typedef struct flup_ilist_ops {
   
   /**
    * @brief Deallocs @ref flup_ilist dealloc
+   * @public @memberof flup_ilist 
    * 
    * @param self The instance to dealloc
    */
@@ -110,8 +117,9 @@ typedef struct flup_ilist_ops {
   
   /**
    * @brief (With default) Append to list
+   * @public @memberof flup_ilist 
    *
-   * The default implementation is to @ref flup_ilist_ops.insert
+   * The default implementation is to @ref flup_ilist.insert
    * with index at the end of list
    *
    * @param self The instance of self to insert @p element into
@@ -126,8 +134,9 @@ typedef struct flup_ilist_ops {
   
   /**
    * @brief (With default) Prepends element to list
+   * @public @memberof flup_ilist 
    *
-   * The default implementation is to @ref flup_ilist_ops.insert
+   * The default implementation is to @ref flup_ilist.insert
    * with index at the front of list
    *
    * @param self The instance of self to insert @p element into
@@ -142,8 +151,9 @@ typedef struct flup_ilist_ops {
   
   /**
    * @brief (With default) Get a @ref flup_iterator
+   * @public @memberof flup_ilist 
    *
-   * The default implementation is using @ref flup_ilist_ops.get
+   * The default implementation is using @ref flup_ilist.get
    * to iterate by tracking the index.
    *
    * @param self The instance of @ref flup_ilist to be iterated
@@ -156,9 +166,10 @@ typedef struct flup_ilist_ops {
   
   /**
    * @brief (With default) Try get an element
-   * 
+   * @public @memberof flup_ilist 
+   *
    * Gets an element and return true if exist and false if
-   * not exist. The default implementation is using @ref flup_ilist_ops.get
+   * not exist. The default implementation is using @ref flup_ilist.get
    * and return true if thats returns true otherwise false (errors
    * or actually don't exist)
    *
@@ -173,9 +184,9 @@ typedef struct flup_ilist_ops {
 } flup_ilist_ops;
 
 /**
- * @brief Default implementation for @ref flup_ilist_ops.append
+ * @brief Default implementation for @ref flup_ilist.append
  *
- * @see @ref flup_ilist_ops.append
+ * @see @ref flup_ilist.append
  *
  * @param self List instance
  * @param element Element to be appended
@@ -188,27 +199,27 @@ FLUP_PUBLIC
 int flup_impl_ilist_append(flup_ilist* self, const void* element);
 
 /**
- * @copydoc flup_ilist_ops.prepend
+ * @copydoc flup_ilist.prepend
  */
 FLUP_PUBLIC
 int flup_impl_ilist_prepend(flup_ilist* self, const void* element);
 
 /**
- * @copydoc flup_ilist_ops.getIterator
+ * @copydoc flup_ilist.getIterator
  */
 FLUP_PUBLIC
 flup_iterator* flup_impl_ilist_get_iterator(flup_ilist* self);
 
 /**
- * @copydoc flup_ilist_ops.tryGet
+ * @copydoc flup_ilist.tryGet
  */
 FLUP_PUBLIC
 bool flup_impl_ilist_try_get(flup_ilist* self, size_t index, void** element);
 
 /**
- * @brief Contains default @ref flup_ilist_ops initializers
+ * @brief Contains default @ref flup_ilist initializers
  *
- * This should be initialize the @ref flup_ilist_ops first like
+ * This should be initialize the @ref flup_ilist first like
  *
  * ```c
  * struct app_ilist_ops = { FLUP_ILIST_OPS_DEFAULTS
