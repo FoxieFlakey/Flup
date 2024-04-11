@@ -182,7 +182,7 @@ const flup_log_record* logger_read_log() {
   
   // Convert the offsets into pointer
 # define initField(field) do { \
-    if (record.field ## Offset > 0) \
+    if (record.field ## Offset >= 0) \
       record.field = &threadBuffer[record.field ## Offset]; \
     else \
       record.field = NULL; \
