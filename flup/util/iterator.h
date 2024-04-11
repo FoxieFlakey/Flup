@@ -11,17 +11,12 @@
  * @brief Macros and type for stateful iterator
  */
 
-/**
- * @brief Typedef for @ref flup_iterator
- *
- * @see @ref flup_iterator
- */
 typedef struct flup_iterator flup_iterator;
 
 /**
- * @brief Contains default @ref flup_iterator_ops initializers
+ * @brief Contains default @ref flup_iterator initializers
  *
- * This should be initialize the @ref flup_iterator_ops first like
+ * This should be initialize the @ref flup_iterator first like
  *
  * ```c
  * struct flup_iterator_ops = { FLUP_ITERATOR_OPS_DEFAULT
@@ -44,6 +39,7 @@ typedef struct flup_iterator_ops {
 
   /**
    * @brief Advance iterator state
+   * @public @memberof flup_iterator
    *
    * Advance current iterator state
    * and optionally copy next value to @p nextItem
@@ -60,6 +56,7 @@ typedef struct flup_iterator_ops {
 
   /**
    * @brief Check if there next item
+   * @public @memberof flup_iterator
    *
    * @note This method may set @ref flup_iterator.errorCode if
    *   any error occured
@@ -71,6 +68,7 @@ typedef struct flup_iterator_ops {
 
   /**
    * @brief Do any cleanup necessary except free'ing self
+   * @public @memberof flup_iterator
    *
    * @param self The iterator state
    */
@@ -88,12 +86,12 @@ typedef struct flup_iterator_ops {
 /**
  * @brief Iterator state
  */
-struct flup_iterator {
+typedef struct flup_iterator {
   /// Pointer to operation supported by this iterator
   const flup_iterator_ops* ops;
   
   /**
-   * @brief Free's current iterator
+   * @public @brief Free's current iterator
    *
    * Moving the free function away from @ref flup_iterator.ops
    * allows the caller to possible static allocate or dynamicly
@@ -104,11 +102,11 @@ struct flup_iterator {
    */
   void (*free)(flup_iterator* self); 
   
-  /// Pointer to current item
+  /// @public Pointer to current item
   void* current;
 
   /**
-   * @brief Recent error code
+   * @public @brief Recent error code
    *
    * Used to store error codes from iterator methods if an
    * error occured. None of the methods allowed to set this
@@ -119,10 +117,11 @@ struct flup_iterator {
    *   this changed or not.
    */
   int errorCode;
-};
+} flup_iterator;
 
 /**
  * @brief Default implementation of @ref flup_iterator.free
+ * @protected @memberof flup_iterator
  *
  * This defaults to no-op.
  *
@@ -132,7 +131,8 @@ FLUP_PUBLIC
 void flup_iterator_impl_free_nop(flup_iterator* self);
 
 /**
- * @brief Default implementation of @ref flup_iterator_ops.cleanup
+ * @brief Default implementation of @ref flup_iterator.cleanup
+ * @protected @memberof flup_iterator
  *
  * This defaults to no-op.
  *

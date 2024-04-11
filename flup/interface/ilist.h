@@ -18,9 +18,7 @@
  * Its a structure embedded in implementor's structure.
  */
 typedef struct flup_ilist {
-  /**
-   * @public @brief Contains pointer to implemented methods
-   */
+  /// Contains pointer to implemented methods
   const struct flup_ilist_ops* ops;
 } flup_ilist;
 
@@ -186,17 +184,8 @@ typedef struct flup_ilist_ops {
 } flup_ilist_ops;
 
 /**
- * @brief Default implementation for @ref flup_ilist.append
+ * @copydoc flup_ilist.append
  * @protected @memberof flup_ilist
- *
- * @see @ref flup_ilist.append
- *
- * @param self List instance
- * @param element Element to be appended
- *
- * @throws ENOMEM Out of memory while appending
- *
- * @return 0 on success, -errno on error (see above)
  */
 FLUP_PUBLIC
 int flup_impl_ilist_append(flup_ilist* self, const void* element);
@@ -211,6 +200,7 @@ int flup_impl_ilist_prepend(flup_ilist* self, const void* element);
 /**
  * @copydoc flup_ilist.getIterator
  * @protected @memberof flup_ilist
+ * @see Default iterator is @ref flup_ilist_iterator
  */
 FLUP_PUBLIC
 flup_iterator* flup_impl_ilist_get_iterator(flup_ilist* self);
@@ -243,7 +233,7 @@ bool flup_impl_ilist_try_get(flup_ilist* self, size_t index, void** element);
 
 /**
  * @brief IList default iterator structure
- * @public @memberof flup_ilist
+ * @extends flup_resetable_iterator
  */
 typedef struct flup_ilist_iterator {
   /// The base structure of iterator
@@ -259,20 +249,20 @@ typedef struct flup_ilist_iterator {
    */
   size_t nextIndex;
   
-  /// Value will be returned by @ref flup_iterator_ops.hasNext implementation
+  /// Value will be returned by @ref flup_iterator.hasNext implementation
   bool hasNext;
   /// Pointer to next value
   void* nextValue;
 } flup_ilist_iterator;
 
 /**
- * @brief Initializes an @ref flup_ilist_iterator
+ * @brief Initializes an @ref flup_ilist_iterator and reset it
  * @public @memberof flup_ilist_iterator
  *
  * @param self The instance
  * @param owner The list to be iterated by @p self instance
  *
- * @return Returns result of @ref flup_resetable_iterator_ops.reset
+ * @return Returns result of @ref flup_resetable_iterator.reset
  */
 FLUP_PUBLIC
 int flup_ilist_iterator_init(flup_ilist_iterator* self, flup_ilist* owner);

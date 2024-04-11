@@ -35,6 +35,7 @@ typedef struct flup_counter {
 
 /**
  * @brief Get current number and increment
+ * @public @memberof flup_counter
  *
  * @param self The counter for the number
  * @return The current number
