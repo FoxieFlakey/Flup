@@ -33,6 +33,7 @@ typedef void (^flup_thread_block)();
 
 /**
  * @brief Create a new thread with a block
+ * @public @memberof flup_thread
  *
  * This function creates a new thread with a block and
  * the block will be copied by Flup.
@@ -50,6 +51,7 @@ typedef void (*flup_thread_func)(void* udata);
 
 /**
  * @brief Create a new thread with a function
+ * @public @memberof flup_thread
  *
  * This function creates a new thread with a block and
  * the block is copied with Block_copy.
@@ -64,6 +66,7 @@ flup_thread* flup_thread_new(flup_thread_func func, void* udata);
 
 /**
  * @brief Frees the thread
+ * @public @memberof flup_thread
  *
  * @warning Its undefined to free the thread while the thread running
  *   Flup won't make any attempt to kill nor stop the thread.
@@ -75,6 +78,7 @@ void flup_thread_free(flup_thread* self);
 
 /**
  * @brief Wait for a thread termination
+ * @public @memberof flup_thread
  *
  * @param self The thread to be waited on
  */

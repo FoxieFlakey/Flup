@@ -25,7 +25,8 @@ typedef struct flup_iqueue {
 typedef struct flup_iqueue_ops {
   /**
    * @brief Get the length of queue
-   * 
+   * @public @memberof flup_iqueue 
+   *
    * The length of items waiting in queue
    * @note Do not use this to conditionally dequeue/enqueue, use
    *   @ref dequeue or @ref enqueue with timeout at past instead.
@@ -38,6 +39,7 @@ typedef struct flup_iqueue_ops {
   
   /**
    * @brief Enqueue an item to queue
+   * @public @memberof flup_iqueue
    *
    * Enqueues an item with timeout or no timeout ( @p abstimeout is NULL).
    * If the queue uncontended, there are queue space and @p abstimeout NULL, 
@@ -56,6 +58,7 @@ typedef struct flup_iqueue_ops {
   
   /**
    * @brief Dequeues an item from queue
+   * @public @memberof flup_iqueue
    *
    * Enqueues an item with timeout or no timeout ( @p abstimeout is NULL)
    *
@@ -75,6 +78,7 @@ typedef struct flup_iqueue_ops {
   
   /**
    * @brief Deallocates the iqueue instance
+   * @public @memberof flup_iqueue
    *
    * @param self The queue itself
    */
