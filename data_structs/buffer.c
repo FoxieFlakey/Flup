@@ -4,12 +4,14 @@
 #include <errno.h>
 
 #include "flup/bug.h"
+#include "flup/attributes.h"
 #include "flup/concurrency/mutex.h"
 #include "flup/concurrency/cond.h"
 
 #include "flup/data_structs/buffer/circular_buffer.h"
 #include "flup/data_structs/buffer.h"
 
+FLUP_PUBLIC
 flup_buffer* flup_buffer_new(size_t capacityInBytes) {
   flup_buffer* self = malloc(sizeof(*self));
   if (!self)
@@ -31,6 +33,7 @@ failure:
   return NULL;
 }
 
+FLUP_PUBLIC
 void flup_buffer_free(flup_buffer* self) {
   if (!self)
     return;
@@ -42,6 +45,7 @@ void flup_buffer_free(flup_buffer* self) {
   free(self);
 }
 
+FLUP_PUBLIC
 int flup_buffer_write(flup_buffer* self, const void* data, size_t size) {
   if (size > self->buffer->bufferSize)
     return -EMSGSIZE;
@@ -59,6 +63,7 @@ int flup_buffer_write(flup_buffer* self, const void* data, size_t size) {
   return 0;
 }
 
+FLUP_PUBLIC
 int flup_buffer_read(flup_buffer* self, void* dataRead, size_t size) {
   if (size > self->buffer->bufferSize)
     return -EMSGSIZE;
@@ -76,6 +81,7 @@ int flup_buffer_read(flup_buffer* self, void* dataRead, size_t size) {
   return 0;
 }
 
+FLUP_PUBLIC
 void flup_buffer_flush(flup_buffer* self) {
   flup_mutex_lock(self->lock);
   while (self->buffer->usedSize > 0)
