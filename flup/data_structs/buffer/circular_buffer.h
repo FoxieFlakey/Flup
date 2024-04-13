@@ -3,6 +3,7 @@
 
 #include <stddef.h>
 #include <sys/types.h>
+#include <sys/uio.h>
 
 #include "flup/attributes.h"
 
@@ -104,5 +105,37 @@ int flup_circular_buffer_write(flup_circular_buffer* self, const void* data, siz
  */
 FLUP_PUBLIC
 int flup_circular_buffer_read(flup_circular_buffer* self, void* data, size_t size);
+
+/**
+ * @brief Read data from buffer (Vector IO)
+ * @public @memberof flup_circular_buffer
+ *
+ * @param self The instance of the buffer
+ * @param vectors Array of `struct iovec` describing where
+ *   to put the data
+ * @param size Size of data to be read
+ *
+ * @throws -ENODATA Not enough data to be read
+ *
+ * @return 0 on success or -errno on error (see above)
+ */
+FLUP_PUBLIC
+int flup_circular_buffer_readv(flup_circular_buffer* self, const struct iovec* vectors, unsigned int vecCount);
+
+/**
+ * @brief Write data to buffer (Vector IO)
+ * @public @memberof flup_circular_buffer
+ *
+ * @param self The instance of the buffer
+ * @param vectors Array of `struct iovec` describing where
+ *   to get the data
+ * @param size Size of data to be read
+ *
+ * @throws -ENOSPC Not enough space to write
+ *
+ * @return 0 on success or -errno on error (see above)
+ */
+FLUP_PUBLIC
+int flup_circular_buffer_writev(flup_circular_buffer* self, const struct iovec* vectors, unsigned int vecCount);
 
 #endif

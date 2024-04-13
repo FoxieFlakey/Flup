@@ -3,9 +3,11 @@
 #include <stdlib.h>
 #include <errno.h>
 #include <string.h>
+#include <sys/uio.h>
 
 #include "flup/data_structs/buffer/circular_buffer.h"
 #include "flup/attributes.h"
+#include "flup/bug.h"
 #include "flup/util/min_max.h"
 
 // Almost copy pasting from https://lo.calho.st/posts/black-magic-buffer/
@@ -74,6 +76,42 @@ int flup_circular_buffer_read(flup_circular_buffer* self, void* data, size_t siz
   
   self->readOffset = (self->readOffset + size) % self->bufferSize;
   self->usedSize -= size;
+  return 0;
+}
+
+FLUP_PUBLIC
+int flup_circular_buffer_readv(flup_circular_buffer* self, const struct iovec* vectors, unsigned int vecCount) {
+  size_t totalSize = 0;
+  for (unsigned int i = 0; i < vecCount; i++)
+    totalSize += vectors[i].iov_len;
+  
+  // Buffer has less data than needed
+  if (self->usedSize < totalSize)
+    return -ENODATA;
+  
+  for (unsigned int i = 0; i < vecCount; i++) {
+    const struct iovec* cur = &vectors[i];
+    int ret = flup_circular_buffer_read(self, cur->iov_base, cur->iov_len);
+    BUG_ON(ret < 0);
+  }
+  return 0;
+}
+
+FLUP_PUBLIC
+int flup_circular_buffer_writev(flup_circular_buffer* self, const struct iovec* vectors, unsigned int vecCount) {
+  size_t totalSize = 0;
+  for (unsigned int i = 0; i < vecCount; i++)
+    totalSize += vectors[i].iov_len;
+  
+  // Buffer don't have enough space
+  if (self->bufferSize - self->usedSize < totalSize)
+    return -ENOSPC;
+  
+  for (unsigned int i = 0; i < vecCount; i++) {
+    const struct iovec* cur = &vectors[i];
+    int ret = flup_circular_buffer_read(self, cur->iov_base, cur->iov_len);
+    BUG_ON(ret < 0);
+  }
   return 0;
 }
 
