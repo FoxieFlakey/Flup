@@ -3,6 +3,7 @@
 #include <stdatomic.h>
 #include <stdbool.h>
 #include <stddef.h>
+#include <sys/uio.h>
 #include <stdio.h>
 #include <string.h>
 #include <time.h>
@@ -164,8 +165,7 @@ const flup_log_record* logger_read_log() {
     flup_cond_wait(&dataWrittenBufferEvent, &bufferLock, NULL);
   
   // Read the log header
-  int ret = flup_circular_buffer_read(&buffer, &record, sizeof(record));
-  assert(ret == 0);
+  flup_circular_buffer_read(&buffer, &record, sizeof(record));
   
   size_t stringSize = record.recordSize - sizeof(record);
   
@@ -175,8 +175,7 @@ const flup_log_record* logger_read_log() {
     flup_cond_wait(&dataWrittenBufferEvent, &bufferLock, NULL);
   
   // Then read the strings
-  ret = flup_circular_buffer_read(&buffer, threadBuffer, record.recordSize - sizeof(record));
-  assert(ret == 0);
+  flup_circular_buffer_read(&buffer, threadBuffer, record.recordSize - sizeof(record));
   flup_mutex_unlock(&bufferLock);
   flup_cond_wake_one(&dataReadBufferEvent);
   
