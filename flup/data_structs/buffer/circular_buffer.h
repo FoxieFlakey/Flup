@@ -113,7 +113,7 @@ int flup_circular_buffer_read(flup_circular_buffer* self, void* data, size_t siz
  * @param self The instance of the buffer
  * @param vectors Array of `struct iovec` describing where
  *   to put the data
- * @param size Size of data to be read
+ * @param vecCount Amount of vector targets
  *
  * @throws -ENODATA Not enough data to be read
  *
@@ -129,7 +129,7 @@ int flup_circular_buffer_readv(flup_circular_buffer* self, const struct iovec* v
  * @param self The instance of the buffer
  * @param vectors Array of `struct iovec` describing where
  *   to get the data
- * @param size Size of data to be read
+ * @param vecCount Amount of vector targets
  *
  * @throws -ENOSPC Not enough space to write
  *
