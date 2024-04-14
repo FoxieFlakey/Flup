@@ -91,5 +91,37 @@ int flup_buffer_read(flup_buffer* self, void* readData, size_t size);
 FLUP_PUBLIC
 void flup_buffer_flush(flup_buffer* self);
 
+/**
+ * @brief Never fail version of @ref flup_buffer_write
+ * @public @memberof flup_buffer
+ *
+ * Behaves exactly like @ref flup_buffer_write but never
+ * fail, if it somehow fail, it will panic. Its for codes
+ * which don't expect error and fine with panic on edge
+ * case or buggy codes.
+ *
+ * @param self The instance of buffer
+ * @param data The pointer to the data to be written
+ * @param size The size of data to be written
+ */
+FLUP_PUBLIC
+void flup_buffer_write_no_fail(flup_buffer* self, const void* data, size_t size);
+
+/**
+ * @brief Never fail version of @ref flup_buffer_read
+ * @public @memberof flup_buffer
+ *
+ * Behaves exactly like @ref flup_buffer_read but never
+ * fail, if it somehow fail, it will panic. Its for codes
+ * which don't expect error and fine with panic on edge
+ * case or buggy codes.
+ *
+ * @param self The instance of buffer
+ * @param readData The pointer to the data to be read
+ * @param size The size of data to be read
+ */
+FLUP_PUBLIC
+void flup_buffer_read_no_fail(flup_buffer* self, void* readData, size_t size);
+
 #endif
 
