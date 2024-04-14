@@ -1,3 +1,4 @@
+#include "flup/core/panic.h"
 #define _GNU_SOURCE
 #include <time.h>
 #include <assert.h>
@@ -22,6 +23,10 @@
 static void mimalloc_play();
 FLUP_PUBLIC
 int fluffedup_main(FLUP_UNUSED int argc, FLUP_UNUSED const char** argv) {
+  // Main thread is not attached by default
+  if (flup_attach_thread("Main-Thread") == NULL)
+    flup_panic("Cannot attach thread!");
+  
   flup_pr_info("Hello World!");
   
   enum command {
@@ -109,6 +114,10 @@ int fluffedup_main(FLUP_UNUSED int argc, FLUP_UNUSED const char** argv) {
   flup_buffer_free(commandBuffer);
   flup_buffer_free(completionBuffer);
   // mimalloc_play();
+  
+  // This thread is attached so try detach
+  // and free the handle
+  flup_thread_free(flup_detach_thread());
   return 0;
 }
 
