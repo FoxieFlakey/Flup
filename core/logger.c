@@ -18,6 +18,7 @@
 #include "flup/concurrency/mutex.h"
 #include "flup/data_structs/buffer/circular_buffer.h"
 
+#include "flup/thread/thread.h"
 #include "logger.h"
 
 /*
@@ -121,6 +122,15 @@ funcNameNotGiven:
     goto overflow_occured;
   storeOffsetAndIncrement(uCategoryOffset);
 categoryNotGiven:
+  
+  // Append current thread name if given
+  if (!flup_current_thread || !flup_current_thread->name)
+    goto threadNameUnavailable;
+  currentWrittenBytes = snprintf(currentPointer, sizeLeft, "%s", flup_current_thread->name) + 1;
+  if ((size_t) currentWrittenBytes > sizeLeft)
+    goto overflow_occured;
+  storeOffsetAndIncrement(uThreadNameOffset);
+threadNameUnavailable:
   
   // Append the message itself
 #ifdef __clang__

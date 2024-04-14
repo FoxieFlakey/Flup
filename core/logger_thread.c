@@ -43,7 +43,6 @@ static const char* loglevelToString(flup_loglevel level) {
 }
 
 static void* readerThread(void*) {
-  fprintf(stderr, "Started\n");
   while (atomic_load(&wantShutdown) == false) {
     const flup_log_record* record = logger_read_log();
     
@@ -62,12 +61,11 @@ static void* readerThread(void*) {
     // Example: [Sat 12 Aug 2023, 10:31 AM +0700] [Renderer] [Render Thread/INFO] [renderer/renderer.c:20#init()] Initalizing OpenGL...
     fprintf(stderr, "[%s] [%s] [%s/%s] [%s:%d#%s()] %s\n", timestampBuffer, record->uCategory ? record->uCategory : "Uncategorized", record->uThreadName ? record->uThreadName : "<Unknown Thread>", loglevelToString(record->logLevel), record->uSourcePath, record->line, record->uShortFuncName, record->uMessage);
   }
-  fprintf(stderr, "Exiting\n");
   pthread_exit(NULL);
 }
 
 static void onExit() {
-  flup_printk(FLUP_FATAL, "Flushing logs... (not fatal but make sure its not filtered)");
+  flup_printk(FLUP_FATAL, "Flushing logs... (not fatal but make sure its not filtered, thread name is expected to be unknown due its already at the end of lifetime)");
   struct timespec timeout;
   clock_gettime(CLOCK_REALTIME, &timeout);
   timeout.tv_sec += 5;
@@ -75,7 +73,7 @@ static void onExit() {
     flup_printk(FLUP_FATAL, "Log did not flushed within timeout");
   
   atomic_store(&wantShutdown, true);
-  flup_printk(FLUP_FATAL, "Stopping thread... (not fatal but make sure its not filtered and wakes the thread)");
+  flup_printk(FLUP_FATAL, "Stopping thread... (not fatal but make sure its not filtered and wakes the thread, thread name is expected to be unknown due its already at the end of lifetime)");
   pthread_join(thread, NULL);
 }
 
