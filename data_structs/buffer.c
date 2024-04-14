@@ -8,6 +8,7 @@
 #include "flup/concurrency/mutex.h"
 #include "flup/concurrency/cond.h"
 
+#include "flup/core/panic.h"
 #include "flup/data_structs/buffer/circular_buffer.h"
 #include "flup/data_structs/buffer.h"
 
@@ -88,4 +89,19 @@ void flup_buffer_flush(flup_buffer* self) {
     flup_cond_wait(self->dataReadEvent, self->lock, NULL);
   flup_mutex_unlock(self->lock);
 }
+
+FLUP_PUBLIC
+void flup_buffer_write_no_fail(flup_buffer* self, const void* data, size_t size) {
+  int ret = flup_buffer_write(self, data, size);
+  if (ret != 0)
+    flup_panic("flup_buffer_write failed in no fail context, error %d", ret);
+}
+
+FLUP_PUBLIC
+void flup_buffer_read_no_fail(flup_buffer* self, void* readData, size_t size) {
+  int ret = flup_buffer_read(self, readData, size);
+  if (ret != 0)
+    flup_panic("flup_buffer_read failed in no fail context, error %d", ret);
+}
+
 
