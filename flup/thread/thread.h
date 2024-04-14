@@ -7,6 +7,7 @@
  */
 
 #include <pthread.h>
+#include <threads.h>
 
 #include "flup/attributes.h"
 #include "flup/compiler.h"
@@ -15,16 +16,15 @@
  * @brief A thread handle
  */
 typedef struct flup_thread {
+  /// Is the thread handle correspond attached thread
+  /// not from flup_thread_new
+  bool isThreadAttached;
   /// Is @ref flup_thread.thread initialized
   bool threadInitialized;
   /// Pthread handle to thread
   pthread_t thread;
   /// Name of the thread
   const char* name;
-  /// Is @ref flup_thread.attribute initialized
-  bool attributeInitialized;
-  /// Pthread attribute for the thread
-  pthread_attr_t attribute;
 } flup_thread;
 
 #if FLUP_APPLE_BLOCKS_AVAILABLE
@@ -84,5 +84,30 @@ void flup_thread_free(flup_thread* self);
  */
 FLUP_PUBLIC
 void flup_thread_wait(flup_thread* self);
+
+/// Thread local pointer to current thread's handle (or NULL if unknown)
+extern thread_local flup_thread* flup_current_thread;
+
+/**
+ * @brief Attach current thread so Flup know
+ * @public @memberof flup_thread
+ *
+ * The thread will auto detach on thread exit.
+ *
+ * @param name The name of current thread
+ *
+ * @return New thread handle representing current thread, or NULL on error
+ */
+FLUP_PUBLIC
+flup_thread* flup_attach_thread(const char* name);
+
+/**
+ * @brief Detachs current thread
+ * @public @memberof flup_thread
+ *
+ * @return Current thread for cleaning up, or NULL if current isnt attached
+ */
+FLUP_PUBLIC
+flup_thread* flup_detach_thread();
 
 #endif
