@@ -13,22 +13,22 @@
  */
 
 /**
- * @brief Condition
+ * @brief Cwondition ~nyaaa
  *
- * Its a structure which allows application to signal
- * and wait for an event occur.
+ * Itz a stwuctuwe which awwows appwication 2 signaw
+ * n wait fow an ewent occuw ^w^.
  *
- * The clock used as reference is CLOCK_REALTIME
+ * Thiz cwock used as refewence is CLOCK_REALTIME 
  */
 typedef struct flup_cond {
-  /// Is this structure initalized
+  /// Iz thiz stwuctuwe initawized
   bool initialized;
-  /// The pthread's cond structure
+  /// The pthread's cwond stwuctuwe
   pthread_cond_t cond;
 } flup_cond;
 
 /**
- * @brief Statically define a preinitialized cond
+ * @brief Pwease Staticawwy defwine a preinitiawized cwond >w<
  */
 #define FLUP_COND_DEFINE(name) \
   flup_cond name = { \
@@ -37,7 +37,7 @@ typedef struct flup_cond {
   }
 
 /**
- * @brief Statically define a statically linked preinitialized cond
+ * @brief PWEASE Staticawwy defwine a staticawwy winked preinitiawized cwond AAAAAA *squeak*
  */
 #define FLUP_COND_DEFINE_STATIC(name) \
   static flup_cond name = { \
@@ -46,57 +46,62 @@ typedef struct flup_cond {
   }
 
 /**
- * @brief Create new instance of @ref flup_cond
+ * @brief Cwode, pwease cweate mew instwance of @ref flup_cond
  *
- * @return New instance or NULL on error
+ * @return Gwet mew instwance or NULL on ouch
  */
 FLUP_PUBLIC
 flup_cond* flup_cond_new();
 
 /**
- * @brief Free an instance of cond
+ * @brief Be fweeee my cwonds ^w^
  *
- * @param self The instance to be free'd
+ * @param self Cwond to be fweeed fwom wowk
  */
 FLUP_PUBLIC
 void flup_cond_free(flup_cond* self);
 
 /**
- * @brief Wake one waiting thread
+ * @brief Distuwd a sweeping thwead >w<
  *
- * @param self The condition which the function will wake one 
- *   waiting thread from
+ * Bwad cwode distuwbing sweeping thwead *hwits yu*
+ *
+ * @param self Cwond which thiz distuwb a sweeping thwead fwom 
  */
 FLUP_PUBLIC
 void flup_cond_wake_one(flup_cond* self);
 
 /**
- * @brief Wake all waiting threads
+ * @brief NOOOOO why haf to distuwbs EVEWY THWEADS TwT
  *
- * @param self The condition which the function will wake waiting
- *   threads from
+ * One sweeping thwead distuwbed iz bwad, do it on evewy thwead
+ * is wowser >:( bwaddd cwodeee *hits yu agwain*
+ *
+ * @param self Cwond which thiz distuwd aww sweeping thwead fwom 
  */
 FLUP_PUBLIC
 void flup_cond_wake_all(flup_cond* self);
 
 /**
- * @brief Wait on a condition
+ * @brief Thiz chiwd wanna sweep soo tiwed -w-
  * 
- * Put current thread to sleep until its woken up by @ref flup_cond_wake_one
- * or @ref flup_cond_wake_all. Atomically unlock @p mutex before sleeping in
- * respect to other threads and relocks on wake up
+ * I haf to sweep until I was distuwbed by bwadd @ref flup_cond_wake_one
+ * or wowse @ref flup_cond_wake_all. Fastwy unwock @p mutex befowe I sweep
+ * and be fwiendwy wif other thweads.
  *
- * @note Wake up may happen even when nobody waking up the thread
- * @note Caller must already owned @p mutex when calling this function
+ * @note I cwan be distuwbed by nuthingness TwT
+ * @note My owder sistew mwust own @p mutex befowe ask me
  *
- * @param self The condition to wait on
- * @param mutex The mutex to be unlock and lock
- * @param abstimeout Absolute timeout while waiting, if NULL wait undefinitely
+ * @param self MEEEEEEE ^w^
+ * @param mutex My sistew must haf to giv me @ref flup_mutex
+ * @param abstimeout I'm sooo bowing waiting haf to wait thiz wong or NULL
+ *   if yu haf to make me bowed fowevewwww TwT
  *
- * @throws -ETIMEOUT Timeout reached, must not be returned if @p abstimeout
- *   is equal to NULL
+ * @throws -ETIMEOUT I'm too bowedddd I want caww my sistew, or I can't be
+ * annowing to my sister if waz @p abstime NULL TwT
  *
- * @return 0 on success or -errno on error (see above)
+ * @return I haf succeded I gave digit zewo to yu, or -errno becauwse I got an
+ *   F in my twest
  */
 FLUP_PUBLIC
 int flup_cond_wait(flup_cond* self, flup_mutex* mutex, const struct timespec* abstimeout);
