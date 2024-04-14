@@ -113,7 +113,7 @@ sourceNotGiven:
   storeOffsetAndIncrement(uShortFuncNameOffset);
 funcNameNotGiven:
   
-  // Append the func name if given
+  // Append the category if given
   if (!category)
     goto categoryNotGiven;
   currentWrittenBytes = snprintf(currentPointer, sizeLeft, "%s", category) + 1;
