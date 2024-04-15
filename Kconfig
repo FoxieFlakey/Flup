@@ -24,4 +24,11 @@ config MSAN
 config UBSAN
   bool "Enable UBSAN"
 
+menu "Installation"
+  config PREFIX
+    string 
+    prompt "The usual $PREFIX you see on programs"  
+    default "/usr/local"
+endmenu
+
 source "c23_support/Kconfig"
