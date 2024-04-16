@@ -25,15 +25,15 @@ UwUMaker-is-executable := m
 UwUMaker-name := Flup_v$(CONFIG_VERSION_MAJOR).$(CONFIG_VERSION_MINOR).$(CONFIG_VERSION_PATCH)
 
 proj_test:
-	@$(MAKE) -C $(UWUMAKER_HOME) PROJECT_DIR="$(PROJECT_DIR)" cmd_all
+	@$(MAKE) -C $(UWUMAKER_DIR) PROJECT_DIR="$(PROJECT_DIR)" cmd_all
 	@cd "$(PROJECT_DIR)" && LD_LIBRARY_PATH="$(BUILD_DIR)/objs:$$LD_LIBRARY_PATH" $(BUILD_DIR)/objs/test/catch_all_test/test_exe/objs/Test
 
 proj_test_gdb:
-	@$(MAKE) -C $(UWUMAKER_HOME) PROJECT_DIR="$(PROJECT_DIR)" cmd_all
+	@$(MAKE) -C $(UWUMAKER_DIR) PROJECT_DIR="$(PROJECT_DIR)" cmd_all
 	@cd "$(PROJECT_DIR)" && LD_LIBRARY_PATH="$(BUILD_DIR)/objs:$$LD_LIBRARY_PATH" gdb $(BUILD_DIR)/objs/test/catch_all_test/test_exe/objs/Test
 
 proj_test_strace:
-	@$(MAKE) -C $(UWUMAKER_HOME) PROJECT_DIR="$(PROJECT_DIR)" cmd_all
+	@$(MAKE) -C $(UWUMAKER_DIR) PROJECT_DIR="$(PROJECT_DIR)" cmd_all
 	@cd "$(PROJECT_DIR)" && LD_LIBRARY_PATH="$(BUILD_DIR)/objs:$$LD_LIBRARY_PATH" strace $(BUILD_DIR)/objs/test/catch_all_test/test_exe/objs/Test
 
 proj_doxygen:
