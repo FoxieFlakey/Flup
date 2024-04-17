@@ -22,7 +22,7 @@ UwUMaker-dirs-y += data_structs core interface util concurrency thread
 UwUMaker-dirs-$(CONFIG_ENABLE_TEST_EXE) += test
 
 UwUMaker-is-executable := m
-UwUMaker-name := Flup_v$(CONFIG_VERSION_MAJOR).$(CONFIG_VERSION_MINOR).$(CONFIG_VERSION_PATCH)
+UwUMaker-name := Flup
 
 proj_test:
 	@$(MAKE) -C $(UWUMAKER_DIR) PROJECT_DIR="$(PROJECT_DIR)" cmd_all
@@ -55,7 +55,9 @@ proj_install_bin: proj_install_check
 # 755 permission correspond to rwxr-xr-x
 	@install -Dm 755 \
 		"$(BUILD_DIR)/objs/lib$(UwUMaker-name).so" \
-		"$(PROJ_OUTDIR)/$(CONFIG_PREFIX)/lib/lib$(UwUMaker-name).so" 
+		"$(PROJ_OUTDIR)/$(CONFIG_PREFIX)/lib/lib$(UwUMaker-name).so.$(CONFIG_VERSION_MAJOR).$(CONFIG_VERSION_MINOR).$(CONFIG_VERSION_PATCH)" 
+	@ln -s lib$(UwUMaker-name).so $(PROJ_OUTDIR)/$(CONFIG_PREFIX)/lib/lib$(UwUMaker-name).so.$(CONFIG_VERSION_MAJOR).$(CONFIG_VERSION_MINOR)
+	@ln -s lib$(UwUMaker-name).so $(PROJ_OUTDIR)/$(CONFIG_PREFIX)/lib/lib$(UwUMaker-name).so.$(CONFIG_VERSION_MAJOR)
 
 # Install development headers
 # $PROJ_OUTDIR is a variable which pretend to be root for easing packaging
