@@ -6,7 +6,7 @@ config VERSION_MAJOR
 
 config VERSION_MINOR
   int 
-  default 2
+  default 3
 
 config VERSION_PATCH
   int 
