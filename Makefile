@@ -57,5 +57,16 @@ proj_install_bin: proj_install_check
 		"$(BUILD_DIR)/objs/lib$(UwUMaker-name).so" \
 		"$(PROJ_OUTDIR)/$(CONFIG_PREFIX)/lib/lib$(UwUMaker-name).so" 
 
+# Install development headers
+# $PROJ_OUTDIR is a variable which pretend to be root for easing packaging
+proj_install_dev: proj_install_check
+	@install -Dm 755 \
+		"$(PROJECT_DIR)/flup/bug.h" \
+		"$(PROJ_OUTDIR)/$(CONFIG_PREFIX)/include/flup/bug.h"
+# 644 permission correspond to rw-r--r--
+	@cd $(PROJECT_DIR)/flup && find . -type f -exec install -Dm 644 \
+		"$(PROJECT_DIR)/flup/{}" \
+		"$(PROJ_OUTDIR)/$(CONFIG_PREFIX)/include/flup/{}" ';'
+
 proj_install: proj_install_bin
 	@:
