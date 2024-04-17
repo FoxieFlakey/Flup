@@ -55,7 +55,7 @@ proj_install_bin: proj_install_check
 # 755 permission correspond to rwxr-xr-x
 	@install -Dm 755 \
 		"$(BUILD_DIR)/objs/lib$(UwUMaker-name).so" \
-		"$(PROJ_OUTDIR)/$(CONFIG_PREFIX)/lib/lib$(UwUMaker-name).so" \
+		"$(PROJ_OUTDIR)/$(CONFIG_PREFIX)/lib/lib$(UwUMaker-name).so" 
 
 proj_install: proj_install_bin
 	@:
