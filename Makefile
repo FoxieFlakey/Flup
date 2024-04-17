@@ -70,5 +70,5 @@ proj_install_dev: proj_install_check
 		"$(PROJECT_DIR)/flup/{}" \
 		"$(PROJ_OUTDIR)/$(CONFIG_PREFIX)/include/flup/{}" ';'
 
-proj_install: proj_install_bin
+proj_install: proj_install_bin proj_install_dev
 	@:
