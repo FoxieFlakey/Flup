@@ -1,7 +1,9 @@
 #include <limits.h>
 #include <sched.h>
 #include <stdarg.h>
+#include <errno.h>
 #include <stdatomic.h>
+#include <inttypes.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
@@ -10,6 +12,7 @@
 #include "flup/core/panic.h"
 #include "flup/attributes.h"
 #include "flup/core/logger.h"
+#include "flup/stacktrace/stacktrace.h"
 
 /*
 1 << 10, 1 KiB log buffer
@@ -27,18 +30,54 @@ void flup_panic(const char* format, ...) {
   va_end(list);
 }
 
+static const char* snip1 = "--------[ stacktrace UwU ]--------";
+static const char* snip2 = "----------------------------------";
+
+static void dumpStacktrace(void (^printMsg)(const char* fmt, ...)) {
+  int ret = flup_stacktrace_walk_current_block(^bool (const flup_stacktrace_element* element) {
+    char ipHexedBuffer[64];
+    const char* symName = NULL; 
+    if (element->symbol)
+      symName = element->symbol->symbolName;
+    
+    if (!symName) {
+      snprintf(ipHexedBuffer, sizeof(ipHexedBuffer), "0x%" PRIxPTR "+0x%04" PRIxPTR, element->ip, element->ipOffset);
+      symName = ipHexedBuffer;
+    }
+    
+    if (element->source)
+      printMsg("  at %s(%s:%d:%d)", symName, element->source->file, element->source->line, element->source->column);
+    else if (element->symbol)
+      printMsg("  at %s(Source.c:-1:-1)", symName);
+    if (element->count > 1)
+      printMsg("  ... previous frame repeats %d times ...", element->count - 1);
+    return true;
+  });
+  if (ret == -ENOSYS)
+    printMsg("Stacktrace unavailable: %d", ret);
+}
+
 [[noreturn]]
 static void hardPanic(const char* format, va_list list) {
+  fprintf(stderr, "[HARD PANIC] %s", snip1);
   fprintf(stderr, "[HARD PANIC] Hard panic occured OwO: ");
 #ifdef __clang__
 # pragma clang diagnostic push
 # pragma clang diagnostic ignored "-Wformat-nonliteral"
 #endif
   vfprintf(stderr, format, list);
+  fprintf(stderr, "\n");
+  dumpStacktrace(^void (const char* fmt, ...) {
+    va_list args;
+    va_start(args, fmt);
+    vfprintf(stderr, fmt, args);
+    fputs("\n", stderr);
+    va_end(args);
+  });
 #ifdef __clang__
 # pragma clang diagnostic pop
 #endif
-  fprintf(stderr, "\n");
+  fprintf(stderr, "[HARD PANIC] %s", snip2);
   fprintf(stderr, "[HARD PANIC] Logs not flushed!\n");
   abort();
 }
@@ -74,7 +113,16 @@ void flup_vpanic(const char* format, va_list list) {
 #ifdef __clang__
 # pragma clang diagnostic pop
 #endif
+  
+  flup_pr_fatal("%s", snip1);
   flup_pr_fatal("Panic occured >w<: %s", panicBuffer);
+  dumpStacktrace(^(const char *fmt, ...) {
+    va_list args;
+    va_start(args, fmt);
+    flup_vprintk(FLUP_FATAL, fmt, args);
+    va_end(args);
+  });
+  flup_pr_fatal("%s", snip2);
   flup_pr_info("Flushing logs");
   flup_flush_logs(NULL);
   abort();
