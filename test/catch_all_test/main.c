@@ -115,7 +115,7 @@ int fluffedup_main(FLUP_UNUSED int argc, FLUP_UNUSED const char** argv) {
   flup_buffer_free(completionBuffer);
   // mimalloc_play();
   
-  flup_stacktrace_walk_current(^bool(flup_stacktrace_element* element, void*) {
+  flup_stacktrace_walk_current_block(^bool (const flup_stacktrace_element* element) {
     const char* sourceFile = element->source ? element->source->file : NULL;
     int line = element->source ? element->source->line : -1;
     int column = element->source ? element->source->column : -1;
@@ -134,11 +134,12 @@ int fluffedup_main(FLUP_UNUSED int argc, FLUP_UNUSED const char** argv) {
         element->ip);
     }
     return true;
-  }, NULL);
+  });
   
   // This thread is attached so try detach
   // and free the handle
   flup_thread_free(flup_detach_thread());
+  flup_panic("Panic test");
   return 0;
 }
 

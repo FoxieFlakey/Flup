@@ -7,10 +7,12 @@
 #include <unistd.h>
 
 #include "flup/stacktrace/stacktrace.h"
+#include "flup/attributes.h"
 #include "common.h"
 
 static_assert(UNW_WORD_MAX <= UINTPTR_MAX, "unw_word_t must be smaller than uintptr_t (or can be represented by uintptr_t)");
 
+FLUP_PUBLIC
 int flup_stacktrace_walk_current(flup_stacktrace_walker_func walker, void* udata) {
   unw_context_t context;
   unw_cursor_t cursor;
@@ -72,3 +74,14 @@ int flup_stacktrace_walk_current(flup_stacktrace_walker_func walker, void* udata
   
   return 0;
 }
+
+static bool walkerTrampoline(const flup_stacktrace_element* element, void* walker) {
+  return ((flup_stacktrace_walker_block) walker)(element);
+}
+
+FLUP_PUBLIC
+int flup_stacktrace_walk_current_block(flup_stacktrace_walker_block walker) {
+  return flup_stacktrace_walk_current(walkerTrampoline, walker);
+}
+
+
