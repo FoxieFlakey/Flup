@@ -6,6 +6,7 @@
 #include <inttypes.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <threads.h>
 #include <time.h>
 #include <unistd.h>
 
@@ -57,8 +58,27 @@ static void dumpStacktrace(void (^printMsg)(const char* fmt, ...)) {
     printMsg("Stacktrace unavailable: %d", ret);
 }
 
+static thread_local bool currentThreadInHardPanic = false;
+static atomic_bool programInHardPanic = false;
+
 [[noreturn]]
 static void hardPanic(const char* format, va_list list) {
+  currentThreadInHardPanic = true;
+  
+  if (atomic_exchange(&programInHardPanic, true) == true) {
+    // Nothing we can do if double hard panic occured on same thread
+    if (currentThreadInHardPanic == true) {
+      // Exit in most abrupt way ever
+      _exit(EXIT_FAILURE);
+    }
+    
+    // Idk, wait forever?
+    while (1) {
+      sched_yield();
+      sleep(UINT_MAX);
+    }
+  }
+  
   fprintf(stderr, "[HARD PANIC] %s", snip1);
   fprintf(stderr, "[HARD PANIC] Hard panic occured OwO: ");
 #ifdef __clang__
