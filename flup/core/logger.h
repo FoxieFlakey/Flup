@@ -189,7 +189,7 @@ void flup__printk(const flup_printk_call_site_info* callSite, const char* catego
     .line = __LINE__, \
     .funcPtr = NULL \
   }; \
-  flup__printk(&callSite, FLUP_LOG_CATEGORY, (loglevel), flup_fmt(fmt), args); \
+  flup__vprintk(&callSite, FLUP_LOG_CATEGORY, (loglevel), flup_fmt(fmt), args); \
 } while(0)
 
 /**
