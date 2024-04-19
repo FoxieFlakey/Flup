@@ -127,6 +127,9 @@ extern thread_local bool flup_is_current_thread_aborting;
 FLUP_PUBLIC
 void flup__vprintk(const flup_printk_call_site_info* callSite, const char* category, flup_loglevel loglevel, const char* fmt, va_list args);
 
+#if defined(__has_attribute) && __has_attribute(format)
+__attribute__((format(printf, 4, 5)))
+#endif
 FLUP_PUBLIC
 void flup__printk(const flup_printk_call_site_info* callSite, const char* category, flup_loglevel loglevel, const char* fmt, ...);
 /// @endcond
