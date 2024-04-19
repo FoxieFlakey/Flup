@@ -12,6 +12,9 @@ config VERSION_PATCH
   int 
   default 0
 
+config DISABLE_GNU_API
+  bool "Disables use of GNU API and fallback to portable only"
+
 config ENABLE_TEST_EXE
   bool "Enable main"
 
