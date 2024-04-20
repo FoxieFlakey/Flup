@@ -182,7 +182,7 @@ void flup__printk(const flup_printk_call_site_info* callSite, const char* catego
  * @param fmt The printf format for log
  * @param args The rest of arguments for printf format
  */
-#define flup_vprintk(loglevel, fmt, args) do {\
+#define vprintk(loglevel, fmt, args) do {\
   static const flup_printk_call_site_info callSite = { \
     .shortFuncName = __func__, \
     .sourceFile = __FILE__, \

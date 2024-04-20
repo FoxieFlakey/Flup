@@ -140,7 +140,7 @@ void flup_vpanic(const char* format, va_list list) {
   dumpStacktrace(^(const char *fmt, ...) {
     va_list args;
     va_start(args, fmt);
-    flup_vprintk(FLUP_FATAL, fmt, args);
+    vprintk(FLUP_FATAL, fmt, args);
     va_end(args);
   });
   pr_fatal("%s", snip2);
