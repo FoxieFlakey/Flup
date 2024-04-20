@@ -23,7 +23,7 @@
 #if defined(__GNUC__) && defined(__has_builtin) && __has_builtin(__builtin_types_compatible_p)
 # undef flup_must_be_array
 
-# include "flup/compile_time/must_be_true.h"
+# include "flup/macros/must_be_true.h"
 # define flup_must_be_array(err, array) flup__same_type(err, (array), &(array)[0])
 # define flup__same_type(err, a, b) flup_must_be_true(err, __builtin_types_compatible_p(typeof(a), typeof(b)) == 0)
 #endif
