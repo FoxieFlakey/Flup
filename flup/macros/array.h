@@ -1,7 +1,7 @@
 #ifndef UWU_D5452213_C2E3_44D8_B8A2_C419AE576836_UWU
 #define UWU_D5452213_C2E3_44D8_B8A2_C419AE576836_UWU
 
-#include "flup/compile_time/must_be_array.h"
+#include "flup/macros/must_be_array.h"
 
 /**
  * @file
