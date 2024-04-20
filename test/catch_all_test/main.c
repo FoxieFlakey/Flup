@@ -1,4 +1,3 @@
-#include "flup/core/panic.h"
 #define _GNU_SOURCE
 #include <time.h>
 #include <assert.h>
@@ -6,7 +5,6 @@
 #include <mimalloc.h>
 #include <stdbool.h>
 #include <locale.h>
-#include <inttypes.h>
 #include <ctype.h>
 #include <stddef.h>
 #include <stdio.h>
@@ -14,9 +12,9 @@
 
 #include "flup/data_structs/buffer.h"
 #include "flup/thread/thread.h"
-#include "flup/stacktrace/stacktrace.h"
 #include "flup/attributes.h"
 #include "flup/core/logger.h"
+#include "flup/core/panic.h"
 
 #include "main.h"
 
@@ -114,27 +112,6 @@ int fluffedup_main(FLUP_UNUSED int argc, FLUP_UNUSED const char** argv) {
   flup_buffer_free(commandBuffer);
   flup_buffer_free(completionBuffer);
   // mimalloc_play();
-  
-  flup_stacktrace_walk_current_block(^bool (const flup_stacktrace_element* element) {
-    const char* sourceFile = element->source ? element->source->file : NULL;
-    int line = element->source ? element->source->line : -1;
-    int column = element->source ? element->source->column : -1;
-    
-    if (element->symbol) {
-      flup_printk(FLUP_INFO, "at %s:%d:%d in symbol %s+0x%04" PRIxPTR " (from %s, IP = 0x%016" PRIxPTR ")",
-        sourceFile, line, column,
-        element->symbol->symbolName, element->ipOffset,
-        element->object ? element->object->objectPath : "<unknown>",
-        element->ip);
-    } else {
-      flup_printk(FLUP_INFO, "at %s:%d:%d in symbol 0x%016" PRIxPTR "+0x%04" PRIxPTR " (from %s, IP = 0x%016" PRIxPTR ")",
-        sourceFile, line, column,
-        element->ip - element->ipOffset, element->ipOffset,
-        element->object ? element->object->objectPath : "<unknown>",
-        element->ip);
-    }
-    return true;
-  });
   
   // This thread is attached so try detach
   // and free the handle
