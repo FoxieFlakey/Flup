@@ -25,7 +25,7 @@ int fluffedup_main(FLUP_UNUSED int argc, FLUP_UNUSED const char** argv) {
   if (flup_attach_thread("Main-Thread") == NULL)
     flup_panic("Cannot attach thread!");
   
-  flup_pr_info("Hello World!");
+  pr_info("Hello World!");
   
   enum command {
     COMMAND_SAY,

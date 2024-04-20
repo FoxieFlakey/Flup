@@ -135,16 +135,16 @@ void flup_vpanic(const char* format, va_list list) {
 # pragma clang diagnostic pop
 #endif
   
-  flup_pr_fatal("%s", snip1);
-  flup_pr_fatal("Panic occured >w<: %s", panicBuffer);
+  pr_fatal("%s", snip1);
+  pr_fatal("Panic occured >w<: %s", panicBuffer);
   dumpStacktrace(^(const char *fmt, ...) {
     va_list args;
     va_start(args, fmt);
     flup_vprintk(FLUP_FATAL, fmt, args);
     va_end(args);
   });
-  flup_pr_fatal("%s", snip2);
-  flup_pr_info("Flushing logs");
+  pr_fatal("%s", snip2);
+  pr_info("Flushing logs");
   flup_flush_logs(NULL);
   abort();
 }

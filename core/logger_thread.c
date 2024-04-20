@@ -65,15 +65,15 @@ static void* readerThread(void*) {
 }
 
 static void onExit() {
-  flup_printk(FLUP_FATAL, "Flushing logs... (not fatal but make sure its not filtered, thread name is expected to be unknown due its already at the end of lifetime)");
+  pr_fatal("Flushing logs... (not fatal but make sure its not filtered, thread name is expected to be unknown due its already at the end of lifetime)");
   struct timespec timeout;
   clock_gettime(CLOCK_REALTIME, &timeout);
   timeout.tv_sec += 5;
   if (flup_flush_logs(&timeout) == -ETIMEDOUT)
-    flup_printk(FLUP_FATAL, "Log did not flushed within timeout");
+    pr_fatal("Log did not flushed within timeout");
   
   atomic_store(&wantShutdown, true);
-  flup_printk(FLUP_FATAL, "Stopping thread... (not fatal but make sure its not filtered and wakes the thread, thread name is expected to be unknown due its already at the end of lifetime)");
+  pr_fatal("Stopping thread... (not fatal but make sure its not filtered and wakes the thread, thread name is expected to be unknown due its already at the end of lifetime)");
   pthread_join(thread, NULL);
 }
 

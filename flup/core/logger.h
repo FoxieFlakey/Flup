@@ -162,15 +162,15 @@ void flup__printk(const flup_printk_call_site_info* callSite, const char* catego
 /**
  * @brief Short wrapper around @ref flup_printk with coresponding level
  */
-#define flup_pr_fatal(fmt, ...) flup_printk(FLUP_FATAL, fmt __VA_OPT__(,) __VA_ARGS__)
-#define flup_pr_alert(fmt, ...) flup_printk(FLUP_ALERT, fmt __VA_OPT__(,) __VA_ARGS__)
-#define flup_pr_critical(fmt, ...) flup_printk(FLUP_CRITICAL, fmt __VA_OPT__(,) __VA_ARGS__)
-#define flup_pr_error(fmt, ...) flup_printk(FLUP_ERROR, fmt __VA_OPT__(,) __VA_ARGS__)
-#define flup_pr_warn(fmt, ...) flup_printk(FLUP_WARN, fmt __VA_OPT__(,) __VA_ARGS__)
-#define flup_pr_notice(fmt, ...) flup_printk(FLUP_NOTICE, fmt __VA_OPT__(,) __VA_ARGS__)
-#define flup_pr_info(fmt, ...) flup_printk(FLUP_INFO, fmt __VA_OPT__(,) __VA_ARGS__)
-#define flup_pr_verbose(fmt, ...) flup_printk(FLUP_VERBOSE, fmt __VA_OPT__(,) __VA_ARGS__)
-#define flup_pr_debug(fmt, ...) flup_printk(FLUP_DEBUG, fmt __VA_OPT__(,) __VA_ARGS__)
+#define pr_fatal(fmt, ...) flup_printk(FLUP_FATAL, fmt __VA_OPT__(,) __VA_ARGS__)
+#define pr_alert(fmt, ...) flup_printk(FLUP_ALERT, fmt __VA_OPT__(,) __VA_ARGS__)
+#define pr_critical(fmt, ...) flup_printk(FLUP_CRITICAL, fmt __VA_OPT__(,) __VA_ARGS__)
+#define pr_error(fmt, ...) flup_printk(FLUP_ERROR, fmt __VA_OPT__(,) __VA_ARGS__)
+#define pr_warn(fmt, ...) flup_printk(FLUP_WARN, fmt __VA_OPT__(,) __VA_ARGS__)
+#define pr_notice(fmt, ...) flup_printk(FLUP_NOTICE, fmt __VA_OPT__(,) __VA_ARGS__)
+#define pr_info(fmt, ...) flup_printk(FLUP_INFO, fmt __VA_OPT__(,) __VA_ARGS__)
+#define pr_verbose(fmt, ...) flup_printk(FLUP_VERBOSE, fmt __VA_OPT__(,) __VA_ARGS__)
+#define pr_debug(fmt, ...) flup_printk(FLUP_DEBUG, fmt __VA_OPT__(,) __VA_ARGS__)
 /// @}
 
 /**
