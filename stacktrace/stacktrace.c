@@ -72,7 +72,8 @@ int flup_stacktrace_walk_current(flup_stacktrace_walker_func walker, void* udata
       element.source = &src;
     
     element.count = 1;
-    walker(&element, udata);
+    if (!walker(&element, udata))
+      break;
   }
   
   return 0;
