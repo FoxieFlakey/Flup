@@ -27,7 +27,8 @@ int stacktrace_get_source(uintptr_t, flup_stacktrace_source* res) {
   *res = (flup_stacktrace_source) {
     .column = -1,
     .line = -1,
-    .file = NULL
+    .file = NULL,
+    .funcName = NULL
   };
   return 0;
 }

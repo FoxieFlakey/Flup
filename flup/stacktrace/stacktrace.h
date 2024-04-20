@@ -7,6 +7,7 @@
 #include "flup/compiler.h"
 
 typedef struct flup_stacktrace_source {
+  const char* funcName;
   const char* file;
   int line;
   int column;

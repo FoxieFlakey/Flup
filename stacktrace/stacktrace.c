@@ -71,6 +71,7 @@ int flup_stacktrace_walk_current(flup_stacktrace_walker_func walker, void* udata
     if (stacktrace_get_source((uintptr_t) ip, &src) == 0)
       element.source = &src;
     
+    element.count = 1;
     walker(&element, udata);
   }
   

@@ -47,9 +47,10 @@ static void dumpStacktrace(void (^printMsg)(const char* fmt, ...)) {
     }
     
     if (element->source)
-      printMsg("  at %s(%s:%d:%d)", symName, element->source->file, element->source->line, element->source->column);
+      printMsg("  at %s(%s:%d:%d)", element->source->funcName ? element->source->funcName : symName,element->source->file, element->source->line, element->source->column);
     else if (element->symbol)
       printMsg("  at %s(Source.c:-1:-1)", symName);
+    
     if (element->count > 1)
       printMsg("  ... previous frame repeats %d times ...", element->count - 1);
     return true;
