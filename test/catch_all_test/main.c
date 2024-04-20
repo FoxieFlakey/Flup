@@ -23,7 +23,7 @@ FLUP_PUBLIC
 int fluffedup_main(FLUP_UNUSED int argc, FLUP_UNUSED const char** argv) {
   // Main thread is not attached by default
   if (flup_attach_thread("Main-Thread") == NULL)
-    flup_panic("Cannot attach thread!");
+    panic("Cannot attach thread!");
   
   pr_info("Hello World!");
   
@@ -116,7 +116,7 @@ int fluffedup_main(FLUP_UNUSED int argc, FLUP_UNUSED const char** argv) {
   // This thread is attached so try detach
   // and free the handle
   flup_thread_free(flup_detach_thread());
-  flup_panic("Panic test");
+  panic("Panic test");
   return 0;
 }
 

@@ -25,12 +25,12 @@
 FLUP_ATTR_PRINTF(1, 2)
 [[noreturn]]
 FLUP_PUBLIC
-void flup_panic(const char* format, ...);
+void panic(const char* format, ...);
 
 /**
  * @brief Trigger a panic and never return
  *
- * Same as @ref flup_panic but uses va_list
+ * Same as @ref panic but uses va_list
  *
  * @param format Printf like format for panic message
  * @param list va_list of arguments

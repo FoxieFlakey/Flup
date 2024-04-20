@@ -60,10 +60,10 @@ int flup_cond_wait(flup_cond* self, flup_mutex* mutex, const struct timespec* ab
   if (abstimeout) {
     ret = pthread_cond_timedwait(&self->cond, &mutex->lock, abstimeout);
     if (ret != 0 && ret != ETIMEDOUT)
-      flup_panic("pthread_cond_timedwait failed with %d when it can only failed with -ETIMEDOUT", ret);
+      panic("pthread_cond_timedwait failed with %d when it can only failed with -ETIMEDOUT", ret);
   } else {
     if ((ret = pthread_cond_wait(&self->cond, &mutex->lock)) != 0)
-      flup_panic("pthread_cond_wait failed with %d when it can't failed!", ret);
+      panic("pthread_cond_wait failed with %d when it can't failed!", ret);
   }
   
   return -ret;

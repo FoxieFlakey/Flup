@@ -11,6 +11,6 @@ void flup__trigger_bug(const char* file, int line, const char* func) {
     line = -1;
   if (!func)
     func = "<unknown>";
-  flup_panic("BUG: failure at %s:%d/%s()!", file, line, func);
+  panic("BUG: failure at %s:%d/%s()!", file, line, func);
 }
 

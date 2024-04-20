@@ -24,7 +24,7 @@
 
 [[noreturn]]
 FLUP_PUBLIC
-void flup_panic(const char* format, ...) {
+void panic(const char* format, ...) {
   va_list list;
   va_start(list, format);
   flup_vpanic(format, list);
