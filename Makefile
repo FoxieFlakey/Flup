@@ -14,9 +14,9 @@ UwUMaker-c-flags-y += -std=c2x -g \
 		-Wno-initializer-overrides \
 		-Wundef
 
-UwUMaker-linker-flags-y += -lm -lBlocksRuntime
+UwUMaker-linker-flags-y += -lm -lBlocksRuntime -lunwind
 
-UwUMaker-pkg-config-libs-y += mimalloc libunwind
+UwUMaker-pkg-config-libs-y += mimalloc
 
 UwUMaker-dirs-y += data_structs core interface util concurrency thread stacktrace
 UwUMaker-dirs-$(CONFIG_ENABLE_TEST_EXE) += test

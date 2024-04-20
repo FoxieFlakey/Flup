@@ -1,5 +1,3 @@
-#define UNW_LOCAL_ONLY 
-
 #include <stddef.h>
 #include <libunwind.h>
 #include <stdint.h>
@@ -10,7 +8,11 @@
 #include "flup/attributes.h"
 #include "common.h"
 
+#ifdef UNW_WORD_MAX
 static_assert(UNW_WORD_MAX <= UINTPTR_MAX, "unw_word_t must be smaller than uintptr_t (or can be represented by uintptr_t)");
+#else  
+static_assert(sizeof(unw_word_t) <= sizeof(uintptr_t), "unw_word_t must be smaller than uintptr_t (or can be represented by uintptr_t)");
+#endif
 
 FLUP_PUBLIC
 int flup_stacktrace_walk_current(flup_stacktrace_walker_func walker, void* udata) {
