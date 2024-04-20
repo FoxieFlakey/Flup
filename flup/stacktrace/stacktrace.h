@@ -59,7 +59,7 @@ typedef struct flup_stacktrace_element {
   /// Un-offseted instruction pointer
   uintptr_t ip;
   /// Offset to ip relative to the starting ip
-  /// of the function
+  /// of the function or UINTPTR_MAX if unavailable
   uintptr_t ipOffset;
   
   /// Number of same frame occuring

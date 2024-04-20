@@ -30,20 +30,23 @@ int flup_stacktrace_walk_current(flup_stacktrace_walker_func walker, void* udata
     unw_word_t ip;
     unw_proc_info_t info;
     
+    bool offsetIsValid;
     unw_word_t offsetFromSymbol;
     
     unw_get_reg(&cursor, UNW_REG_IP, &ip);
-    if (unw_get_proc_info(&cursor, &info) == 0)
+    if (unw_get_proc_info(&cursor, &info) == 0) {
       offsetFromSymbol = ip - info.start_ip;
-    else
-      offsetFromSymbol = 0;
+      offsetIsValid = true;
+    } else {
+      offsetIsValid = false;
+    }
     
     flup_stacktrace_symbol sym;
     flup_stacktrace_object object;
     flup_stacktrace_source src;
     
     flup_stacktrace_element element = {
-      .ipOffset = (uintptr_t) offsetFromSymbol,
+      .ipOffset = offsetIsValid ? (uintptr_t) offsetFromSymbol : UINTPTR_MAX,
       .ip = (uintptr_t) ip,
       .symbol = NULL,
       .source = NULL,
