@@ -51,7 +51,7 @@ FLUP_COND_DEFINE_STATIC(dataWrittenBufferEvent);
 FLUP_COND_DEFINE_STATIC(dataReadBufferEvent);
 
 FLUP_PUBLIC
-void flup__printk(const flup_printk_call_site_info* callSite, const char* category, flup_loglevel loglevel, const char* fmt, ...) {
+void flup__printk(const printk_call_site_info* callSite, const char* category, flup_loglevel loglevel, const char* fmt, ...) {
   va_list args;
   va_start(args, fmt);
   flup__vprintk(callSite, category, loglevel, fmt, args);
@@ -59,7 +59,7 @@ void flup__printk(const flup_printk_call_site_info* callSite, const char* catego
 }
 
 FLUP_PUBLIC
-void flup__vprintk(const flup_printk_call_site_info* callSite, const char* category, flup_loglevel loglevel, const char* fmt, va_list args) {
+void flup__vprintk(const printk_call_site_info* callSite, const char* category, flup_loglevel loglevel, const char* fmt, va_list args) {
   logger_thread_start();
   
   static thread_local char threadBuffer[THREAD_BUFFER_SIZE];
