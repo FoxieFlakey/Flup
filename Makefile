@@ -24,17 +24,20 @@ UwUMaker-dirs-$(CONFIG_ENABLE_TEST_EXE) += test
 UwUMaker-is-executable := m
 UwUMaker-name := Flup
 
-proj_test:
+# Set PROJ_TEST_NAME to select which test to run
+proj_run:
 	@$(MAKE) -C $(UWUMAKER_DIR) PROJECT_DIR="$(PROJECT_DIR)" cmd_all
-	@cd "$(PROJECT_DIR)" && LD_LIBRARY_PATH="$(BUILD_DIR)/objs:$$LD_LIBRARY_PATH" $(BUILD_DIR)/objs/test/catch_all_test/exe/objs/Test
+	@cd "$(PROJECT_DIR)" && LD_LIBRARY_PATH="$(BUILD_DIR)/objs:$$LD_LIBRARY_PATH" $(BUILD_DIR)/objs/test/$(PROJ_TEST_NAME)/exe/objs/Test
 
-proj_test_gdb:
+# Set PROJ_TEST_NAME to select which test to run
+proj_run_gdb:
 	@$(MAKE) -C $(UWUMAKER_DIR) PROJECT_DIR="$(PROJECT_DIR)" cmd_all
-	@cd "$(PROJECT_DIR)" && LD_LIBRARY_PATH="$(BUILD_DIR)/objs:$$LD_LIBRARY_PATH" gdb $(BUILD_DIR)/objs/test/catch_all_test/exe/objs/Test
+	@cd "$(PROJECT_DIR)" && LD_LIBRARY_PATH="$(BUILD_DIR)/objs:$$LD_LIBRARY_PATH" gdb $(BUILD_DIR)/objs/test/$(PROJ_TEST_NAME)/exe/objs/Test
 
-proj_test_strace:
+# Set PROJ_TEST_NAME to select which test to run
+proj_run_strace:
 	@$(MAKE) -C $(UWUMAKER_DIR) PROJECT_DIR="$(PROJECT_DIR)" cmd_all
-	@cd "$(PROJECT_DIR)" && LD_LIBRARY_PATH="$(BUILD_DIR)/objs:$$LD_LIBRARY_PATH" strace $(BUILD_DIR)/objs/test/catch_all_test/exe/objs/Test
+	@cd "$(PROJECT_DIR)" && LD_LIBRARY_PATH="$(BUILD_DIR)/objs:$$LD_LIBRARY_PATH" strace $(BUILD_DIR)/objs/test/$(PROJ_TEST_NAME)/exe/objs/Test
 
 proj_doxygen:
 	@cd "$(PROJECT_DIR)" && doxygen
