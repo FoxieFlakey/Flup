@@ -110,7 +110,7 @@ void flup_thread_free(flup_thread* self) {
 FLUP_PUBLIC
 void flup_thread_wait(flup_thread* self) {
   if (self == flup_current_thread)
-    panic("Waiting on the current thread is always lead to deadlock -w-");
+    flup_panic("Waiting on the current thread is always lead to deadlock -w-");
   int ret = pthread_join(self->thread, NULL);
   BUG_ON(ret != 0);
 }

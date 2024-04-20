@@ -25,7 +25,7 @@
 FLUP_ATTR_PRINTF(1, 2)
 [[noreturn]]
 FLUP_PUBLIC
-void panic(const char* format, ...);
+void flup_panic(const char* format, ...);
 
 /**
  * @brief Trigger a panic and never return
