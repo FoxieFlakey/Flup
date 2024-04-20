@@ -11,32 +11,58 @@
  * @brief Stacktracing functionality
  */
 
+/**
+ * @brief Source information
+ */
 typedef struct flup_stacktrace_source {
+  /// The function name
   const char* funcName;
+  /// The filename
   const char* file;
+  /// The line in file
   int line;
+  /// The column in file
   int column;
 } flup_stacktrace_source;
 
+/**
+ * @brief The shared/static/etc object of origin element
+ */
 typedef struct flup_stacktrace_object {
+  /// Path to the object (isn't always valid path)
   const char* objectPath;
+  /// Base address of object
   uintptr_t objectBaseAddress;
 } flup_stacktrace_object;
 
+/**
+ * @brief Symbol of the origin element
+ */
 typedef struct flup_stacktrace_symbol {
+  /// Name of symbol (may not always resolveable by dlsym)
   const char* symbolName;
+  /// Address of symbol
   uintptr_t symbolAddr;
 } flup_stacktrace_symbol;
 
+/**
+ * @brief Stacktrace element
+ */
 typedef struct flup_stacktrace_element {
+  /// Source info from debuginfo or NULL if unavailable
   const struct flup_stacktrace_source* source;
+  /// Symbol of origin NULL if unavailable
   const struct flup_stacktrace_symbol* symbol;
+  /// Object of origin NULL if unavailable
   const flup_stacktrace_object* object;
   
+  /// Un-offseted instruction pointer
   uintptr_t ip;
+  /// Offset to ip relative to the starting ip
+  /// of the function
   uintptr_t ipOffset;
   
-  // Number of same frame occuring
+  /// Number of same frame occuring
   int count;
 } flup_stacktrace_element;
 
