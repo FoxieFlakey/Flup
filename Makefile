@@ -61,6 +61,7 @@ proj_install_bin: proj_install_check
 		"$(PROJ_OUTDIR)/$(CONFIG_PREFIX)/lib/lib$(UwUMaker-name).so.$(CONFIG_VERSION_MAJOR).$(CONFIG_VERSION_MINOR).$(CONFIG_VERSION_PATCH)" 
 	@ln -s lib$(UwUMaker-name).so $(PROJ_OUTDIR)/$(CONFIG_PREFIX)/lib/lib$(UwUMaker-name).so.$(CONFIG_VERSION_MAJOR).$(CONFIG_VERSION_MINOR)
 	@ln -s lib$(UwUMaker-name).so $(PROJ_OUTDIR)/$(CONFIG_PREFIX)/lib/lib$(UwUMaker-name).so.$(CONFIG_VERSION_MAJOR)
+	@ln -s lib$(UwUMaker-name).so $(PROJ_OUTDIR)/$(CONFIG_PREFIX)/lib/lib$(UwUMaker-name).so
 
 # Install development headers
 # $PROJ_OUTDIR is a variable which pretend to be root for easing packaging
