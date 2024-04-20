@@ -175,6 +175,7 @@ const flup_log_record* logger_read_log() {
   
   // Read the log header
   flup_circular_buffer_read(&buffer, &record, sizeof(record));
+  flup_cond_wake_one(&dataReadBufferEvent);
   
   size_t stringSize = record.recordSize - sizeof(record);
   
@@ -186,6 +187,7 @@ const flup_log_record* logger_read_log() {
   // Then read the strings
   flup_circular_buffer_read(&buffer, threadBuffer, record.recordSize - sizeof(record));
   flup_mutex_unlock(&bufferLock);
+  
   flup_cond_wake_one(&dataReadBufferEvent);
   
   // Convert the offsets into pointer
