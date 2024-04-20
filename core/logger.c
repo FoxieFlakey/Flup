@@ -154,13 +154,13 @@ overflow_occured:
   
   // Wait until there space to write whole record plus strings
   while (buffer.bufferSize - buffer.usedSize < record.recordSize)
-    flup_cond_wait(&dataWrittenBufferEvent, &bufferLock, NULL);
+    flup_cond_wait(&dataReadBufferEvent, &bufferLock, NULL);
   
   flup_circular_buffer_write(&buffer, &record, sizeof(record));
   flup_circular_buffer_write(&buffer, threadBuffer, writtenBytes);
   
-  flup_mutex_unlock(&bufferLock);
   flup_cond_wake_one(&dataWrittenBufferEvent);
+  flup_mutex_unlock(&bufferLock);
 }
 
 const flup_log_record* logger_read_log() {
@@ -186,9 +186,8 @@ const flup_log_record* logger_read_log() {
   
   // Then read the strings
   flup_circular_buffer_read(&buffer, threadBuffer, record.recordSize - sizeof(record));
-  flup_mutex_unlock(&bufferLock);
-  
   flup_cond_wake_one(&dataReadBufferEvent);
+  flup_mutex_unlock(&bufferLock);
   
   // Convert the offsets into pointer
 # define initField(field) do { \
