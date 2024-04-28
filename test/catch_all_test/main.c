@@ -10,11 +10,13 @@
 #include <stdio.h>
 #include <unistd.h>
 
+#include "flup/data_structs/dyn_array.h"
 #include "flup/data_structs/buffer.h"
 #include "flup/thread/thread.h"
 #include "flup/attributes.h"
 #include "flup/core/logger.h"
 #include "flup/core/panic.h"
+#include "flup/bug.h"
 
 #include "main.h"
 
@@ -113,10 +115,22 @@ int fluffedup_main(FLUP_UNUSED int argc, FLUP_UNUSED const char** argv) {
   flup_buffer_free(completionBuffer);
   // mimalloc_play();
   
+  flup_dyn_array* a = flup_dyn_array_new(sizeof(int), 5);
+  int e = 0;
+  int ret;
+  
+  for (int i = 0; i < 5; i++) {
+    ret = flup_dyn_array_append(a, &e);
+    BUG_ON(ret < 0);
+  }
+  
+  ret = flup_dyn_array_remove(a, 0, 5);
+  BUG_ON(ret < 0);
+  
   // This thread is attached so try detach
   // and free the handle
   flup_thread_free(flup_detach_thread());
-  flup_panic("Panic test");
+  // flup_panic("Panic test");
   return 0;
 }
 
