@@ -113,19 +113,24 @@ int flup_dyn_array_insert(flup_dyn_array* self, size_t index, const void* elemen
 
 FLUP_PUBLIC
 int flup_dyn_array_remove(flup_dyn_array* self, size_t index, size_t count) {
-  if (count < 1 || index >= self->length)
+  if (count < 1 || index > self->length)
     return -EINVAL;
   
   size_t startOfNext;
   if (ckd_add(&startOfNext, index, count))
     return -EINVAL;
-  if (startOfNext >= self->length)
+  if (startOfNext > self->length)
     return -EINVAL;
 
+  if (startOfNext == self->length)
+    goto movingIsNotNeeded;
+  
   void* destinationAddr = getElementAddr(self, index);
   void* sourceAddr = getElementAddr(self, startOfNext);
   size_t moveCount = self->length - startOfNext;
   memmove(destinationAddr, sourceAddr, moveCount * self->elementSize);
+
+movingIsNotNeeded:
   self->length -= count;
   return 0;
 }
