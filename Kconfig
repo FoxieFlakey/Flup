@@ -10,7 +10,7 @@ config VERSION_MINOR
 
 config VERSION_PATCH
   int 
-  default 3
+  default 4
 
 config DISABLE_GNU_API
   bool "Disables use of GNU API and fallback to portable only"
