@@ -127,6 +127,8 @@ int fluffedup_main(FLUP_UNUSED int argc, FLUP_UNUSED const char** argv) {
   ret = flup_dyn_array_remove(a, 0, 5);
   BUG_ON(ret < 0);
   
+  flup_dyn_array_free(a);
+  
   // This thread is attached so try detach
   // and free the handle
   flup_thread_free(flup_detach_thread());
