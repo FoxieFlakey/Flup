@@ -36,20 +36,21 @@ static const char* snip2 = "----------------------------------";
 
 static void dumpStacktrace(void (^printMsg)(const char* fmt, ...)) {
   int ret = flup_stacktrace_walk_current_block(^bool (const flup_stacktrace_element* element) {
-    char ipHexedBuffer[64];
-    const char* symName = NULL; 
-    if (element->symbol)
-      symName = element->symbol->symbolName;
-    
-    if (!symName) {
-      snprintf(ipHexedBuffer, sizeof(ipHexedBuffer), "0x%" PRIxPTR "+0x%04" PRIxPTR, element->ip, element->ipOffset);
-      symName = ipHexedBuffer;
-    }
-    
-    if (element->source)
-      printMsg("  at %s(%s:%d:%d)", element->source->funcName ? element->source->funcName : symName,element->source->file, element->source->line, element->source->column);
-    else if (element->symbol)
+    if (element->source) {
+      printMsg("  at %s(%s:%d:%d)", element->source->funcName, element->source->file, element->source->line, element->source->column);
+    } else if (element->symbol) {
+      char ipHexedBuffer[64];
+      const char* symName = NULL; 
+      if (element->symbol)
+        symName = element->symbol->symbolName;
+      
+      if (!symName) {
+        snprintf(ipHexedBuffer, sizeof(ipHexedBuffer), "0x%" PRIxPTR "+0x%04" PRIxPTR, element->ip, element->ipOffset);
+        symName = ipHexedBuffer;
+      }
+      
       printMsg("  at %s(Source.c:-1:-1)", symName);
+    }
     
     if (element->count > 1)
       printMsg("  ... previous frame repeats %d times ...", element->count - 1);
