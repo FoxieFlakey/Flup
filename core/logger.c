@@ -45,6 +45,8 @@ atomic_bool flup_is_aborting = false;
 FLUP_PUBLIC_VAR
 thread_local bool flup_is_current_thread_aborting = false;
 
+static atomic_bool loggerThreadIsStarting = false;
+
 FLUP_CIRCULAR_BUFFER_DEFINE_STATIC(buffer, flup_logbuffer, BUFFER_SIZE);
 FLUP_MUTEX_DEFINE_STATIC(bufferLock);
 FLUP_COND_DEFINE_STATIC(dataWrittenBufferEvent);
@@ -60,7 +62,11 @@ void flup__printk(const printk_call_site_info* callSite, const char* category, f
 
 FLUP_PUBLIC
 void flup__vprintk(const printk_call_site_info* callSite, const char* category, flup_loglevel loglevel, const char* fmt, va_list args) {
-  logger_thread_start();
+  // If false that mean this is the winning thread attempting
+  // to start logger thread, the rest will write to buffer
+  if (!atomic_load(&logger_thread_has_started))
+    if (atomic_exchange(&loggerThreadIsStarting, true) == false)
+      logger_thread_start();
   
   static thread_local char threadBuffer[THREAD_BUFFER_SIZE];
   flup_log_record record = {
