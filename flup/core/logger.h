@@ -139,6 +139,17 @@ void flup__printk(const printk_call_site_info* callSite, const char* category, f
 # define flup_fmt(fmt) fmt
 #endif
 
+
+/// @if 0
+// Implementation detail, must not be documented
+#define flup_logger__generate_callsite(name) static const printk_call_site_info name = { \
+    .shortFuncName = __func__, \
+    .sourceFile = __FILE__, \
+    .line = __LINE__, \
+    .funcPtr = NULL \
+  }
+/// @endif
+
 /**
  * @brief Write a log entry
  *
@@ -148,13 +159,8 @@ void flup__printk(const printk_call_site_info* callSite, const char* category, f
  * @param fmt The printf format for log
  * @param ... The rest of arguments for printf format
  */
-#define printk(loglevel, fmt, ...) do {\
-  static const printk_call_site_info callSite = { \
-    .shortFuncName = __func__, \
-    .sourceFile = __FILE__, \
-    .line = __LINE__, \
-    .funcPtr = NULL \
-  }; \
+#define printk(loglevel, fmt, ...) do { \
+  flup_logger__generate_callsite(callSite); \
   flup__printk(&callSite, FLUP_LOG_CATEGORY, (loglevel), flup_fmt(fmt) __VA_OPT__(,) __VA_ARGS__); \
 } while(0)
 
