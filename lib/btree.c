@@ -4,6 +4,7 @@
 // Use of this source code is governed by an MIT-style
 // license that can be found in the LICENSE file.
 
+#include <stdint.h>
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -82,7 +83,7 @@ struct btree {
     void *(*realloc)(void *, size_t);
     void (*free)(void *);
     int (*compare)(const void *a, const void *b, void *udata);
-    int (*searcher)(const void *items, size_t nitems, const void *key,
+    size_t (*searcher)(const void *items, size_t nitems, const void *key,
         bool *found, void *udata);
     bool (*item_clone)(const void *item, void *into, void *udata);
     void (*item_free)(const void *item, void *udata);
@@ -104,7 +105,7 @@ static void *btree_spare_at(const struct btree *btree, size_t index) {
 
 BTREE_EXTERN
 void btree_set_searcher(struct btree *btree, 
-    int (*searcher)(const void *items, size_t nitems, const void *key, 
+    size_t (*searcher)(const void *items, size_t nitems, const void *key, 
         bool *found, void *udata))
 {
     btree->searcher = searcher;
@@ -220,12 +221,12 @@ static size_t btree_node_bsearch(const struct btree *btree,
     return i;
 }
 
-static int btree_node_bsearch_hint(const struct btree *btree,
+static size_t btree_node_bsearch_hint(const struct btree *btree,
     struct btree_node *node, const void *key, bool *found, uint64_t *hint,
     int depth) 
 {
-    int low = 0;
-    int high = node->nitems-1;
+    size_t low = 0;
+    size_t high = node->nitems-1;
     if (hint && depth < 8) {
         size_t index = (size_t)((uint8_t*)hint)[depth];
         if (index > 0) {
@@ -245,9 +246,9 @@ static int btree_node_bsearch_hint(const struct btree *btree,
             }
         }
     }
-    int index;
+    size_t index;
     while ( low <= high ) {
-        int mid = (low + high) / 2;
+        size_t mid = (low + high) / 2;
         void *item = btree_get_item_at((void*)btree, node, (size_t)mid);
         int cmp = _btree_compare(btree, key, item);
         if (cmp == 0) {
@@ -917,10 +918,13 @@ size_t btree_count(const struct btree *btree) {
     return btree->count;
 }
 
+// NOTE from Foxie: is this meant to be exported?
+int btree_compare(const struct btree *btree, const void *a, const void *b);
 BTREE_EXTERN
 int btree_compare(const struct btree *btree, const void *a, const void *b) {
     return _btree_compare(btree, a, b);
 }
+////
 
 static bool btree_node_scan(const struct btree *btree, struct btree_node *node, 
     bool (*iter)(const void *item, void *udata), void *udata)
@@ -1160,7 +1164,7 @@ size_t btree_height(const struct btree *btree) {
 
 struct btree_iter_stack_item {
     struct btree_node *node;
-    int index;
+    size_t index;
 };
 
 struct btree_iter {
@@ -1290,8 +1294,7 @@ bool btree_iter_prev(struct btree_iter *iter) {
     }
     struct btree_iter_stack_item *stack = &iter->stack[iter->nstack-1];
     if (stack->node->leaf) {
-        stack->index--;
-        if (stack->index == -1) {
+        if (stack->index == 0) {
             while (1) {
                 iter->nstack--;
                 if (iter->nstack == 0) {
@@ -1299,12 +1302,13 @@ bool btree_iter_prev(struct btree_iter *iter) {
                     return false;
                 }
                 stack = &iter->stack[iter->nstack-1];
-                stack->index--;
-                if (stack->index > -1) {
+                if (stack->index > 0) {
                     break;
                 }
+                stack->index--;
             }
         }
+        stack->index--;
     } else {
         struct btree_node *node = stack->node->children[stack->index];
         while (1) {

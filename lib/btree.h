@@ -189,8 +189,9 @@ bool btree_descend_hint(const struct btree *btree, const void *pivot,
     void *udata, uint64_t *hint);
 
 // btree_set_searcher allows for setting a custom search function.
+// NOTE by Foxie: This used to search "key" in array of "items"
 void btree_set_searcher(struct btree *btree, 
-    int (*searcher)(const void *items, size_t nitems, const void *key, 
+    size_t (*searcher)(const void *items, size_t nitems, const void *key, 
         bool *found, void *udata));
 
 // Loop-based iterator
