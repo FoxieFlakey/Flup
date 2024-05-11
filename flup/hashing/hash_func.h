@@ -9,14 +9,25 @@
  * @brief Containing typedefs for hash functions
  */
 
+/// @{
 /**
- * @brief A general purpose data to uintptr_t hash function
+ * @brief Type def for each hash size (castable to corresponding uint<X>_t type)
+ */
+typedef uint32_t flup_hash32;
+typedef uint64_t flup_hash64;
+typedef _BitInt(128) flup_hash128;
+typedef _BitInt(256) flup_hash256;
+typedef _BitInt(512) flup_hash512;
+/// @}
+
+/**
+ * @brief A general purpose data to 64-bit hash function
  *
  * @param data The input data
  * @param size Size of the input data
  *
- * @return uintmax_t sized hash
+ * @return uint64_t sized hash
  */
-typedef uintmax_t (*flup_hash_func)(const void* data, size_t size);
+typedef flup_hash64 (*flup_hash_func)(const void* data, size_t size);
 
 #endif
