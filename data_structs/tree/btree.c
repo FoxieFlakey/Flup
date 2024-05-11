@@ -9,7 +9,14 @@
 
 #include "lib/btree.h"
 
-struct flup_btree {
+#define TO_INTERNAL(x) _Generic((x), \
+    flup_btree*: (struct flup_btree_internal*) (x) \
+  )
+#define FROM_INTERNAL(x) _Generic((x), \
+    struct flup_btree_internal*: (flup_btree*) (x) \
+  )
+
+struct flup_btree_internal {
   flup_mutex* lock;
   struct btree* tree;
 };
@@ -32,17 +39,17 @@ static int cmp(const void* _a, const void* _b, void*) {
 
 FLUP_PUBLIC
 flup_btree* flup_btree_new() {
-  flup_btree* self = malloc(sizeof(*self));
+  struct flup_btree_internal* self = malloc(sizeof(*self));
   if (!self)
     return NULL;
   
-  *self = (flup_btree) {};
+  *self = (struct flup_btree_internal) {};
   if (!(self->lock = flup_mutex_new()))
     goto failure;
   
   if (!(self->tree = btree_new(sizeof(struct flup_btree_pair), 64, cmp, NULL)))
     goto failure;
-  return self;
+  return FROM_INTERNAL(self);
 
 failure:
   btree_free(self->tree);
@@ -50,14 +57,16 @@ failure:
 }
 
 FLUP_PUBLIC
-void flup_btree_free(flup_btree* self) {
+void flup_btree_free(flup_btree* _self) {
+  struct flup_btree_internal* self = TO_INTERNAL(_self);
   btree_free(self->tree);
   flup_mutex_free(self->lock);
   free(self);
 }
 
 FLUP_PUBLIC
-int flup_btree_insert(flup_btree* self, uintptr_t key, uintptr_t value) {
+int flup_btree_insert(flup_btree* _self, uintptr_t key, uintptr_t value) {
+  struct flup_btree_internal* self = TO_INTERNAL(_self);
   struct flup_btree_pair pair = {
     .key = key,
     .value = value
@@ -77,7 +86,9 @@ int flup_btree_insert(flup_btree* self, uintptr_t key, uintptr_t value) {
 }
 
 FLUP_PUBLIC
-int flup_btree_set(flup_btree* self, uintptr_t key, uintptr_t value) {
+int flup_btree_set(flup_btree* _self, uintptr_t key, uintptr_t value) {
+  struct flup_btree_internal* self = TO_INTERNAL(_self);
+  
   struct flup_btree_pair pair = {
     .key = key,
     .value = value
@@ -93,7 +104,9 @@ int flup_btree_set(flup_btree* self, uintptr_t key, uintptr_t value) {
 }
 
 FLUP_PUBLIC
-int flup_btree_remove(flup_btree* self, uintptr_t key) {
+int flup_btree_remove(flup_btree* _self, uintptr_t key) {
+  struct flup_btree_internal* self = TO_INTERNAL(_self);
+  
   struct flup_btree_pair pair = {
     .key = key
   };
@@ -113,7 +126,8 @@ int flup_btree_remove(flup_btree* self, uintptr_t key) {
 }
 
 FLUP_PUBLIC
-int flup_btree_get(flup_btree* self, uintptr_t key, uintptr_t* result) {
+int flup_btree_get(flup_btree* _self, uintptr_t key, uintptr_t* result) {
+  struct flup_btree_internal* self = TO_INTERNAL(_self);
   struct flup_btree_pair pair = {
     .key = key,
     .value = 0
@@ -128,3 +142,6 @@ int flup_btree_get(flup_btree* self, uintptr_t key, uintptr_t* result) {
   *result = item->value;
   return 0;
 }
+
+
+

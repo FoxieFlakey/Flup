@@ -8,7 +8,7 @@
 // Right now its using under the hood
 // https://github.com/tidwall/btree.c
 
-typedef struct flup_btree flup_btree;
+typedef struct alignas(alignof(void*)) flup_btree {} flup_btree;
 
 FLUP_PUBLIC
 flup_btree* flup_btree_new();
