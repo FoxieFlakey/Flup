@@ -1,8 +1,7 @@
-#include <unistd.h>
 #define _GNU_SOURCE
 
+#include <unistd.h>
 #include <errno.h>
-#include <stddef.h>
 #include <stdint.h>
 #include <dlfcn.h>
 
@@ -24,13 +23,7 @@ int stacktrace_get_object(uintptr_t ip, flup_stacktrace_object* res) {
 }
 
 int stacktrace_get_source(uintptr_t, flup_stacktrace_source* res) {
-  *res = (flup_stacktrace_source) {
-    .column = -1,
-    .line = -1,
-    .file = NULL,
-    .funcName = NULL
-  };
-  return 0;
+  return -ENOSYS;
 }
 
 int stacktrace_get_symbol(uintptr_t ip, flup_stacktrace_symbol* res) {
