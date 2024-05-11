@@ -83,6 +83,21 @@ FLUP_PUBLIC
 int flup_btree_remove(flup_btree* self, uintptr_t key);
 
 /**
+ * @public @brief Removes key and value pair
+ * @memberof flup_btree
+ *
+ * @param self The instance to remove a pair from
+ * @param key The key of pair
+ * @param value The value which was removed
+ *
+ * @throws ENOENT A key don't exist
+ *
+ * @return 0 on success or -errno on error (see above)
+ */
+FLUP_PUBLIC
+int flup_btree_remove2(flup_btree* self, uintptr_t key, uintptr_t* value);
+
+/**
  * @public @brief Retrieves a value from key
  * @memberof flup_btree
  *

@@ -105,6 +105,11 @@ int flup_btree_set(flup_btree* _self, uintptr_t key, uintptr_t value) {
 
 FLUP_PUBLIC
 int flup_btree_remove(flup_btree* _self, uintptr_t key) {
+  return flup_btree_remove2(_self, key, NULL);
+}
+
+FLUP_PUBLIC
+int flup_btree_remove2(flup_btree* _self, uintptr_t key, uintptr_t* value) {
   struct flup_btree_internal* self = TO_INTERNAL(_self);
   
   struct flup_btree_pair pair = {
@@ -112,10 +117,14 @@ int flup_btree_remove(flup_btree* _self, uintptr_t key) {
   };
   
   flup_mutex_lock(self->lock);
-  if (btree_get(self->tree, &pair) == NULL) {
+  const struct flup_btree_pair* foundPair;
+  if ((foundPair = btree_get(self->tree, &pair)) == NULL) {
     flup_mutex_unlock(self->lock);
     return -ENOENT;
   }
+  
+  if (value)
+    *value = foundPair->value;
   
   btree_delete(self->tree, &pair);
   if (btree_oom(self->tree))
