@@ -58,6 +58,9 @@ failure:
 
 FLUP_PUBLIC
 void flup_btree_free(flup_btree* _self) {
+  if (!_self)
+    return;
+  
   struct flup_btree_internal* self = TO_INTERNAL(_self);
   btree_free(self->tree);
   flup_mutex_free(self->lock);
