@@ -140,7 +140,7 @@ void flup__printk(const printk_call_site_info* callSite, const char* category, f
 #endif
 
 
-/// @cond 0
+/// @cond
 // Implementation detail, must not be documented
 #define flup_logger__generate_callsite(name) static const printk_call_site_info name = { \
     .shortFuncName = __func__, \

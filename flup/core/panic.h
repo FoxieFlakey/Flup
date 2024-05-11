@@ -41,7 +41,7 @@
   flup__vpanic(&callSite, (format), list); \
 } while (0)
 
-/// @cond 0
+/// @cond
 FLUP_ATTR_PRINTF(2, 3)
 [[noreturn]]
 FLUP_PUBLIC
