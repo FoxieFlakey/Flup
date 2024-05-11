@@ -1,4 +1,6 @@
 #define _GNU_SOURCE
+#include <stdint.h>
+#include <inttypes.h>
 #include <time.h>
 #include <assert.h>
 #include <sys/mman.h>
@@ -12,6 +14,7 @@
 
 #include "flup/data_structs/dyn_array.h"
 #include "flup/data_structs/buffer.h"
+#include "flup/data_structs/tree/btree.h"
 #include "flup/thread/thread.h"
 #include "flup/attributes.h"
 #include "flup/core/logger.h"
@@ -128,6 +131,20 @@ int fluffedup_main(FLUP_UNUSED int argc, FLUP_UNUSED const char** argv) {
   BUG_ON(ret < 0);
   
   flup_dyn_array_free(a);
+  
+  flup_btree* tree = flup_btree_new();
+  uintptr_t tmp;
+  int res;
+  
+  flup_btree_set(tree, 0, 0x8084);
+  res = flup_btree_get(tree, 0, &tmp);
+  pr_info("Res: %d  Fetched: 0x%" PRIxPTR, res, tmp);
+  
+  flup_btree_set(tree, 129874, 0x1279);
+  res = flup_btree_get(tree, 129874, &tmp);
+  pr_info("Res: %d  Fetched: 0x%" PRIxPTR, res, tmp);
+  
+  flup_btree_free(tree);
   
   // This thread is attached so try detach
   // and free the handle
