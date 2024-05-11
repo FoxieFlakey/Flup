@@ -41,7 +41,7 @@
   flup__vpanic(&callSite, (format), list); \
 } while (0)
 
-/// @if 0
+/// @cond 0
 FLUP_ATTR_PRINTF(2, 3)
 [[noreturn]]
 FLUP_PUBLIC
@@ -51,7 +51,7 @@ FLUP_ATTR_PRINTF(2, 0)
 [[noreturn]]
 FLUP_PUBLIC
 void flup__vpanic(const struct printk_call_site_info* site, const char* format, va_list list);
-/// @endif
+/// @endcond
 
 #endif
 
