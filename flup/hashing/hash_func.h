@@ -14,7 +14,9 @@
  *
  * @param data The input data
  * @param size Size of the input data
+ *
+ * @return uintmax_t sized hash
  */
-typedef uintptr_t (*flup_hash_func)(const void* data, size_t size);
+typedef uintmax_t (*flup_hash_func)(const void* data, size_t size);
 
 #endif

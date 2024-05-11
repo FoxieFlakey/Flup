@@ -16,9 +16,9 @@ UwUMaker-c-flags-y += -std=c2x -g \
 
 UwUMaker-linker-flags-y += -lm -lBlocksRuntime -lunwind
 
-UwUMaker-pkg-config-libs-y += mimalloc
+UwUMaker-pkg-config-libs-y += mimalloc libxxhash
 
-UwUMaker-dirs-y += data_structs core interface util concurrency thread stacktrace lib
+UwUMaker-dirs-y += data_structs core interface util concurrency thread stacktrace lib hashing
 UwUMaker-dirs-$(CONFIG_ENABLE_TEST_EXE) += test
 
 UwUMaker-is-executable := m

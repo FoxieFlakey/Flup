@@ -1,0 +1,1 @@
+UwUMaker-dirs-y += noncrypto
