@@ -24,10 +24,10 @@
 
 [[noreturn]]
 FLUP_PUBLIC
-void flup_panic(const char* format, ...) {
+void flup__panic(const struct printk_call_site_info* site, const char* format, ...) {
   va_list list;
   va_start(list, format);
-  flup_vpanic(format, list);
+  flup__vpanic(site, format, list);
   va_end(list);
 }
 
@@ -64,7 +64,7 @@ static thread_local bool currentThreadInHardPanic = false;
 static atomic_bool programInHardPanic = false;
 
 [[noreturn]]
-static void hardPanic(const char* format, va_list list) {
+static void hardPanic(const struct printk_call_site_info* site, const char* format, va_list list) {
   currentThreadInHardPanic = true;
   
   if (atomic_exchange(&programInHardPanic, true) == true) {
@@ -82,7 +82,7 @@ static void hardPanic(const char* format, va_list list) {
   }
   
   fprintf(stderr, "[HARD PANIC] %s", snip1);
-  fprintf(stderr, "[HARD PANIC] Hard panic occured OwO: ");
+  fprintf(stderr, "[HARD PANIC] Hard panic occured OwO at %s:%d/%s(): ", site->sourceFile, site->line, site->shortFuncName);
 #ifdef __clang__
 # pragma clang diagnostic push
 # pragma clang diagnostic ignored "-Wformat-nonliteral"
@@ -106,7 +106,7 @@ static void hardPanic(const char* format, va_list list) {
 
 [[noreturn]]
 FLUP_PUBLIC
-void flup_vpanic(const char* format, va_list list) {
+void flup__vpanic(const struct printk_call_site_info* site, const char* format, va_list list) {
   flup_is_current_thread_aborting = true;
   
   // Is an program abortion is in progress
@@ -114,7 +114,7 @@ void flup_vpanic(const char* format, va_list list) {
     // Current thread attempt to abort twice just
     // do hard panic to break the loop
     if (flup_is_current_thread_aborting)
-      hardPanic(format, list);
+      hardPanic(site, format, list);
     
     // Abortion happening on other thread while another
     // one in progress just sleep forever and yield to
@@ -137,7 +137,7 @@ void flup_vpanic(const char* format, va_list list) {
 #endif
   
   pr_fatal("%s", snip1);
-  pr_fatal("Panic occured >w<: %s", panicBuffer);
+  pr_fatal("Panic occured >w< at %s:%d/%s(): %s", site->sourceFile, site->line, site->shortFuncName, panicBuffer);
   dumpStacktrace(^(const char *fmt, ...) {
     va_list args;
     va_start(args, fmt);
