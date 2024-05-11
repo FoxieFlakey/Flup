@@ -28,6 +28,6 @@ typedef _BitInt(512) flup_hash512;
  *
  * @return uint64_t sized hash
  */
-typedef flup_hash64 (*flup_hash_func)(const void* data, size_t size);
+typedef flup_hash64 (*flup_hash64_func)(const void* data, size_t size);
 
 #endif
