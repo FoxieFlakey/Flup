@@ -11,8 +11,8 @@ uint64_t flup_xxhash3_hash_64bits(const void* data, size_t size) {
 }
 
 FLUP_PUBLIC
-_BitInt(128) flup_xxhash3_hash_128bits(const void* data, size_t size) {
+unsigned _BitInt(128) flup_xxhash3_hash_128bits(const void* data, size_t size) {
   XXH128_hash_t hash = XXH3_128bits(data, size);
-  return ((_BitInt(128)) hash.low64) | ((_BitInt(128)) hash.high64) << 64;
+  return ((unsigned _BitInt(128)) hash.low64) | ((unsigned _BitInt(128)) hash.high64) << 64;
 }
 

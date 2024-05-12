@@ -17,9 +17,9 @@ typedef uint64_t flup_hash64;
 /// @{
 /// Type def for each hash size (castable to corresponding uint<X>_t type)
 /// @return
-typedef _BitInt(128) flup_hash128;
-typedef _BitInt(256) flup_hash256;
-typedef _BitInt(512) flup_hash512;
+typedef unsigned _BitInt(128) flup_hash128;
+typedef unsigned _BitInt(256) flup_hash256;
+typedef unsigned _BitInt(512) flup_hash512;
 /// @}
 
 /**
