@@ -79,7 +79,7 @@ static int commonGet(flup_string_map* self, const char* key, void** value, bool 
   uintptr_t pairListAddr;
   struct pair_list* pairsList;
   if (flup_btree_get(self->tree, (uintptr_t) keyHash, &pairListAddr) < 0)
-    return -ENOENT;
+    goto key_not_found;
   
   pairsList = (struct pair_list*) pairListAddr;
   flup_list_head* current;
@@ -106,6 +106,10 @@ static int commonGet(flup_string_map* self, const char* key, void** value, bool 
   }
   flup_mutex_unlock(self->lock);
   return 0;
+  
+key_not_found:
+  flup_mutex_unlock(self->lock);
+  return -ENOENT;
 }
 
 FLUP_PUBLIC
