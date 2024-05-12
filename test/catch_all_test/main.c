@@ -13,6 +13,7 @@
 #include <stdio.h>
 #include <unistd.h>
 
+#include "flup/data_structs/string_map.h"
 #include "flup/hashing/noncrypto/xxhash.h"
 #include "flup/data_structs/dyn_array.h"
 #include "flup/data_structs/buffer.h"
@@ -153,6 +154,23 @@ int fluffedup_main(FLUP_UNUSED int argc, FLUP_UNUSED const char** argv) {
   uint64_t doubleWordHash = flup_xxhash3_hash_64bits(string, strlen(string));
   pr_info("Resulting XXH3 128 bits hash: 0x%" PRIx64 "%" PRIx64, (uint64_t) (quadWordHash >> 64), (uint64_t) (quadWordHash & 0xFFFF'FFFF'FFFF'FFFF));
   pr_info("Resulting XXH3 64  bits hash: 0x%" PRIx64, doubleWordHash);
+  
+  flup_string_map* map = flup_string_map_new();
+  flup_string_map_set(map, "UwU1", "Hiiii ^w^");
+  flup_string_map_set(map, "UwU2", "Hiiii222 ^w^");
+  flup_string_map_set(map, "UwU", "Fuwa fuwa");
+  
+  const char* stringRes;
+  flup_string_map_get(map, "UwU1", (void**) &stringRes);
+  pr_info("map['UwU1'] = %s", stringRes);
+  
+  flup_string_map_get(map, "UwU2", (void**) &stringRes);
+  pr_info("map['UwU2'] = %s", stringRes);
+  
+  flup_string_map_get(map, "UwU", (void**) &stringRes);
+  pr_info("map['UwU'] = %s", stringRes);
+  
+  flup_string_map_free(map);
   
   // This thread is attached so try detach
   // and free the handle
