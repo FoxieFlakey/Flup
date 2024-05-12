@@ -2,6 +2,7 @@
 #include <string.h>
 #include <stdint.h>
 #include <inttypes.h>
+#include <errno.h>
 #include <time.h>
 #include <assert.h>
 #include <sys/mman.h>
@@ -169,6 +170,11 @@ int fluffedup_main(FLUP_UNUSED int argc, FLUP_UNUSED const char** argv) {
   
   flup_string_map_get(map, "UwU", (void**) &stringRes);
   pr_info("map['UwU'] = %s", stringRes);
+  
+  flup_string_map_remove(map, "UwU", NULL);
+  
+  ret = flup_string_map_get(map, "UwU", (void**) &stringRes);
+  pr_info("map['UwU'] = %s", ret == -ENOENT ? "<Not found>" : stringRes);
   
   flup_string_map_free(map);
   

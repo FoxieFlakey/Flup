@@ -72,8 +72,7 @@ out_of_memory_error:
   return -ENOMEM;
 }
 
-FLUP_PUBLIC
-int flup_string_map_get(flup_string_map* self, const char* key, void** value) {
+static int commonGet(flup_string_map* self, const char* key, void** value, bool doRemove) {
   flup_mutex_lock(self->lock);
   size_t keyLen = strlen(key);
   flup_hash64 keyHash = self->hashFunction(key, keyLen);
@@ -84,17 +83,39 @@ int flup_string_map_get(flup_string_map* self, const char* key, void** value) {
   
   pairsList = (struct pair_list*) pairListAddr;
   flup_list_head* current;
+  flup_string_map_pair* currentPair;
   flup_list_for_each(&pairsList->list, current) {
-    flup_string_map_pair* pair = flup_list_entry(current, flup_string_map_pair, node);
-    if (strcmp(pair->key, key) == 0) {
-      BUG_ON(pair->keyHash != keyHash);
+    currentPair = flup_list_entry(current, flup_string_map_pair, node);
+    if (strcmp(currentPair->key, key) == 0) {
+      BUG_ON(currentPair->keyHash != keyHash);
       if (value)
-        *value = pair->value;
+        *value = currentPair->value;
       break;
     }
   }
+  
+  if (doRemove) {
+    flup_list_del(current);
+    if (flup_list_is_empty(&pairsList->list)) {
+      int ret = flup_btree_remove(self->tree, keyHash);
+      BUG_ON(ret != 0);
+      flup_list_del(&pairsList->node);
+      free(pairsList);
+    }
+    free(currentPair);
+  }
   flup_mutex_unlock(self->lock);
   return 0;
+}
+
+FLUP_PUBLIC
+int flup_string_map_get(flup_string_map* self, const char* key, void** value) {
+  return commonGet(self, key, value, false);
+}
+
+FLUP_PUBLIC
+int flup_string_map_remove(flup_string_map* self, const char* key, void** value) {
+  return commonGet(self, key, value, true);
 }
 
 FLUP_PUBLIC

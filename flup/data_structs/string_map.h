@@ -41,4 +41,7 @@ int flup_string_map_set(flup_string_map* self, const char* key, void* value);
 FLUP_PUBLIC
 int flup_string_map_get(flup_string_map* self, const char* key, void** value);
 
+FLUP_PUBLIC
+int flup_string_map_remove(flup_string_map* self, const char* key, void** value);
+
 #endif
