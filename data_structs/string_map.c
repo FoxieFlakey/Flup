@@ -88,7 +88,8 @@ int flup_string_map_get(flup_string_map* self, const char* key, void** value) {
     flup_string_map_pair* pair = flup_list_entry(current, flup_string_map_pair, node);
     if (strcmp(pair->key, key) == 0) {
       BUG_ON(pair->keyHash != keyHash);
-      *value = pair->value;
+      if (value)
+        *value = pair->value;
       break;
     }
   }
