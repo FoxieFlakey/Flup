@@ -72,7 +72,7 @@ out_of_memory_error:
   return -ENOMEM;
 }
 
-static int commonGet(flup_string_map* self, const char* key, void** value, bool doRemove) {
+static int commonGet(flup_string_map* self, const char* key, void** valuePtr, bool doRemove) {
   flup_mutex_lock(self->lock);
   size_t keyLen = strlen(key);
   flup_hash64 keyHash = self->hashFunction(key, keyLen);
@@ -84,15 +84,21 @@ static int commonGet(flup_string_map* self, const char* key, void** value, bool 
   pairsList = (struct pair_list*) pairListAddr;
   flup_list_head* current;
   flup_string_map_pair* currentPair;
+  
+  void* value = NULL;
   flup_list_for_each(&pairsList->list, current) {
     currentPair = flup_list_entry(current, flup_string_map_pair, node);
     if (strcmp(currentPair->key, key) == 0) {
       BUG_ON(currentPair->keyHash != keyHash);
-      if (value)
-        *value = currentPair->value;
+      value = currentPair->value;
       break;
     }
   }
+  if (value == NULL)
+    goto key_not_found;
+  
+  if (valuePtr)
+    *valuePtr = value;
   
   if (doRemove) {
     flup_list_del(current);
