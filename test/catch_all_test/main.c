@@ -1,3 +1,4 @@
+#include "flup/hashing/hash_func.h"
 #define _GNU_SOURCE
 #include <string.h>
 #include <stdint.h>
@@ -151,7 +152,7 @@ int fluffedup_main(FLUP_UNUSED int argc, FLUP_UNUSED const char** argv) {
   flup_btree_free(tree);
   
   const char* string = "Im just a cute fox and perhaps a furry ^w^ *fuwa*";
-  _BitInt(128) quadWordHash = flup_xxhash3_hash_128bits(string, strlen(string));
+  flup_hash128 quadWordHash = flup_xxhash3_hash_128bits(string, strlen(string));
   uint64_t doubleWordHash = flup_xxhash3_hash_64bits(string, strlen(string));
   pr_info("Resulting XXH3 128 bits hash: 0x%" PRIx64 "%" PRIx64, (uint64_t) (quadWordHash >> 64), (uint64_t) (quadWordHash & 0xFFFF'FFFF'FFFF'FFFF));
   pr_info("Resulting XXH3 64  bits hash: 0x%" PRIx64, doubleWordHash);
