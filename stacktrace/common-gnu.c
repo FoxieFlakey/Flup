@@ -22,7 +22,7 @@ int stacktrace_get_object(uintptr_t ip, flup_stacktrace_object* res) {
   return 0;
 }
 
-int stacktrace_get_source(uintptr_t, flup_stacktrace_source* res) {
+int stacktrace_get_source(uintptr_t, flup_stacktrace_source*) {
   return -ENOSYS;
 }
 
