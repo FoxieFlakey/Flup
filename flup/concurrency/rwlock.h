@@ -76,7 +76,8 @@ FLUP_PUBLIC
 void flup_rwlock_wrlock(flup_rwlock* self);
 
 /**
- * @brief Get unlocks the rwlock
+ * @public @memberof flup_rwlock
+ * @brief Unlocks the rwlock
  *
  * @param self The rwlock instance to be unlocked
  */
