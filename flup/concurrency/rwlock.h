@@ -60,6 +60,7 @@ FLUP_PUBLIC
 void flup_rwlock_free(flup_rwlock* self);
 
 /**
+ * @public @memberof flup_rwlock
  * @brief Get reader lock
  *
  * @param self The rwlock instance to be locked on
@@ -68,6 +69,7 @@ FLUP_PUBLIC
 void flup_rwlock_rdlock(flup_rwlock* self);
 
 /**
+ * @public @memberof flup_rwlock
  * @brief Get writer lock
  *
  * @param self The rwlock instance to be locked on

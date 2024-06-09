@@ -60,6 +60,7 @@ FLUP_PUBLIC
 void flup_mutex_free(flup_mutex* self);
 
 /**
+ * @public @memberof flup_mutex
  * @brief Lock a mutex
  *
  * This may sleep indefinitely if the lock is locked until 
@@ -71,6 +72,7 @@ FLUP_PUBLIC
 void flup_mutex_lock(flup_mutex* self);
 
 /**
+ * @public @memberof flup_mutex
  * @brief Unlock a mutex
  *
  * Unlock a locked mutex so its visible for other threads waiting

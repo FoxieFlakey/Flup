@@ -62,6 +62,7 @@ FLUP_PUBLIC
 void flup_cond_free(flup_cond* self);
 
 /**
+ * @public @memberof flup_cond
  * @brief Wake one waiting thread
  *
  * @param self The condition which the function will wake one 
@@ -71,6 +72,7 @@ FLUP_PUBLIC
 void flup_cond_wake_one(flup_cond* self);
 
 /**
+ * @public @memberof flup_cond
  * @brief Wake all waiting threads
  *
  * @param self The condition which the function will wake waiting
@@ -80,6 +82,7 @@ FLUP_PUBLIC
 void flup_cond_wake_all(flup_cond* self);
 
 /**
+ * @public @memberof flup_cond
  * @brief Wait on a condition
  * 
  * Put current thread to sleep until its woken up by @ref flup_cond_wake_one
