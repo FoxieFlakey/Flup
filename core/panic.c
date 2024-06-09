@@ -107,8 +107,6 @@ static void hardPanic(const struct printk_call_site_info* site, const char* form
 [[noreturn]]
 FLUP_PUBLIC
 void flup__vpanic(const struct printk_call_site_info* site, const char* format, va_list list) {
-  flup_is_current_thread_aborting = true;
-  
   // Is an program abortion is in progress
   if (atomic_exchange(&flup_is_aborting, true) == true) {
     // Current thread attempt to abort twice just
@@ -124,6 +122,7 @@ void flup__vpanic(const struct printk_call_site_info* site, const char* format, 
       sleep(UINT_MAX);
     }
   }
+  flup_is_current_thread_aborting = true;
   
   static char panicBuffer[PANIC_BUFFER_SIZE];
 #ifdef __clang__
