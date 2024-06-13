@@ -83,6 +83,33 @@ FLUP_PUBLIC
 int flup_buffer_read(flup_buffer* self, void* readData, size_t size);
 
 /**
+ * @brief Read buffer if buffer can be read without waiting for data
+ *
+ * Flag for @ref flup_buffer.flup_buffer_read2 to read
+ * only if it can be read without waiting for data
+ */
+#define FLUP_BUFFER_READ2_DONT_WAIT_FOR_DATA (0x01)
+
+/**
+ * @brief Read a data from buffer (with extra flags)
+ * @public @memberof flup_buffer
+ *
+ * If @p flags is zero then its the same as @ref flup_buffer.flup_buffer_read
+ *
+ * @param self The instance of buffer
+ * @param readData The pointer to the data to be read
+ * @param size The size of data to be read
+ * @param flags Bitmask of flags to tune behaviour
+ *
+ * @throws -EMSGSIZE The data is too big to be read atomicly
+ * @throws -ENODATA The buffer was empty
+ *
+ * @return 0 on success or -errno on failure (no data read on failure)
+ */
+FLUP_PUBLIC
+int flup_buffer_read2(flup_buffer* self, void* readData, size_t size, unsigned int flags);
+
+/**
  * @brief Wait until buffer empty
  * @public @memberof flup_buffer
  *

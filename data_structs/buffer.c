@@ -65,14 +65,24 @@ int flup_buffer_write(flup_buffer* self, const void* data, size_t size) {
 }
 
 FLUP_PUBLIC
-int flup_buffer_read(flup_buffer* self, void* dataRead, size_t size) {
+int flup_buffer_read(flup_buffer* self, void* readData, size_t size) {
+  return flup_buffer_read2(self, readData, size, 0);
+}
+
+FLUP_PUBLIC
+int flup_buffer_read2(flup_buffer* self, void* dataRead, size_t size, unsigned int flags) {
   if (size > self->buffer->bufferSize)
     return -EMSGSIZE;
   
   flup_mutex_lock(self->lock);
   // Not enough data wait for data written event
-  while (self->buffer->usedSize < size)
+  while (self->buffer->usedSize < size) {
+    if (flags & FLUP_BUFFER_READ2_DONT_WAIT_FOR_DATA) {
+      flup_mutex_unlock(self->lock);
+      return -ENODATA;
+    }
     flup_cond_wait(self->dataWrittenEvent, self->lock, NULL);
+  }
   
   int ret = flup_circular_buffer_read(self->buffer, dataRead, size);
   BUG_ON(ret != 0);
