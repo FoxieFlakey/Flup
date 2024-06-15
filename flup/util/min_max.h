@@ -30,15 +30,15 @@ FLUP__MIN_MAX_DEFINE(ullong, unsigned long long);
 
 #define FLUP__MIN_MAX_SELECT(op, a, b) _Generic((a), \
     char: flup_ ## op ## _char, \
-    unsigned char: flup_min_uchar, \
-    short: flup_min_short, \
-    unsigned short: flup_min_ushort, \
-    int: flup_min_int, \
-    unsigned int: flup_min_uint, \
-    long: flup_min_long, \
-    unsigned long: flup_min_ulong, \
-    long long: flup_min_llong, \
-    unsigned long long: flup_min_ullong \
+    unsigned char: flup_ ## op ## _uchar, \
+    short: flup_ ## op ## _short, \
+    unsigned short: flup_ ## op ## _ushort, \
+    int: flup_ ## op ## _int, \
+    unsigned int: flup_ ## op ## _uint, \
+    long: flup_ ## op ## _long, \
+    unsigned long: flup_ ## op ## _ulong, \
+    long long: flup_ ## op ## _llong, \
+    unsigned long long: flup_ ## op ## _ullong \
   )(a, b)
 /// @endcond
 
